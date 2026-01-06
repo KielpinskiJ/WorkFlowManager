@@ -16,6 +16,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<Department> Departments { get; set; }
+    
+    public DbSet<WorkShift> WorkShifts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -36,5 +38,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(d => d.Users)
             .HasForeignKey(u => u.DepartmentId)
             .OnDelete(DeleteBehavior.SetNull);
+        
+        // WorkShift configuration
+        builder.Entity<WorkShift>(entity =>
+        {
+            entity.HasKey(s => s.Id);
+            entity.Property(s => s.UserId).IsRequired();
+            
+            // WorkShift - ApplicationUser relationship
+            entity.HasOne(s => s.User)
+                .WithMany(u => u.Shifts)
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }
