@@ -51,10 +51,18 @@ public class DepartmentService : IDepartmentService
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var department = await _context.Departments.FindAsync(id);
+        var department = await _context.Departments
+            .Include(d => d.Users)
+            .FirstOrDefaultAsync(d => d.Id == id);
+
         if (department == null)
             return false;
 
+        if (department.Users != null && department.Users.Any())
+        {
+            // Prevent deletion if there are users assigned to this department
+            return false;
+        }
         _context.Departments.Remove(department);
         await _context.SaveChangesAsync();
         return true;
