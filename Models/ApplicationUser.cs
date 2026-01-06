@@ -13,5 +13,7 @@ public class ApplicationUser : IdentityUser
     
     public bool IsActive { get; set; } = true;
     
+    // Department relation
     public int? DepartmentId { get; set; }
+    public Department? Department { get; set; }
 }
