@@ -9,9 +9,9 @@ using WorkFlowManager.ViewModels;
 namespace WorkFlowManager.Controllers;
 
 /// <summary>
-/// Controller for managing work shifts. Admin-only access.
+/// Controller for managing work shifts.
 /// </summary>
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class ShiftsController : Controller
 {
     private readonly IShiftService _shiftService;
@@ -24,8 +24,9 @@ public class ShiftsController : Controller
     }
 
     /// <summary>
-    /// Displays a list of all shifts sorted by date descending.
+    /// Displays a list of all shifts sorted by date descending. Admin only.
     /// </summary>
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Index()
     {
         var shifts = await _shiftService.GetAllShiftsAsync();
@@ -33,8 +34,9 @@ public class ShiftsController : Controller
     }
 
     /// <summary>
-    /// Displays the form for creating a new shift.
+    /// Displays the form for creating a new shift. Admin only.
     /// </summary>
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
         var viewModel = new CreateShiftViewModel
@@ -45,10 +47,11 @@ public class ShiftsController : Controller
     }
 
     /// <summary>
-    /// Handles the creation of a new shift.
+    /// Handles the creation of a new shift. Admin only.
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(CreateShiftViewModel viewModel)
     {
         if (viewModel.EndTime <= viewModel.StartTime)
@@ -84,8 +87,9 @@ public class ShiftsController : Controller
     }
 
     /// <summary>
-    /// Displays shift details.
+    /// Displays shift details. Admin only.
     /// </summary>
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Details(int id)
     {
         var shift = await _shiftService.GetByIdAsync(id);
@@ -97,10 +101,11 @@ public class ShiftsController : Controller
     }
 
     /// <summary>
-    /// Deletes a shift.
+    /// Deletes a shift. Admin only.
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var result = await _shiftService.DeleteAsync(id);
@@ -113,6 +118,33 @@ public class ShiftsController : Controller
             TempData["Error"] = "Failed to delete shift.";
         }
         return RedirectToAction(nameof(Index));
+    }
+
+    /// <summary>
+    /// Displays the current user's schedule for the current week.
+    /// Available for all authenticated users.
+    /// </summary>
+    public async Task<IActionResult> MySchedule()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return NotFound("User not found.");
+        }
+
+        // Get current week boundaries (Monday to Sunday)
+        var today = DateTime.Today;
+        var daysUntilMonday = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+        var weekStart = today.AddDays(-daysUntilMonday);
+        var weekEnd = weekStart.AddDays(7).AddSeconds(-1); // End of Sunday
+
+        var shifts = await _shiftService.GetShiftsForUserAsync(user.Id, weekStart, weekEnd);
+        
+        ViewBag.WeekStart = weekStart;
+        ViewBag.WeekEnd = weekEnd;
+        ViewBag.UserName = $"{user.FirstName} {user.LastName}";
+        
+        return View(shifts);
     }
 
     /// <summary>

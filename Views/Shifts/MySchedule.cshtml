@@ -1,0 +1,125 @@
+@model IEnumerable<WorkFlowManager.Models.WorkShift>
+
+@{
+    ViewData["Title"] = "My Schedule";
+    var weekStart = (DateTime)ViewBag.WeekStart;
+    var weekEnd = (DateTime)ViewBag.WeekEnd;
+    var userName = (string)ViewBag.UserName;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1><i class="bi bi-calendar-check me-2"></i>My Schedule</h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-person-circle me-1"></i>@userName
+        </p>
+    </div>
+    <div class="text-end">
+        <span class="badge bg-primary fs-6">
+            <i class="bi bi-calendar-range me-1"></i>
+            @weekStart.ToString("dd MMM") - @weekEnd.ToString("dd MMM yyyy")
+        </span>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>No shifts scheduled this week.</strong>
+        <p class="mb-0 mt-2">You don't have any work shifts assigned for the current week. 
+        Contact your manager if you believe this is an error.</p>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var shift in Model.OrderBy(s => s.StartTime))
+        {
+            var isToday = shift.StartTime.Date == DateTime.Today;
+            var isPast = shift.EndTime < DateTime.Now;
+            var cardClass = isToday ? "border-primary" : (isPast ? "border-secondary opacity-75" : "");
+            
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card h-100 shadow-sm @cardClass">
+                    <div class="card-header @(isToday ? "bg-primary text-white" : "bg-light")">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>
+                                <i class="bi bi-calendar-day me-1"></i>
+                                @shift.StartTime.ToString("dddd")
+                            </strong>
+                            @if (isToday)
+                            {
+                                <span class="badge bg-warning text-dark">Today</span>
+                            }
+                            else if (isPast)
+                            {
+                                <span class="badge bg-secondary">Completed</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Upcoming</span>
+                            }
+                        </div>
+                        <small class="@(isToday ? "text-white-50" : "text-muted")">
+                            @shift.StartTime.ToString("dd MMMM yyyy")
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-5">
+                                <div class="text-success">
+                                    <i class="bi bi-box-arrow-in-right fs-4"></i>
+                                </div>
+                                <div class="fw-bold fs-5">@shift.StartTime.ToString("HH:mm")</div>
+                                <small class="text-muted">Start</small>
+                            </div>
+                            <div class="col-2 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-arrow-right text-muted"></i>
+                            </div>
+                            <div class="col-5">
+                                <div class="text-danger">
+                                    <i class="bi bi-box-arrow-right fs-4"></i>
+                                </div>
+                                <div class="fw-bold fs-5">@shift.EndTime.ToString("HH:mm")</div>
+                                <small class="text-muted">End</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">
+                                <i class="bi bi-clock-history me-1"></i>Duration
+                            </span>
+                            <span class="badge bg-info fs-6">
+                                @shift.DurationHours.ToString("F1") hours
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <hr class="my-4" />
+    
+    <div class="card bg-light">
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <h5 class="text-muted mb-1">Total Shifts</h5>
+                    <span class="fs-3 fw-bold text-primary">@Model.Count()</span>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-muted mb-1">Total Hours</h5>
+                    <span class="fs-3 fw-bold text-success">@Model.Sum(s => s.DurationHours).ToString("F1")</span>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="text-muted mb-1">Avg. Shift Length</h5>
+                    <span class="fs-3 fw-bold text-info">@(Model.Any() ? Model.Average(s => s.DurationHours).ToString("F1") : "0") hrs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
