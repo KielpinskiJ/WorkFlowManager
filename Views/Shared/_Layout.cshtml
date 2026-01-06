@@ -30,11 +30,16 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Departments" asp-action="Index">Departments</a>
                         </li>
-                        @* Navigation items for future features. Uncomment when ShiftsController and RequestsController are available. *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Shifts" asp-action="Index">
+                                    <i class="bi bi-calendar-week me-1"></i>Shifts
+                                </a>
+                            </li>
+                        }
+                        @* Navigation items for future features. Uncomment when RequestsController is available. *@
                         @* <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Shifts" asp-action="Index">Schedule</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Requests" asp-action="Index">Requests</a>
                         </li> *@
                         @if (User.IsInRole("Admin"))
