@@ -136,7 +136,7 @@ public class ShiftsController : Controller
         var today = DateTime.Today;
         var daysUntilMonday = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
         var weekStart = today.AddDays(-daysUntilMonday);
-        var weekEnd = weekStart.AddDays(7).AddSeconds(-1); // End of Sunday
+        var weekEnd = weekStart.AddDays(7).AddMilliseconds(-1); // End of Sunday
 
         var shifts = await _shiftService.GetShiftsForUserAsync(user.Id, weekStart, weekEnd);
         
