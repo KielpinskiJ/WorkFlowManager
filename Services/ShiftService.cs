@@ -30,6 +30,7 @@ public class ShiftService : IShiftService
     public async Task<IEnumerable<WorkShift>> GetShiftsForUserAsync(string userId, DateTime start, DateTime end)
     {
         return await _context.WorkShifts
+            .Include(s => s.User)
             .Where(s => s.UserId == userId && s.StartTime >= start && s.EndTime <= end)
             .OrderBy(s => s.StartTime)
             .ToListAsync();
