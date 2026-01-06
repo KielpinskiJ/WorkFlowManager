@@ -1,0 +1,42 @@
+@model WorkFlowManager.Models.Department
+
+@{
+    ViewData["Title"] = "Department Details";
+}
+
+<h1>Department Details</h1>
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-header">
+        <h4 class="mb-0">@Model.Name</h4>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4">Description</dt>
+            <dd class="col-sm-8">
+                @(string.IsNullOrEmpty(Model.Description) ? "No description" : Model.Description)
+            </dd>
+            
+            <dt class="col-sm-4">Hourly Rate</dt>
+            <dd class="col-sm-8">
+                <span class="badge bg-success fs-6">@Model.HourlyRate.ToString("C")</span>
+            </dd>
+            
+            <dt class="col-sm-4">Employees</dt>
+            <dd class="col-sm-8">
+                @if (Model.Users != null && Model.Users.Any())
+                {
+                    <span class="badge bg-primary">@Model.Users.Count employee(s)</span>
+                }
+                else
+                {
+                    <span class="text-muted">No employees assigned</span>
+                }
+            </dd>
+        </dl>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
