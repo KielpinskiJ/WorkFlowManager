@@ -33,9 +33,9 @@ namespace WorkFlowManager.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkShifts_UserId",
+                name: "IX_WorkShifts_UserId_StartTime",
                 table: "WorkShifts",
-                column: "UserId");
+                columns: new[] { "UserId", "StartTime" });
         }
 
         /// <inheritdoc />
