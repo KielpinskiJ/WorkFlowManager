@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using WorkFlowManager.Models;
+using System;
 
 namespace WorkFlowManager.Data;
 
 public static class DbSeeder
 {
     public const string AdminEmail = "admin@wsb.pl";
-    public const string AdminPassword = "GrupaJDK123!";
+    private static readonly string AdminPassword =
+        Environment.GetEnvironmentVariable("ADMIN_PASSWORD")
+        ?? throw new InvalidOperationException("Admin password is not configured. Set the ADMIN_PASSWORD environment variable.");
     
     public const string RoleAdmin = "Admin";
     public const string RoleEmployee = "Employee";
