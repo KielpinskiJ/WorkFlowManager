@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkFlowManager.Models;
 using WorkFlowManager.Services.Interfaces;
 
 namespace WorkFlowManager.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class DepartmentsController : Controller
 {
     private readonly IDepartmentService _departmentService;

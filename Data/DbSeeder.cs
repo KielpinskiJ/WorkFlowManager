@@ -7,9 +7,28 @@ namespace WorkFlowManager.Data;
 public static class DbSeeder
 {
     public const string AdminEmail = "admin@wsb.pl";
-    private static readonly string AdminPassword =
-        Environment.GetEnvironmentVariable("ADMIN_PASSWORD")
-        ?? throw new InvalidOperationException("Admin password is not configured. Set the ADMIN_PASSWORD environment variable.");
+    private static readonly string AdminPassword = GetAdminPassword();
+
+    private static string GetAdminPassword()
+    {
+        var password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
+        if (!string.IsNullOrEmpty(password))
+        {
+            return password;
+        }
+
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (string.Equals(environment, "Development", StringComparison.OrdinalIgnoreCase))
+        {
+            const string defaultDevPassword = "Admin123!";
+            Console.Error.WriteLine(
+                "Warning: ADMIN_PASSWORD environment variable is not set. Using a default development admin password.");
+            return defaultDevPassword;
+        }
+
+        throw new InvalidOperationException(
+            "Admin password is not configured. Set the ADMIN_PASSWORD environment variable.");
+    }
     
     public const string RoleAdmin = "Admin";
     public const string RoleEmployee = "Employee";
