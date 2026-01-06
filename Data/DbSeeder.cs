@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using WorkFlowManager.Models;
 using System;
+using System.Diagnostics;
 
 namespace WorkFlowManager.Data;
 
@@ -21,7 +22,7 @@ public static class DbSeeder
         if (string.Equals(environment, "Development", StringComparison.OrdinalIgnoreCase))
         {
             const string defaultDevPassword = "Admin123!";
-            Console.Error.WriteLine(
+            Debug.WriteLine(
                 "Warning: ADMIN_PASSWORD environment variable is not set. Using a default development admin password.");
             return defaultDevPassword;
         }
