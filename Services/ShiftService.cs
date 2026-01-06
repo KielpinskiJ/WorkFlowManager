@@ -78,7 +78,7 @@ public class ShiftService : IShiftService
             .Select(group => new DepartmentStatsDto
             {
                 DepartmentName = group.Key,
-                TotalHours = group.Sum(s => EF.Functions.DateDiffMinute(s.StartTime, s.EndTime) / 60.0),
+                TotalHours = group.Sum(s => (s.EndTime - s.StartTime).TotalHours),
                 ShiftCount = group.Count()
             })
             .OrderByDescending(d => d.TotalHours)
