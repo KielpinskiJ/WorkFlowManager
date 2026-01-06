@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WorkFlowManager.Data;
 using WorkFlowManager.Models;
+using WorkFlowManager.Services;
+using WorkFlowManager.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = "/Identity/Account/Logout";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
+
+// Register application services
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); // Required for Identity UI
