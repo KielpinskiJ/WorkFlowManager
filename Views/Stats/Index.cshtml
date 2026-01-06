@@ -132,9 +132,9 @@ else
     
     <script>
         // Data from controller (serialized as JSON)
-        const labels = @Html.Raw(ViewBag.ChartLabels ?? "[]");
-        const hoursData = @Html.Raw(ViewBag.ChartHours ?? "[]");
-        const countsData = @Html.Raw(ViewBag.ChartCounts ?? "[]");
+        const labels = JSON.parse('@(ViewBag.ChartLabels ?? "[]")');
+        const hoursData = JSON.parse('@(ViewBag.ChartHours ?? "[]")');
+        const countsData = JSON.parse('@(ViewBag.ChartCounts ?? "[]")');
         
         // Create the chart
         const ctx = document.getElementById('departmentChart');
