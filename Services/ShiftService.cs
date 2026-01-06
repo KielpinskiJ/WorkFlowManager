@@ -1,0 +1,76 @@
+using Microsoft.EntityFrameworkCore;
+using WorkFlowManager.Data;
+using WorkFlowManager.Models;
+using WorkFlowManager.Services.Interfaces;
+
+namespace WorkFlowManager.Services;
+
+/// <summary>
+/// Service for managing work shifts with business logic and validation.
+/// </summary>
+public class ShiftService : IShiftService
+{
+    private readonly ApplicationDbContext _context;
+
+    public ShiftService(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<WorkShift> AddShiftAsync(WorkShift shift)
+    {
+        ValidateShiftTimes(shift);
+        
+        _context.WorkShifts.Add(shift);
+        await _context.SaveChangesAsync();
+        return shift;
+    }
+
+    public async Task<IEnumerable<WorkShift>> GetShiftsForUserAsync(string userId, DateTime start, DateTime end)
+    {
+        return await _context.WorkShifts
+            .Where(s => s.UserId == userId && s.StartTime >= start && s.EndTime <= end)
+            .OrderBy(s => s.StartTime)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<WorkShift>> GetAllShiftsAsync()
+    {
+        return await _context.WorkShifts
+            .Include(s => s.User)
+            .OrderByDescending(s => s.StartTime)
+            .ToListAsync();
+    }
+
+    public async Task<WorkShift?> GetByIdAsync(int id)
+    {
+        return await _context.WorkShifts
+            .Include(s => s.User)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var shift = await _context.WorkShifts.FindAsync(id);
+        if (shift == null)
+            return false;
+        
+        _context.WorkShifts.Remove(shift);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Validates that EndTime is greater than StartTime.
+    /// </summary>
+    /// <param name="shift">The shift to validate.</param>
+    /// <exception cref="ArgumentException">Thrown when validation fails.</exception>
+    private static void ValidateShiftTimes(WorkShift shift)
+    {
+        if (shift.EndTime <= shift.StartTime)
+        {
+            throw new ArgumentException("End time must be greater than start time.", nameof(shift));
+        }
+    }
+}
+

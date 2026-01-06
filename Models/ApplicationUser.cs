@@ -16,4 +16,7 @@ public class ApplicationUser : IdentityUser
     // Department relation
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }
+    
+    // Work shifts relation
+    public ICollection<WorkShift> Shifts { get; set; } = new List<WorkShift>();
 }
