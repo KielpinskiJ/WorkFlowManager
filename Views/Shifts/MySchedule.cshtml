@@ -116,7 +116,7 @@ else
                 </div>
                 <div class="col-md-4">
                     <h5 class="text-muted mb-1">Avg. Shift Length</h5>
-                    <span class="fs-3 fw-bold text-info">@(Model.Any() ? Model.Average(s => s.DurationHours).ToString("F1") : "0") hrs</span>
+                    <span class="fs-3 fw-bold text-info">@Model.Average(s => s.DurationHours).ToString("F1") hrs</span>
                 </div>
             </div>
         </div>
