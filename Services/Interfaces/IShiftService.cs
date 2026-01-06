@@ -1,4 +1,5 @@
 using WorkFlowManager.Models;
+using WorkFlowManager.ViewModels;
 
 namespace WorkFlowManager.Services.Interfaces;
 
@@ -43,5 +44,11 @@ public interface IShiftService
     /// <param name="id">The shift identifier.</param>
     /// <returns>True if deleted successfully, false otherwise.</returns>
     Task<bool> DeleteAsync(int id);
+    
+    /// <summary>
+    /// Gets statistics grouped by department for the last 3 months.
+    /// </summary>
+    /// <returns>Collection of department statistics with total hours worked.</returns>
+    Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync();
 }
 

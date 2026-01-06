@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WorkFlowManager.Data;
 using WorkFlowManager.Models;
 using WorkFlowManager.Services.Interfaces;
+using WorkFlowManager.ViewModels;
 
 namespace WorkFlowManager.Services;
 
@@ -58,6 +59,32 @@ public class ShiftService : IShiftService
         _context.WorkShifts.Remove(shift);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    /// <summary>
+    /// Gets work statistics grouped by department for the last 3 months.
+    /// </summary>
+    /// <returns>Collection of department statistics ordered by total hours descending.</returns>
+    public async Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync()
+    {
+        var threeMonthsAgo = DateTime.Now.AddMonths(-3);
+        
+        var stats = await _context.WorkShifts
+            .Include(s => s.User)
+                .ThenInclude(u => u!.Department)
+            .Where(s => s.StartTime >= threeMonthsAgo)
+            .Where(s => s.User != null && s.User.Department != null)
+            .GroupBy(s => s.User!.Department!.Name)
+            .Select(group => new DepartmentStatsDto
+            {
+                DepartmentName = group.Key,
+                TotalHours = group.Sum(s => EF.Functions.DateDiffMinute(s.StartTime, s.EndTime) / 60.0),
+                ShiftCount = group.Count()
+            })
+            .OrderByDescending(d => d.TotalHours)
+            .ToListAsync();
+        
+        return stats;
     }
 
     /// <summary>
