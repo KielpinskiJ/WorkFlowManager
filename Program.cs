@@ -42,6 +42,13 @@ builder.Services.AddRazorPages(); // Required for Identity UI
 
 var app = builder.Build();
 
+// Seed database with roles and admin user
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DbSeeder.SeedRolesAndAdminAsync(services);
+}
+
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
