@@ -68,7 +68,7 @@ else
     
     <!-- Data Table -->
     <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
+        <div class="card-header bg-secondary text-dark">
             <h5 class="mb-0"><i class="bi bi-table me-2"></i>Detailed Statistics</h5>
         </div>
         <div class="card-body p-0">
@@ -132,9 +132,9 @@ else
     
     <script>
         // Data from controller (serialized as JSON)
-        const labels = JSON.parse('@(ViewBag.ChartLabels ?? "[]")');
-        const hoursData = JSON.parse('@(ViewBag.ChartHours ?? "[]")');
-        const countsData = JSON.parse('@(ViewBag.ChartCounts ?? "[]")');
+        const labels = @Html.Raw(ViewBag.ChartLabels ?? "[]");
+        const hoursData = @Html.Raw(ViewBag.ChartHours ?? "[]");
+        const countsData = @Html.Raw(ViewBag.ChartCounts ?? "[]");
         
         // Create the chart
         const ctx = document.getElementById('departmentChart');

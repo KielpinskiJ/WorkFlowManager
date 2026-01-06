@@ -70,11 +70,16 @@ public class ShiftService : IShiftService
     {
         var threeMonthsAgo = DateTime.Now.AddMonths(-3);
         
-        var stats = await _context.WorkShifts
+        // Fetch data to memory first, then perform grouping with calculations
+        var shifts = await _context.WorkShifts
             .Include(s => s.User)
                 .ThenInclude(u => u!.Department)
             .Where(s => s.StartTime >= threeMonthsAgo)
             .Where(s => s.User != null && s.User.Department != null)
+            .ToListAsync();
+        
+        // Group and calculate on client side
+        var stats = shifts
             .GroupBy(s => s.User!.Department!.Name)
             .Select(group => new DepartmentStatsDto
             {
@@ -83,7 +88,7 @@ public class ShiftService : IShiftService
                 ShiftCount = group.Count()
             })
             .OrderByDescending(d => d.TotalHours)
-            .ToListAsync();
+            .ToList();
         
         return stats;
     }
