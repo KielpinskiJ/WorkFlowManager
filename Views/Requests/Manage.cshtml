@@ -36,9 +36,7 @@ else
                 <tr>
                     <th>Employee</th>
                     <th>Type</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Days</th>
+                    <th>Details</th>
                     <th>Submitted</th>
                     <th>Actions</th>
                 </tr>
@@ -54,44 +52,115 @@ else
                         <td>
                             @if (request.Type == WorkFlowManager.Models.RequestType.Vacation)
                             {
-                                <span class="badge bg-info">Vacation</span>
+                                <span class="badge bg-info">
+                                    <i class="bi bi-umbrella-fill me-1"></i>Vacation
+                                </span>
                             }
                             else
                             {
-                                <span class="badge bg-secondary">Dept. Change</span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-building me-1"></i>Dept. Change
+                                </span>
                             }
                         </td>
-                        <td>@request.StartDate.ToString("dd MMM yyyy")</td>
-                        <td>@request.EndDate.ToString("dd MMM yyyy")</td>
-                        <td>@((request.EndDate - request.StartDate).Days + 1)</td>
+                        <td>
+                            @if (request.Type == WorkFlowManager.Models.RequestType.Vacation)
+                            {
+                                <small>
+                                    @request.StartDate.ToString("dd MMM") - @request.EndDate.ToString("dd MMM yyyy")
+                                    <br /><span class="text-muted">(@((request.EndDate - request.StartDate).Days + 1) days)</span>
+                                </small>
+                            }
+                            else
+                            {
+                                <small>
+                                    Target: <strong>@(request.TargetDepartment?.Name ?? "Not specified")</strong>
+                                </small>
+                            }
+                        </td>
                         <td>@request.CreatedAt.ToString("dd MMM")</td>
                         <td>
-                            <div class="btn-group" role="group">
-                                <!-- Approve Button -->
-                                <form asp-action="Approve" asp-route-id="@request.Id" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-success" title="Approve">
-                                        <i class="bi bi-check-lg"></i>
+                            <div class="btn-group-vertical" role="group">
+                                @if (request.Type == WorkFlowManager.Models.RequestType.DepartmentChange && request.TargetDepartmentId.HasValue)
+                                {
+                                    <!-- Approve with auto-transfer -->
+                                    <button type="button" class="btn btn-sm btn-success mb-1" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#approveModal-@request.Id" 
+                                            title="Approve">
+                                        <i class="bi bi-check-lg"></i> Approve
                                     </button>
-                                </form>
+                                }
+                                else
+                                {
+                                    <!-- Simple approve -->
+                                    <form asp-action="Approve" asp-route-id="@request.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success mb-1" title="Approve">
+                                            <i class="bi bi-check-lg"></i> Approve
+                                        </button>
+                                    </form>
+                                }
                                 
-                                <!-- Reject Button with Modal -->
-                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-@request.Id" title="Reject">
-                                    <i class="bi bi-x-lg"></i>
+                                <!-- Reject Button -->
+                                <button type="button" class="btn btn-sm btn-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#rejectModal-@request.Id" 
+                                        title="Reject">
+                                    <i class="bi bi-x-lg"></i> Reject
                                 </button>
-                                
-                                <!-- Details Button -->
-                                <a asp-action="Details" asp-route-id="@request.Id" class="btn btn-sm btn-outline-primary" title="Details">
-                                    <i class="bi bi-eye"></i>
-                                </a>
                             </div>
+
+                            @if (request.Type == WorkFlowManager.Models.RequestType.DepartmentChange && request.TargetDepartmentId.HasValue)
+                            {
+                                <!-- Approve Modal for Department Change -->
+                                <div class="modal fade" id="approveModal-@request.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-success text-white">
+                                                <h5 class="modal-title">Approve Department Change</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form asp-action="Approve" asp-route-id="@request.Id" method="post">
+                                                <div class="modal-body">
+                                                    <p>
+                                                        <strong>@request.User?.FirstName @request.User?.LastName</strong> 
+                                                        wants to transfer to <strong>@request.TargetDepartment?.Name</strong>.
+                                                    </p>
+                                                    
+                                                    <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" name="autoTransfer" value="true" id="autoTransfer-@request.Id" checked>
+                                                        <label class="form-check-label" for="autoTransfer-@request.Id">
+                                                            <strong>Automatically transfer employee to @request.TargetDepartment?.Name</strong>
+                                                        </label>
+                                                        <div class="form-text">
+                                                            If unchecked, you will need to manually change the employee's department.
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Comment (optional)</label>
+                                                        <textarea name="adminComment" class="form-control" rows="2" placeholder="Add a note..."></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="bi bi-check-lg me-1"></i>Approve Request
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
 
                             <!-- Reject Modal -->
                             <div class="modal fade" id="rejectModal-@request.Id" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <div class="modal-header">
+                                        <div class="modal-header bg-danger text-white">
                                             <h5 class="modal-title">Reject Request</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <form asp-action="Reject" asp-route-id="@request.Id" method="post">
                                             <div class="modal-body">
@@ -103,7 +172,9 @@ else
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-danger">Reject Request</button>
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-x-lg me-1"></i>Reject Request
+                                                </button>
                                             </div>
                                         </form>
                                     </div>
@@ -116,4 +187,3 @@ else
         </table>
     </div>
 }
-

@@ -17,9 +17,9 @@ public class RequestService : IRequestService
         _context = context;
     }
 
-    public async Task<LeaveRequest> CreateRequestAsync(string userId, RequestType type, DateTime startDate, DateTime endDate)
+    public async Task<LeaveRequest> CreateRequestAsync(string userId, RequestType type, DateTime startDate, DateTime endDate, int? targetDepartmentId = null)
     {
-        if (startDate >= endDate)
+        if (type == RequestType.Vacation && startDate >= endDate)
         {
             throw new ArgumentException("Start date must be before end date.");
         }
@@ -31,6 +31,7 @@ public class RequestService : IRequestService
             Status = RequestStatus.Pending,
             StartDate = startDate,
             EndDate = endDate,
+            TargetDepartmentId = targetDepartmentId,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -44,6 +45,7 @@ public class RequestService : IRequestService
     {
         return await _context.LeaveRequests
             .Include(r => r.User)
+            .Include(r => r.TargetDepartment)
             .Where(r => r.Status == RequestStatus.Pending)
             .OrderBy(r => r.CreatedAt)
             .ToListAsync();
@@ -61,12 +63,15 @@ public class RequestService : IRequestService
     {
         return await _context.LeaveRequests
             .Include(r => r.User)
+            .Include(r => r.TargetDepartment)
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 
-    public async Task<bool> ApproveRequestAsync(int requestId, string? adminComment = null)
+    public async Task<bool> ApproveRequestAsync(int requestId, string? adminComment = null, bool autoTransfer = false)
     {
-        var request = await _context.LeaveRequests.FindAsync(requestId);
+        var request = await _context.LeaveRequests
+            .Include(r => r.User)
+            .FirstOrDefaultAsync(r => r.Id == requestId);
         
         if (request == null)
         {
@@ -75,6 +80,13 @@ public class RequestService : IRequestService
 
         request.Status = RequestStatus.Approved;
         request.AdminComment = adminComment;
+
+        // Auto-transfer user to target department if requested
+        if (autoTransfer && request.Type == RequestType.DepartmentChange 
+            && request.TargetDepartmentId.HasValue && request.User != null)
+        {
+            request.User.DepartmentId = request.TargetDepartmentId;
+        }
 
         await _context.SaveChangesAsync();
         return true;

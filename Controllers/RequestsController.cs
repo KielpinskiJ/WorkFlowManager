@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using WorkFlowManager.Models;
 using WorkFlowManager.Services.Interfaces;
 using WorkFlowManager.ViewModels;
@@ -14,11 +15,16 @@ namespace WorkFlowManager.Controllers;
 public class RequestsController : Controller
 {
     private readonly IRequestService _requestService;
+    private readonly IDepartmentService _departmentService;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public RequestsController(IRequestService requestService, UserManager<ApplicationUser> userManager)
+    public RequestsController(
+        IRequestService requestService, 
+        IDepartmentService departmentService,
+        UserManager<ApplicationUser> userManager)
     {
         _requestService = requestService;
+        _departmentService = departmentService;
         _userManager = userManager;
     }
 
@@ -36,9 +42,18 @@ public class RequestsController : Controller
     }
 
     // GET: Requests/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        return View(new CreateRequestViewModel());
+        var departments = await _departmentService.GetAllAsync();
+        var model = new CreateRequestViewModel
+        {
+            Departments = departments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name
+            })
+        };
+        return View(model);
     }
 
     // POST: Requests/Create
@@ -46,18 +61,46 @@ public class RequestsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateRequestViewModel model)
     {
-        if (model.StartDate >= model.EndDate)
+        // Validation depends on request type
+        if (model.Type == RequestType.Vacation)
         {
-            ModelState.AddModelError("EndDate", "End date must be after start date.");
+            if (!model.StartDate.HasValue)
+            {
+                ModelState.AddModelError("StartDate", "Start date is required for vacation requests.");
+            }
+            if (!model.EndDate.HasValue)
+            {
+                ModelState.AddModelError("EndDate", "End date is required for vacation requests.");
+            }
+            if (model.StartDate.HasValue && model.EndDate.HasValue)
+            {
+                if (model.StartDate >= model.EndDate)
+                {
+                    ModelState.AddModelError("EndDate", "End date must be after start date.");
+                }
+                if (model.StartDate < DateTime.Today)
+                {
+                    ModelState.AddModelError("StartDate", "Start date cannot be in the past.");
+                }
+            }
         }
-
-        if (model.StartDate < DateTime.Today)
+        else if (model.Type == RequestType.DepartmentChange)
         {
-            ModelState.AddModelError("StartDate", "Start date cannot be in the past.");
+            if (!model.TargetDepartmentId.HasValue)
+            {
+                ModelState.AddModelError("TargetDepartmentId", "Please select a target department.");
+            }
         }
 
         if (!ModelState.IsValid)
         {
+            // Repopulate departments dropdown
+            var departments = await _departmentService.GetAllAsync();
+            model.Departments = departments.Select(d => new SelectListItem
+            {
+                Value = d.Id.ToString(),
+                Text = d.Name
+            });
             return View(model);
         }
 
@@ -67,7 +110,13 @@ public class RequestsController : Controller
             return Unauthorized();
         }
 
-        await _requestService.CreateRequestAsync(userId, model.Type, model.StartDate, model.EndDate);
+        await _requestService.CreateRequestAsync(
+            userId, 
+            model.Type, 
+            model.StartDate ?? DateTime.Today, 
+            model.EndDate ?? DateTime.Today,
+            model.TargetDepartmentId);
+            
         TempData["Success"] = "Request submitted successfully. Awaiting admin approval.";
         return RedirectToAction(nameof(Index));
     }
@@ -103,16 +152,19 @@ public class RequestsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Approve(int id, string? adminComment)
+    public async Task<IActionResult> Approve(int id, string? adminComment, bool autoTransfer = false)
     {
-        var result = await _requestService.ApproveRequestAsync(id, adminComment);
+        var result = await _requestService.ApproveRequestAsync(id, adminComment, autoTransfer);
         if (!result)
         {
             TempData["Error"] = "Request not found.";
             return RedirectToAction(nameof(Manage));
         }
 
-        TempData["Success"] = "Request approved successfully.";
+        var message = autoTransfer 
+            ? "Request approved and employee transferred to new department." 
+            : "Request approved successfully.";
+        TempData["Success"] = message;
         return RedirectToAction(nameof(Manage));
     }
 

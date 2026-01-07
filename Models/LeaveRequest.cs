@@ -29,11 +29,17 @@ public class LeaveRequest
     public string? AdminComment { get; set; }
 
     /// <summary>
+    /// Target department for DepartmentChange requests.
+    /// </summary>
+    public int? TargetDepartmentId { get; set; }
+
+    /// <summary>
     /// Date when the request was submitted.
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    // Navigation property
+    // Navigation properties
     public ApplicationUser? User { get; set; }
+    public Department? TargetDepartment { get; set; }
 }
 

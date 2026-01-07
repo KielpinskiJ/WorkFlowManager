@@ -69,6 +69,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             
+            // LeaveRequest - TargetDepartment relationship (for department change requests)
+            entity.HasOne(r => r.TargetDepartment)
+                .WithMany()
+                .HasForeignKey(r => r.TargetDepartmentId)
+                .OnDelete(DeleteBehavior.SetNull);
+            
             // Index for faster queries on pending requests
             entity.HasIndex(r => r.Status);
         });

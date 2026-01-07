@@ -14,8 +14,9 @@ public interface IRequestService
     /// <param name="type">The type of request (Vacation or DepartmentChange).</param>
     /// <param name="startDate">Start date of the leave.</param>
     /// <param name="endDate">End date of the leave.</param>
+    /// <param name="targetDepartmentId">Target department for department change requests.</param>
     /// <returns>The created leave request.</returns>
-    Task<LeaveRequest> CreateRequestAsync(string userId, RequestType type, DateTime startDate, DateTime endDate);
+    Task<LeaveRequest> CreateRequestAsync(string userId, RequestType type, DateTime startDate, DateTime endDate, int? targetDepartmentId = null);
 
     /// <summary>
     /// Gets all pending requests with user details included.
@@ -42,8 +43,9 @@ public interface IRequestService
     /// </summary>
     /// <param name="requestId">The request ID to approve.</param>
     /// <param name="adminComment">Optional comment from admin.</param>
+    /// <param name="autoTransfer">For DepartmentChange requests: automatically transfer user to target department.</param>
     /// <returns>True if approved successfully, false if request not found.</returns>
-    Task<bool> ApproveRequestAsync(int requestId, string? adminComment = null);
+    Task<bool> ApproveRequestAsync(int requestId, string? adminComment = null, bool autoTransfer = false);
 
     /// <summary>
     /// Rejects a leave request.
