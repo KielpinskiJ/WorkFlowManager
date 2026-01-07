@@ -1,0 +1,46 @@
+@model WorkFlowManager.Models.Bonus
+
+@{
+    ViewData["Title"] = "Bonus Details";
+}
+
+<h2><i class="bi bi-gift me-2"></i>Bonus Details</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <strong>Bonus #@Model.Id</strong>
+                <span class="badge bg-success float-end fs-6">@Model.Amount.ToString("N2") PLN</span>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Employee</dt>
+                    <dd class="col-sm-8">
+                        <strong>@Model.User?.FirstName @Model.User?.LastName</strong>
+                        <br /><small class="text-muted">@Model.User?.Email</small>
+                    </dd>
+
+                    <dt class="col-sm-4">Amount</dt>
+                    <dd class="col-sm-8">@Model.Amount.ToString("N2") PLN</dd>
+
+                    <dt class="col-sm-4">Date Granted</dt>
+                    <dd class="col-sm-8">@Model.DateGranted.ToString("dddd, dd MMMM yyyy")</dd>
+
+                    <dt class="col-sm-4">Reason</dt>
+                    <dd class="col-sm-8">@Model.Reason</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to List
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                <i class="bi bi-trash me-1"></i>Delete
+            </a>
+        </div>
+    </div>
+</div>
+
