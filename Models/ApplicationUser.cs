@@ -19,4 +19,10 @@ public class ApplicationUser : IdentityUser
     
     // Work shifts relation
     public ICollection<WorkShift> Shifts { get; set; } = new List<WorkShift>();
+    
+    // Leave requests relation
+    public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+    
+    // Bonuses relation
+    public ICollection<Bonus> Bonuses { get; set; } = new List<Bonus>();
 }

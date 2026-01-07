@@ -18,6 +18,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Department> Departments { get; set; }
     
     public DbSet<WorkShift> WorkShifts { get; set; }
+    
+    public DbSet<LeaveRequest> LeaveRequests { get; set; }
+    
+    public DbSet<Bonus> Bonuses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -50,6 +54,41 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(u => u.Shifts)
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        // LeaveRequest configuration
+        builder.Entity<LeaveRequest>(entity =>
+        {
+            entity.HasKey(r => r.Id);
+            entity.Property(r => r.UserId).IsRequired();
+            entity.Property(r => r.AdminComment).HasMaxLength(500);
+            
+            // LeaveRequest - ApplicationUser relationship
+            entity.HasOne(r => r.User)
+                .WithMany(u => u.LeaveRequests)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Index for faster queries on pending requests
+            entity.HasIndex(r => r.Status);
+        });
+        
+        // Bonus configuration
+        builder.Entity<Bonus>(entity =>
+        {
+            entity.HasKey(b => b.Id);
+            entity.Property(b => b.UserId).IsRequired();
+            entity.Property(b => b.Amount).HasColumnType("decimal(18,2)");
+            entity.Property(b => b.Reason).IsRequired().HasMaxLength(500);
+            
+            // Bonus - ApplicationUser relationship
+            entity.HasOne(b => b.User)
+                .WithMany(u => u.Bonuses)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            // Index for payroll calculations by date
+            entity.HasIndex(b => b.DateGranted);
         });
     }
 }
