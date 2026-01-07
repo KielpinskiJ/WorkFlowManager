@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WorkFlowManager.Data;
 
@@ -11,13 +12,15 @@ using WorkFlowManager.Data;
 namespace WorkFlowManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260107181927_AddLeaveRequestsAndBonuses")]
+    partial class AddLeaveRequestsAndBonuses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.22")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -317,9 +320,6 @@ namespace WorkFlowManager.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TargetDepartmentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
@@ -330,8 +330,6 @@ namespace WorkFlowManager.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Status");
-
-                    b.HasIndex("TargetDepartmentId");
 
                     b.HasIndex("UserId");
 
@@ -437,18 +435,11 @@ namespace WorkFlowManager.Migrations
 
             modelBuilder.Entity("WorkFlowManager.Models.LeaveRequest", b =>
                 {
-                    b.HasOne("WorkFlowManager.Models.Department", "TargetDepartment")
-                        .WithMany()
-                        .HasForeignKey("TargetDepartmentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("WorkFlowManager.Models.ApplicationUser", "User")
                         .WithMany("LeaveRequests")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("TargetDepartment");
 
                     b.Navigation("User");
                 });

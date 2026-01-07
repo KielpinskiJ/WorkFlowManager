@@ -1,0 +1,145 @@
+@model WorkFlowManager.ViewModels.PayrollEntryViewModel
+
+@{
+    ViewData["Title"] = "My Payroll";
+    var month = (int)ViewBag.Month;
+    var year = (int)ViewBag.Year;
+    var monthName = (string)ViewBag.MonthName;
+}
+
+<h2><i class="bi bi-wallet2 me-2"></i>My Payroll</h2>
+
+<!-- Month/Year Selector -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Month</label>
+                <select name="month" class="form-select">
+                    @for (int m = 1; m <= 12; m++)
+                    {
+                        <option value="@m" selected="@(m == month)">
+                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Year</label>
+                <select name="year" class="form-select">
+                    @foreach (var y in (List<int>)ViewBag.AvailableYears)
+                    {
+                        <option value="@y" selected="@(y == year)">@y</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i>View Payroll
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model == null)
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        No payroll data available for @monthName @year.
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text me-2"></i>
+                        Payroll Statement - @monthName @year
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Employee</h6>
+                            <p class="fs-5 mb-0"><strong>@Model.FullName</strong></p>
+                            <small class="text-muted">@Model.Email</small>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Department</h6>
+                            <p class="fs-5 mb-0">
+                                @if (Model.DepartmentName == "Unassigned")
+                                {
+                                    <span class="badge bg-secondary">@Model.DepartmentName</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info fs-6">@Model.DepartmentName</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted">Hourly Rate</td>
+                                <td class="text-end">@Model.HourlyRate.ToString("N2") PLN/h</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Hours Worked</td>
+                                <td class="text-end">@Model.TotalHours.ToString("N1") h</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Base Payment</td>
+                                <td class="text-end">@Model.BasePayment.ToString("N2") PLN</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Bonuses</td>
+                                <td class="text-end">
+                                    @if (Model.BonusTotal > 0)
+                                    {
+                                        <span class="text-success">+@Model.BonusTotal.ToString("N2") PLN</span>
+                                    }
+                                    else
+                                    {
+                                        <span>0.00 PLN</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="border-top">
+                                <th class="fs-5">Total Salary</th>
+                                <th class="text-end fs-4 text-success">@Model.FinalSalary.ToString("N2") PLN</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <i class="bi bi-cash-coin text-success" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">@Model.FinalSalary.ToString("N2") PLN</h4>
+                    <p class="text-muted mb-0">Total for @monthName @year</p>
+                </div>
+            </div>
+
+            @if (Model.TotalHours == 0 && Model.BonusTotal == 0)
+            {
+                <div class="alert alert-warning mt-3">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <small>No shifts or bonuses recorded for this month.</small>
+                </div>
+            }
+        </div>
+    </div>
+}
+

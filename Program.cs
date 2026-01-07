@@ -37,6 +37,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Register application services
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IPayrollService, PayrollService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); // Required for Identity UI
