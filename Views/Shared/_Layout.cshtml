@@ -121,10 +121,38 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted py-3 mt-5 bg-light">
-        <div class="container text-center">
-            &copy; 2026 - <strong>WorkFlowManager</strong> - 
-            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Privacy Policy</a>
+    <footer class="footer-custom py-3 mt-4">
+        <div class="container">
+            <div class="row align-items-center gy-2">
+                <!-- Brand -->
+                <div class="col-md-4 text-center text-md-start">
+                    <a class="footer-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-kanban-fill me-1"></i>WorkFlowManager
+                    </a>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-md-4 text-center">
+                    <ul class="footer-nav">
+                        <li><a class="footer-nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+                        <li><a class="footer-nav-link" asp-controller="Departments" asp-action="Index"><i class="bi bi-building-fill me-1"></i>Departments</a></li>
+                        <li><a class="footer-nav-link" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check me-1"></i>Privacy</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Social -->
+                <div class="col-md-4 text-center text-md-end">
+                    <div class="footer-social justify-content-center justify-content-md-end">
+                        <a href="https://github.com/KielpinskiJ/WorkFlowManager" target="_blank" class="footer-social-link" title="GitHub"><i class="bi bi-github"></i></a>
+                        <a href="https://www.linkedin.com/school/uniwersytet-merito-poznan" target="_blank" class="footer-social-link" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://www.poczta-polska.pl/" target="_blank" class="footer-social-link" title="Email"><i class="bi bi-envelope-fill"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center footer-copyright mt-2">
+                &copy; 2026 WorkFlowManager &bull; Made with <span class="fish">🐟</span> by Team JDK
+            </div>
         </div>
     </footer>
     
