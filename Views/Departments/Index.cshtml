@@ -2,14 +2,34 @@
 
 @{
     ViewData["Title"] = "Departments";
+    var userDepartmentId = ViewBag.UserDepartmentId as int?;
+    var isAdmin = ViewBag.IsAdmin as bool? ?? false;
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Departments</h1>
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg"></i> Add Department
-    </a>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Department
+        </a>
+    }
 </div>
+
+@if (userDepartmentId.HasValue && !isAdmin)
+{
+    var myDepartment = Model.FirstOrDefault(d => d.Id == userDepartmentId.Value);
+    if (myDepartment != null)
+    {
+        <div class="alert alert-primary mb-4">
+            <strong>Your Department:</strong> @myDepartment.Name
+            @if (!string.IsNullOrEmpty(myDepartment.Description))
+            {
+                <span class="text-muted">— @myDepartment.Description</span>
+            }
+        </div>
+    }
+}
 
 @if (TempData["Success"] != null)
 {
@@ -22,7 +42,11 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>No departments found.</strong> Create your first department to get started.
+        <strong>No departments found.</strong>
+        @if (isAdmin)
+        {
+            <span>Create your first department to get started.</span>
+        }
     </div>
 }
 else
@@ -33,34 +57,45 @@ else
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Hourly Rate</th>
-                    <th class="text-end">Actions</th>
+                    @if (isAdmin)
+                    {
+                        <th>Hourly Rate</th>
+                        <th class="text-end">Actions</th>
+                    }
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    var isMyDepartment = userDepartmentId.HasValue && item.Id == userDepartmentId.Value;
+                    <tr class="@(isMyDepartment ? "table-primary" : "")">
                         <td>
                             <strong>@item.Name</strong>
+                            @if (isMyDepartment)
+                            {
+                                <span class="badge bg-primary ms-2">Your Department</span>
+                            }
                         </td>
                         <td>
                             @(string.IsNullOrEmpty(item.Description) ? "—" : item.Description)
                         </td>
-                        <td>
-                            <span class="badge bg-success">@item.HourlyRate.ToString("C")</span>
-                        </td>
-                        <td class="text-end">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
-                                Details
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">
-                                Edit
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
-                                Delete
-                            </a>
-                        </td>
+                        @if (isAdmin)
+                        {
+                            <td>
+                                <span class="badge bg-success">@item.HourlyRate.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</span>
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
+                                    Details
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">
+                                    Edit
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>
