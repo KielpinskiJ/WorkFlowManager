@@ -82,7 +82,7 @@ else
                         @if (isAdmin)
                         {
                             <td>
-                                <span class="badge bg-success">@item.HourlyRate.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</span>
+                                <span class="badge bg-success">@item.HourlyRate.ToString("N2") zł/h</span>
                             </td>
                             <td class="text-end">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
