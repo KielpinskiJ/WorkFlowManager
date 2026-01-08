@@ -20,3 +20,278 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* ============================================
+                    NAVBAR
+   ============================================ */
+
+.navbar-custom {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, #e94560, #0f3460, #e94560) 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow-x: clip;
+  overflow-y: visible;
+  z-index: 1337;
+}
+
+.navbar-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(233, 69, 96, 0.1), transparent);
+  animation: navbarShine 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes navbarShine {
+  0%, 100% { transform: translateX(-50%); }
+  50% { transform: translateX(50%); }
+}
+
+.navbar-brand-custom {
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  position: relative;
+  text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+}
+
+.navbar-brand-custom:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 20px rgba(233, 69, 96, 0.8);
+}
+
+.navbar-brand-custom i {
+  color: #e94560;
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand-custom:hover i {
+  transform: rotate(10deg) scale(1.1);
+}
+
+.nav-link-custom {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 0 2px;
+  z-index: 1;
+}
+
+.nav-link-custom::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e94560, #f39c12);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.nav-link-custom:hover {
+  color: #fff !important;
+  background: rgba(233, 69, 96, 0.15);
+  transform: translateY(-2px);
+}
+
+.nav-link-custom:hover::after {
+  width: 70%;
+}
+
+.nav-link-custom i {
+  transition: all 0.3s ease;
+}
+
+.nav-link-custom:hover i {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.dropdown-toggle-custom {
+  position: relative;
+  z-index: 1;
+}
+
+.dropdown-toggle-custom::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(233, 69, 96, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.dropdown-toggle-custom:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.dropdown-menu-custom {
+  background: rgba(22, 33, 62, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(233, 69, 96, 0.3);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  animation: dropdownFadeIn 0.3s ease;
+  overflow: hidden;
+  z-index: 1337 !important;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-item-custom {
+  color: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  margin: 2px 0;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-item-custom::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(180deg, #e94560, #f39c12);
+  transform: scaleY(0);
+  transition: transform 0.25s ease;
+  pointer-events: none;
+}
+
+.dropdown-item-custom:hover,
+.dropdown-item-custom:focus {
+  background: rgba(233, 69, 96, 0.2) !important;
+  color: #fff !important;
+  transform: translateX(5px);
+}
+
+.dropdown-item-custom:hover::before {
+  transform: scaleY(1);
+}
+
+.dropdown-item-custom i {
+  transition: all 0.3s ease;
+}
+
+.dropdown-item-custom:hover i {
+  transform: scale(1.15);
+}
+
+.dropdown-header-custom {
+  color: #e94560 !important;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.dropdown-divider-custom {
+  border-color: rgba(233, 69, 96, 0.2);
+  margin: 0.5rem 0;
+}
+
+.login-link-custom {
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.3s ease;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px;
+}
+
+.login-link-custom:hover {
+  color: #e94560 !important;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.login-btn-custom {
+  background: linear-gradient(135deg, #e94560, #f39c12) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 600;
+  padding: 0.4rem 1.2rem !important;
+  border-radius: 20px !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+}
+
+.login-btn-custom:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 25px rgba(233, 69, 96, 0.6);
+}
+
+.user-badge-custom {
+  background: linear-gradient(135deg, rgba(233, 69, 96, 0.2), rgba(243, 156, 18, 0.2)) !important;
+  border: 1px solid rgba(233, 69, 96, 0.4);
+  color: #fff !important;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.user-badge-custom:hover {
+  background: linear-gradient(135deg, rgba(233, 69, 96, 0.4), rgba(243, 156, 18, 0.4)) !important;
+  transform: scale(1.05);
+}
+
+.icon-schedule { color: #3498db !important; }
+.icon-requests { color: #f39c12 !important; }
+.icon-payroll { color: #2ecc71 !important; }
+.icon-bonuses { color: #e74c3c !important; }
+.icon-stats { color: #9b59b6 !important; }
+.icon-users { color: #1abc9c !important; }
+.icon-home { color: #e94560 !important; }
+.icon-dept { color: #3498db !important; }
+
+@media (max-width: 991.98px) { /* https://getbootstrap.com/docs/5.3/layout/breakpoints/ */
+  .navbar-custom {
+    padding: 1rem;
+  }
+  
+  .dropdown-menu-custom {
+    background: rgba(22, 33, 62, 0.98);
+    border: none;
+    border-left: 3px solid #e94560;
+    border-radius: 0;
+    margin-left: 1rem;
+  }
+  
+  .nav-link-custom::after {
+    display: none;
+  }
+}
