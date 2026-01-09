@@ -4,49 +4,54 @@
     ViewData["Title"] = "Delete Bonus";
 }
 
-<h2><i class="bi bi-trash me-2 text-danger"></i>Delete Bonus</h2>
+<div class="page-header">
+    <h1><i class="bi bi-trash-fill"></i>Delete Bonus</h1>
+</div>
 
-<div class="alert alert-warning">
-    <i class="bi bi-exclamation-triangle me-2"></i>
+<div class="alert-custom-warning mb-4">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
     <strong>Warning!</strong> Are you sure you want to delete this bonus? This action cannot be undone.
 </div>
 
 <div class="row">
     <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-danger text-white">
-                <strong>Bonus #@Model.Id</strong>
+        <div class="card-custom">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-gift-fill me-2"></i>Bonus #@Model.Id</h5>
+                <span class="badge-custom-success">@Model.Amount.ToString("N2") zł</span>
             </div>
             <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-4">Employee</dt>
-                    <dd class="col-sm-8">@Model.User?.FirstName @Model.User?.LastName</dd>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-person-fill me-1"></i>Employee
+                    </label>
+                    <p class="mb-0" style="color: #1e293b;">@Model.User?.FirstName @Model.User?.LastName</p>
+                </div>
 
-                    <dt class="col-sm-4">Amount</dt>
-                    <dd class="col-sm-8">
-                        <span class="badge bg-success">@Model.Amount.ToString("N2") PLN</span>
-                    </dd>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-calendar-fill me-1"></i>Date Granted
+                    </label>
+                    <p class="mb-0" style="color: #1e293b;">@Model.DateGranted.ToString("dd MMM yyyy")</p>
+                </div>
 
-                    <dt class="col-sm-4">Date Granted</dt>
-                    <dd class="col-sm-8">@Model.DateGranted.ToString("dd MMM yyyy")</dd>
-
-                    <dt class="col-sm-4">Reason</dt>
-                    <dd class="col-sm-8">@Model.Reason</dd>
-                </dl>
+                <div>
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-card-text me-1"></i>Reason
+                    </label>
+                    <p class="mb-0" style="color: #1e293b;">@Model.Reason</p>
+                </div>
             </div>
             <div class="card-footer">
-                <form asp-action="Delete" method="post">
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash me-1"></i>Delete Bonus
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left me-1"></i>Cancel
-                        </a>
-                    </div>
+                <form asp-action="Delete" method="post" class="d-flex gap-2 mb-0">
+                    <button type="submit" class="btn btn-custom-danger">
+                        <i class="bi bi-trash-fill me-1"></i>Delete Bonus
+                    </button>
+                    <a asp-action="Index" class="btn btn-custom-secondary">
+                        <i class="bi bi-x-lg me-1"></i>Cancel
+                    </a>
                 </form>
             </div>
         </div>
     </div>
 </div>
-

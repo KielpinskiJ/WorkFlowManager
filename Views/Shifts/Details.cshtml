@@ -4,67 +4,74 @@
     ViewData["Title"] = "Shift Details";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-secondary text-white">
-                <h4 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Shift Details</h4>
+<div class="page-header">
+    <h1><i class="bi bi-calendar-event-fill"></i>Shift Details</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-custom">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i>@Model.StartTime.ToString("dddd, dd MMMM yyyy")</h5>
             </div>
             <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-4">Employee</dt>
-                    <dd class="col-sm-8">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-person-fill me-1"></i>Employee
+                    </label>
+                    <p class="mb-0">
                         @if (Model.User != null)
                         {
-                            <strong>@Model.User.FirstName @Model.User.LastName</strong>
-                            <br />
-                            <small class="text-muted">@Model.User.Email</small>
+                            <strong style="color: #1e293b;">@Model.User.FirstName @Model.User.LastName</strong>
+                            <span class="d-block small" style="color: #64748b;">@Model.User.Email</span>
                         }
                         else
                         {
-                            <span class="text-muted">Unknown</span>
+                            <span style="color: #94a3b8;">Unknown</span>
                         }
-                    </dd>
-                    
-                    <dt class="col-sm-4">Date</dt>
-                    <dd class="col-sm-8">
-                        @Model.StartTime.ToString("dddd, dd MMMM yyyy")
-                    </dd>
-                    
-                    <dt class="col-sm-4">Start Time</dt>
-                    <dd class="col-sm-8">
-                        <i class="bi bi-clock text-success me-1"></i>
-                        @Model.StartTime.ToString("HH:mm")
-                    </dd>
-                    
-                    <dt class="col-sm-4">End Time</dt>
-                    <dd class="col-sm-8">
-                        <i class="bi bi-clock-fill text-danger me-1"></i>
-                        @Model.EndTime.ToString("HH:mm")
-                    </dd>
-                    
-                    <dt class="col-sm-4">Duration</dt>
-                    <dd class="col-sm-8">
-                        <span class="badge bg-info fs-6">@Model.DurationHours.ToString("F1") hours</span>
-                    </dd>
-                </dl>
-                
-                <hr />
-                
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Back to List
-                    </a>
-                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
-                          onsubmit="return confirm('Are you sure you want to delete this shift?');">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash me-1"></i>Delete
-                        </button>
-                    </form>
+                    </p>
                 </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label fw-semibold" style="color: #64748b;">
+                            <i class="bi bi-clock me-1"></i>Start Time
+                        </label>
+                        <p class="mb-0">
+                            <span class="badge-custom-success" style="font-size: 1.1rem;">@Model.StartTime.ToString("HH:mm")</span>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-semibold" style="color: #64748b;">
+                            <i class="bi bi-clock-fill me-1"></i>End Time
+                        </label>
+                        <p class="mb-0">
+                            <span class="badge-custom-danger" style="font-size: 1.1rem;">@Model.EndTime.ToString("HH:mm")</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-hourglass-split me-1"></i>Duration
+                    </label>
+                    <p class="mb-0">
+                        <span class="badge-custom-info" style="font-size: 1.1rem;">@Model.DurationHours.ToString("F1") hours</span>
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <a asp-action="Index" class="btn btn-custom-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to List
+                </a>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
+                      onsubmit="return confirm('Are you sure you want to delete this shift?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-custom-danger">
+                        <i class="bi bi-trash-fill me-1"></i>Delete
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-

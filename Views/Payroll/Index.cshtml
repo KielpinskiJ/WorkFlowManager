@@ -9,94 +9,150 @@
         .no-print {
             display: none !important;
         }
-        header, footer, .navbar {
+        header, footer, .navbar, .footer-custom {
             display: none !important;
         }
+        
         .container {
             max-width: 100% !important;
+            width: 100% !important;
             padding: 0 !important;
             margin: 0 !important;
         }
-        .card {
-            border: none !important;
+        
+        body {
+            font-size: 10px !important;
+            padding: 5mm !important;
+            margin: 0 !important;
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        .card-custom {
+            border: 1px solid #ccc !important;
             box-shadow: none !important;
+            page-break-inside: avoid;
         }
         .card-header {
             background-color: #333 !important;
             color: white !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            padding: 8px 12px !important;
         }
-        body {
-            font-size: 11px;
-            padding: 10px;
+        .card-body {
+            padding: 10px !important;
         }
+        
+        .table-responsive,
+        .table-wrapper {
+            overflow: visible !important;
+            width: 100% !important;
+        }
+        .table-custom,
         .table {
-            font-size: 10px;
+            font-size: 9px !important;
+            width: 100% !important;
+            table-layout: fixed !important;
         }
+        .table-custom th,
+        .table-custom td {
+            padding: 4px 6px !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+        }
+        
+        .d-none.d-md-table-cell,
+        .d-none.d-lg-table-cell {
+            display: table-cell !important;
+        }
+        
+        .row .col-md-3 {
+            width: 25% !important;
+            float: left !important;
+        }
+        .card-highlight {
+            background: #f0f0f0 !important;
+            color: #333 !important;
+        }
+        .card-highlight .card-body {
+            color: #333 !important;
+        }
+        .card-highlight .text-white {
+            color: #333 !important;
+        }
+        
+        .badge-custom,
+        .badge-custom-info,
+        .badge-custom-success {
+            background: #666 !important;
+            color: white !important;
+            padding: 2px 6px !important;
+            font-size: 8px !important;
+        }
+    }
+    
+    @@page {
+        size: A4 landscape;
+        margin: 10mm;
     }
 </style>
 
-<div class="d-flex justify-content-between align-items-center mb-4 no-print">
-    <h2><i class="bi bi-cash-stack me-2"></i>Payroll Report</h2>
-    <button onclick="window.print()" class="btn btn-outline-secondary">
-        <i class="bi bi-printer me-1"></i>Print Report
+<div class="page-header no-print">
+    <h1><i class="bi bi-cash-stack"></i>Payroll Report</h1>
+    <button onclick="window.print()" class="btn btn-custom-secondary">
+        <i class="bi bi-printer-fill me-1"></i>Print
     </button>
 </div>
 
 <!-- Month/Year Selector -->
-<div class="card mb-4 no-print">
-    <div class="card-body">
-        <form method="get" class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label">Month</label>
-                <select name="month" class="form-select">
-                    @for (int m = 1; m <= 12; m++)
-                    {
-                        <option value="@m" selected="@(m == Model.Month)">
-                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
-                        </option>
-                    }
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">Year</label>
-                <select name="year" class="form-select">
-                    @foreach (var y in (List<int>)ViewBag.AvailableYears)
-                    {
-                        <option value="@y" selected="@(y == Model.Year)">@y</option>
-                    }
-                </select>
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search me-1"></i>Generate Report
-                </button>
-            </div>
-        </form>
-    </div>
+<div class="form-custom mb-4 no-print">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label fw-semibold" style="color: #374151;">
+                <i class="bi bi-calendar-month me-1" style="color: #3b82f6;"></i>Month
+            </label>
+            <select name="month" class="form-select">
+                @for (int m = 1; m <= 12; m++)
+                {
+                    <option value="@m" selected="@(m == Model.Month)">
+                        @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-semibold" style="color: #374151;">
+                <i class="bi bi-calendar-fill me-1" style="color: #3b82f6;"></i>Year
+            </label>
+            <select name="year" class="form-select">
+                @foreach (var y in (List<int>)ViewBag.AvailableYears)
+                {
+                    <option value="@y" selected="@(y == Model.Year)">@y</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-custom-primary">
+                <i class="bi bi-search me-1"></i>Generate Report
+            </button>
+        </div>
+    </form>
 </div>
 
-<!-- Report Header -->
-<div class="card mb-4">
-    <div class="card-header bg-primary text-white">
-        <div class="row">
-            <div class="col">
-                <h4 class="mb-0">
-                    <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-                    @Model.MonthName @Model.Year - Payroll Summary
-                </h4>
-            </div>
-            <div class="col-auto">
-                <small>Generated: @Model.GeneratedAt.ToString("dd MMM yyyy, HH:mm")</small>
-            </div>
-        </div>
+<!-- Report -->
+<div class="card-custom mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">
+            <i class="bi bi-file-earmark-spreadsheet me-2"></i>
+            @Model.MonthName @Model.Year - Payroll Summary
+        </h5>
+        <small style="color: rgba(255,255,255,0.8);">Generated: @Model.GeneratedAt.ToString("dd MMM yyyy, HH:mm")</small>
     </div>
     <div class="card-body">
         @if (!Model.Entries.Any())
         {
-            <div class="alert alert-info mb-0">
-                <i class="bi bi-info-circle me-2"></i>
+            <div class="alert-custom-info mb-0">
+                <i class="bi bi-info-circle-fill me-2"></i>
                 No payroll data available for @Model.MonthName @Model.Year.
                 Employees need assigned shifts and/or bonuses in this period.
             </div>
@@ -105,35 +161,39 @@
         {
             <!-- Summary Cards -->
             <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-light">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="card-custom h-100">
                         <div class="card-body text-center">
-                            <h6 class="text-muted">Total Employees</h6>
-                            <h3 class="text-primary">@Model.EmployeeCount</h3>
+                            <i class="bi bi-people-fill fs-2" style="color: #3b82f6;"></i>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">Total Employees</h6>
+                            <span class="fs-3 fw-bold" style="color: #3b82f6;">@Model.EmployeeCount</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="card-custom h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-clock-fill fs-2" style="color: #0ea5e9;"></i>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">Total Hours</h6>
+                            <span class="fs-3 fw-bold" style="color: #0ea5e9;">@Model.TotalHours.ToString("N1") h</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="card-custom h-100">
+                        <div class="card-body text-center">
+                            <i class="bi bi-gift-fill fs-2" style="color: #f59e0b;"></i>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">Total Bonuses</h6>
+                            <span class="fs-3 fw-bold" style="color: #f59e0b;">@Model.TotalBonuses.ToString("N2") zł</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h6 class="text-muted">Total Hours</h6>
-                            <h3 class="text-info">@Model.TotalHours.ToString("N1") h</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h6 class="text-muted">Total Bonuses</h6>
-                            <h3 class="text-warning">@Model.TotalBonuses.ToString("N2") PLN</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body text-center">
-                            <h6>Total Payroll</h6>
-                            <h3>@Model.TotalPayroll.ToString("N2") PLN</h3>
+                    <div class="card-custom card-highlight h-100" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
+                        <div class="card-body text-center text-white">
+                            <i class="bi bi-cash-coin fs-2"></i>
+                            <h6 class="mt-2 mb-1 opacity-75">Total Payroll</h6>
+                            <span class="fs-3 fw-bold">@Model.TotalPayroll.ToString("N2") zł</span>
                         </div>
                     </div>
                 </div>
@@ -141,68 +201,68 @@
 
             <!-- Payroll Table -->
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Employee</th>
-                            <th>Department</th>
-                            <th class="text-end">Rate/h</th>
-                            <th class="text-end">Hours</th>
-                            <th class="text-end">Base Pay</th>
-                            <th class="text-end">Bonuses</th>
-                            <th class="text-end"><strong>Total</strong></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var entry in Model.Entries)
-                        {
+                <div class="table-wrapper">
+                    <table class="table table-custom mb-0">
+                        <thead>
                             <tr>
-                                <td>
-                                    <strong>@entry.FullName</strong>
-                                    <br /><small class="text-muted">@entry.Email</small>
-                                </td>
-                                <td>
-                                    @if (entry.DepartmentName == "Unassigned")
-                                    {
-                                        <span class="badge bg-secondary">@entry.DepartmentName</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-info">@entry.DepartmentName</span>
-                                    }
-                                </td>
-                                <td class="text-end">@entry.HourlyRate.ToString("N2") PLN</td>
-                                <td class="text-end">@entry.TotalHours.ToString("N1") h</td>
-                                <td class="text-end">@entry.BasePayment.ToString("N2") PLN</td>
-                                <td class="text-end">
-                                    @if (entry.BonusTotal > 0)
-                                    {
-                                        <span class="text-success">+@entry.BonusTotal.ToString("N2") PLN</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">0.00 PLN</span>
-                                    }
-                                </td>
-                                <td class="text-end">
-                                    <strong class="text-primary">@entry.FinalSalary.ToString("N2") PLN</strong>
-                                </td>
+                                <th><i class="bi bi-person-fill me-1"></i>Employee</th>
+                                <th class="d-none d-md-table-cell"><i class="bi bi-building-fill me-1"></i>Department</th>
+                                <th class="text-end d-none d-lg-table-cell"><i class="bi bi-currency-exchange me-1"></i>Rate/h</th>
+                                <th class="text-end"><i class="bi bi-clock me-1"></i>Hours</th>
+                                <th class="text-end d-none d-md-table-cell"><i class="bi bi-wallet2 me-1"></i>Base</th>
+                                <th class="text-end d-none d-lg-table-cell"><i class="bi bi-gift me-1"></i>Bonuses</th>
+                                <th class="text-end"><strong>Total</strong></th>
                             </tr>
-                        }
-                    </tbody>
-                    <tfoot class="table-secondary">
-                        <tr>
-                            <th colspan="3">TOTAL</th>
-                            <th class="text-end">@Model.TotalHours.ToString("N1") h</th>
-                            <th class="text-end">@Model.Entries.Sum(e => e.BasePayment).ToString("N2") PLN</th>
-                            <th class="text-end">@Model.TotalBonuses.ToString("N2") PLN</th>
-                            <th class="text-end text-success fs-5">@Model.TotalPayroll.ToString("N2") PLN</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var entry in Model.Entries)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong style="color: #1e293b;">@entry.FullName</strong>
+                                        <span class="d-block small" style="color: #64748b;">@entry.Email</span>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">
+                                        @if (entry.DepartmentName == "Unassigned")
+                                        {
+                                            <span class="badge-custom">@entry.DepartmentName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-custom-info">@entry.DepartmentName</span>
+                                        }
+                                    </td>
+                                    <td class="text-end d-none d-lg-table-cell" style="color: #475569;">@entry.HourlyRate.ToString("N2") zł</td>
+                                    <td class="text-end" style="color: #475569;">@entry.TotalHours.ToString("N1") h</td>
+                                    <td class="text-end d-none d-md-table-cell" style="color: #475569;">@entry.BasePayment.ToString("N2") zł</td>
+                                    <td class="text-end d-none d-lg-table-cell">
+                                        @if (entry.BonusTotal > 0)
+                                        {
+                                            <span style="color: #22c55e;">+@entry.BonusTotal.ToString("N2") zł</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: #94a3b8;">0.00 zł</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <strong style="color: #3b82f6;">@entry.FinalSalary.ToString("N2") zł</strong>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: #f8fafc;">
+                                <th colspan="3" style="color: #1e293b;">TOTAL</th>
+                                <th class="text-end" style="color: #1e293b;">@Model.TotalHours.ToString("N1") h</th>
+                                <th class="text-end d-none d-md-table-cell" style="color: #1e293b;">@Model.Entries.Sum(e => e.BasePayment).ToString("N2") zł</th>
+                                <th class="text-end d-none d-lg-table-cell" style="color: #1e293b;">@Model.TotalBonuses.ToString("N2") zł</th>
+                                <th class="text-end fs-5" style="color: #22c55e;">@Model.TotalPayroll.ToString("N2") zł</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         }
     </div>
 </div>
-
-

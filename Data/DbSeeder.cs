@@ -45,6 +45,23 @@ public static class DbSeeder
 
         // Create admin user
         await CreateAdminUserIfNotExists(userManager);
+
+        // Assign Employee role to all users without any role
+        await AssignEmployeeRoleToUsersWithoutRole(userManager);
+    }
+
+    private static async Task AssignEmployeeRoleToUsersWithoutRole(UserManager<ApplicationUser> userManager)
+    {
+        var allUsers = userManager.Users.ToList();
+        
+        foreach (var user in allUsers)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+            if (roles.Count == 0)
+            {
+                await userManager.AddToRoleAsync(user, RoleEmployee);
+            }
+        }
     }
 
     private static async Task CreateRoleIfNotExists(RoleManager<IdentityRole> roleManager, string roleName)

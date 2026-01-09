@@ -4,39 +4,66 @@
     ViewData["Title"] = "Department Details";
 }
 
-<h1>Department Details</h1>
+<div class="page-header">
+    <h1><i class="bi bi-building-fill"></i>Department Details</h1>
+</div>
 
-<div class="card" style="max-width: 600px;">
-    <div class="card-header">
-        <h4 class="mb-0">@Model.Name</h4>
-    </div>
-    <div class="card-body">
-        <dl class="row mb-0">
-            <dt class="col-sm-4">Description</dt>
-            <dd class="col-sm-8">
-                @(string.IsNullOrEmpty(Model.Description) ? "No description" : Model.Description)
-            </dd>
-            
-            <dt class="col-sm-4">Hourly Rate</dt>
-            <dd class="col-sm-8">
-                <span class="badge bg-success fs-6">@Model.HourlyRate.ToString("N2") zł/h</span>
-            </dd>
-            
-            <dt class="col-sm-4">Employees</dt>
-            <dd class="col-sm-8">
-                @if (Model.Users != null && Model.Users.Any())
-                {
-                    <span class="badge bg-primary">@Model.Users.Count employee(s)</span>
-                }
-                else
-                {
-                    <span class="text-muted">No employees assigned</span>
-                }
-            </dd>
-        </dl>
-    </div>
-    <div class="card-footer">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-custom">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-tag-fill me-2"></i>@Model.Name</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-card-text me-1"></i>Description
+                    </label>
+                    <p class="mb-0" style="color: #1e293b;">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            @Model.Description
+                        }
+                        else
+                        {
+                            <span style="color: #94a3b8;">No description</span>
+                        }
+                    </p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-currency-exchange me-1"></i>Hourly Rate
+                    </label>
+                    <p class="mb-0">
+                        <span class="badge-custom-success">@Model.HourlyRate.ToString("N2") zł/h</span>
+                    </p>
+                </div>
+                
+                <div>
+                    <label class="form-label fw-semibold" style="color: #64748b;">
+                        <i class="bi bi-people-fill me-1"></i>Employees
+                    </label>
+                    <p class="mb-0">
+                        @if (Model.Users != null && Model.Users.Any())
+                        {
+                            <span class="badge-custom-info">@Model.Users.Count employee(s)</span>
+                        }
+                        else
+                        {
+                            <span style="color: #94a3b8;">No employees assigned</span>
+                        }
+                    </p>
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-custom-warning">
+                    <i class="bi bi-pencil-fill me-1"></i>Edit
+                </a>
+                <a asp-action="Index" class="btn btn-custom-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to List
+                </a>
+            </div>
+        </div>
     </div>
 </div>
