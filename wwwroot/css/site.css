@@ -27,15 +27,13 @@ body > header {
   flex-shrink: 0;
   position: sticky;
   top: 0;
-  z-index: 1337;
+  z-index: 1030;
 }
 
 body > .container {
   flex-shrink: 0;
-}
-
-body > .container {
   flex-grow: 1;
+  padding-top: 1.5rem;
 }
 
 body > footer {
@@ -176,7 +174,7 @@ body > footer {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   animation: dropdownFadeIn 0.3s ease;
   overflow: hidden;
-  z-index: 1337 !important;
+  z-index: 1035 !important;
 }
 
 @keyframes dropdownFadeIn {
