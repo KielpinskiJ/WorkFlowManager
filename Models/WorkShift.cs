@@ -32,6 +32,11 @@ namespace WorkFlowManager.Models;
         /// </summary>
         public double DurationHours => (EndTime - StartTime).TotalHours;
 
+        /// <summary>
+        /// Hourly rate snapshot at the time of shift creation.
+        /// </summary>
+        public decimal HourlyRateSnapshot { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (EndTime <= StartTime)

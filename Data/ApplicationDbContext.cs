@@ -48,6 +48,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasKey(s => s.Id);
             entity.Property(s => s.UserId).IsRequired();
+            entity.Property(s => s.HourlyRateSnapshot).HasColumnType("decimal(18,2)");
             
             // WorkShift - ApplicationUser relationship
             entity.HasOne(s => s.User)

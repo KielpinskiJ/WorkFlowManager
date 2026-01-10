@@ -45,11 +45,11 @@ public class PayrollService : IPayrollService
             var totalHours = monthlyShifts
                 .Sum(s => (s.EndTime - s.StartTime).TotalHours);
 
-            // Get hourly rate from department (default to 0 if no department)
-            var hourlyRate = user.Department?.HourlyRate ?? 0;
+            // Calculate base payment using snapshot rates from each shift
+            var basePayment = monthlyShifts
+                .Sum(s => (decimal)(s.EndTime - s.StartTime).TotalHours * s.HourlyRateSnapshot);
 
-            // Calculate base payment
-            var basePayment = (decimal)totalHours * hourlyRate;
+            var hourlyRate = user.Department?.HourlyRate ?? 0;
 
             // Sum bonuses granted in the specified month
             var bonusTotal = user.Bonuses
@@ -110,8 +110,13 @@ public class PayrollService : IPayrollService
             .ToList();
 
         var totalHours = monthlyShifts.Sum(s => (s.EndTime - s.StartTime).TotalHours);
+        
+        // Calculate base payment using snapshot rates from each shift
+        var basePayment = monthlyShifts
+            .Sum(s => (decimal)(s.EndTime - s.StartTime).TotalHours * s.HourlyRateSnapshot);
+        
         var hourlyRate = user.Department?.HourlyRate ?? 0;
-        var basePayment = (decimal)totalHours * hourlyRate;
+        
         var bonusTotal = user.Bonuses
             .Where(b => b.DateGranted >= startDate && b.DateGranted < endDate)
             .Sum(b => b.Amount);

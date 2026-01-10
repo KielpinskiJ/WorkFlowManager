@@ -22,6 +22,13 @@ public class ShiftService : IShiftService
     {
         ValidateShiftTimes(shift);
         
+        // Snapshot the hourly rate at shift creation time for accurate payroll
+        var user = await _context.Users
+            .Include(u => u.Department)
+            .FirstOrDefaultAsync(u => u.Id == shift.UserId);
+        
+        shift.HourlyRateSnapshot = user?.Department?.HourlyRate ?? 0;
+        
         _context.WorkShifts.Add(shift);
         await _context.SaveChangesAsync();
         return shift;
