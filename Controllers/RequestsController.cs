@@ -118,15 +118,34 @@ public class RequestsController : Controller
             return Unauthorized();
         }
 
-        await _requestService.CreateRequestAsync(
-            userId, 
-            model.Type, 
-            model.StartDate ?? DateTime.Today, 
-            model.EndDate ?? DateTime.Today,
-            model.TargetDepartmentId);
+        try
+        {
+            await _requestService.CreateRequestAsync(
+                userId, 
+                model.Type, 
+                model.StartDate ?? DateTime.Today, 
+                model.EndDate ?? DateTime.Today,
+                model.TargetDepartmentId);
+                
+            TempData["Success"] = "Request submitted successfully. Awaiting admin approval.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
             
-        TempData["Success"] = "Request submitted successfully. Awaiting admin approval.";
-        return RedirectToAction(nameof(Index));
+            // Repopulate departments dropdown
+            var currentUser = await _userManager.GetUserAsync(User);
+            var departments = await _departmentService.GetAllAsync();
+            model.Departments = departments
+                .Where(d => d.Id != currentUser?.DepartmentId)
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                });
+            return View(model);
+        }
     }
 
     // GET: Requests/Details/5

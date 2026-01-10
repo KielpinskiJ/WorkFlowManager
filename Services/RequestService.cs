@@ -24,6 +24,8 @@ public class RequestService : IRequestService
             throw new ArgumentException("Start date must be before end date.");
         }
 
+        await ValidateNoDuplicateRequestAsync(userId, type, startDate, endDate, targetDepartmentId);
+
         var request = new LeaveRequest
         {
             UserId = userId,
@@ -39,6 +41,37 @@ public class RequestService : IRequestService
         await _context.SaveChangesAsync();
 
         return request;
+    }
+
+    /// <summary>
+    /// Validates that no duplicate pending request exists for the user.
+    /// </summary>
+    private async Task ValidateNoDuplicateRequestAsync(string userId, RequestType type, DateTime startDate, DateTime endDate, int? targetDepartmentId)
+    {
+        var pendingRequestsQuery = _context.LeaveRequests
+            .Where(r => r.UserId == userId && r.Status == RequestStatus.Pending && r.Type == type);
+
+        bool duplicateExists;
+
+        if (type == RequestType.Vacation)
+        {
+            duplicateExists = await pendingRequestsQuery
+                .AnyAsync(r => r.StartDate == startDate && r.EndDate == endDate);
+        }
+        else
+        {
+            duplicateExists = await pendingRequestsQuery
+                .AnyAsync(r => r.TargetDepartmentId == targetDepartmentId);
+        }
+
+        if (duplicateExists)
+        {
+            var message = type == RequestType.Vacation
+                ? "You already have a pending vacation request for the same dates. Please wait for it to be processed."
+                : "You already have a pending department change request for this department. Please wait for it to be processed.";
+
+            throw new InvalidOperationException(message);
+        }
     }
 
     public async Task<IEnumerable<LeaveRequest>> GetPendingRequestsAsync()
