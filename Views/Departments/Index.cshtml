@@ -40,6 +40,14 @@
     </div>
 }
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert-custom-danger mb-4">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+    </div>
+}
+
 @if (!Model.Any())
 {
     <div class="alert-custom-info">

@@ -137,7 +137,8 @@ else
                                                         
                                                         <div class="mb-3">
                                                             <label class="form-label" style="color: #374151;">Comment (optional)</label>
-                                                            <textarea name="adminComment" class="form-control" rows="2" placeholder="Add a note..."></textarea>
+                                                            <textarea name="adminComment" class="form-control" rows="2" placeholder="Add a note..." maxlength="500"></textarea>
+                                                            <div class="form-text">Maximum 500 characters</div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -165,7 +166,8 @@ else
                                                     <p style="color: #1e293b;">Are you sure you want to reject this request from <strong>@request.User?.FirstName @request.User?.LastName</strong>?</p>
                                                     <div class="mb-3">
                                                         <label class="form-label" style="color: #374151;">Comment (optional)</label>
-                                                        <textarea name="adminComment" class="form-control" rows="3" placeholder="Reason for rejection..."></textarea>
+                                                        <textarea name="adminComment" class="form-control" rows="3" placeholder="Reason for rejection..." maxlength="500"></textarea>
+                                                        <div class="form-text">Maximum 500 characters</div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

@@ -14,6 +14,8 @@ namespace WorkFlowManager.Controllers;
 [Authorize]
 public class RequestsController : Controller
 {
+    private const int MaxAdminCommentLength = 500;
+
     private readonly IRequestService _requestService;
     private readonly IDepartmentService _departmentService;
     private readonly UserManager<ApplicationUser> _userManager;
@@ -44,10 +46,13 @@ public class RequestsController : Controller
     // GET: Requests/Create
     public async Task<IActionResult> Create()
     {
+        var user = await _userManager.GetUserAsync(User);
         var departments = await _departmentService.GetAllAsync();
         var model = new CreateRequestViewModel
         {
-            Departments = departments.Select(d => new SelectListItem
+            Departments = departments
+            .Where(d => d.Id != user?.DepartmentId)
+            .Select(d => new SelectListItem
             {
                 Value = d.Id.ToString(),
                 Text = d.Name
@@ -94,13 +99,16 @@ public class RequestsController : Controller
 
         if (!ModelState.IsValid)
         {
-            // Repopulate departments dropdown
+            // Repopulate departments dropdown (exclude user's current department)
+            var currentUser = await _userManager.GetUserAsync(User);
             var departments = await _departmentService.GetAllAsync();
-            model.Departments = departments.Select(d => new SelectListItem
-            {
-                Value = d.Id.ToString(),
-                Text = d.Name
-            });
+            model.Departments = departments
+                .Where(d => d.Id != currentUser?.DepartmentId)
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                });
             return View(model);
         }
 
@@ -154,6 +162,12 @@ public class RequestsController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Approve(int id, string? adminComment, bool autoTransfer = false)
     {
+        if (!string.IsNullOrEmpty(adminComment) && adminComment.Length > MaxAdminCommentLength)
+        {
+            TempData["Error"] = $"Comment cannot exceed {MaxAdminCommentLength} characters.";
+            return RedirectToAction(nameof(Manage));
+        }
+
         var result = await _requestService.ApproveRequestAsync(id, adminComment, autoTransfer);
         if (!result)
         {
@@ -174,6 +188,12 @@ public class RequestsController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Reject(int id, string? adminComment)
     {
+        if (!string.IsNullOrEmpty(adminComment) && adminComment.Length > MaxAdminCommentLength)
+        {
+            TempData["Error"] = $"Comment cannot exceed {MaxAdminCommentLength} characters.";
+            return RedirectToAction(nameof(Manage));
+        }
+
         var result = await _requestService.RejectRequestAsync(id, adminComment);
         if (!result)
         {

@@ -115,9 +115,24 @@ public class DepartmentsController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
+        var department = await _departmentService.GetByIdAsync(id);
+        if (department == null)
+        {
+            return NotFound();
+        }
+
+        if (department.Users != null && department.Users.Any())
+        {
+            TempData["Error"] = "Cannot delete department with assigned employees. Please reassign employees first.";
+            return RedirectToAction(nameof(Index));
+        }
+
         var result = await _departmentService.DeleteAsync(id);
         if (!result)
-            return NotFound();
+        {
+            TempData["Error"] = "Failed to delete department.";
+            return RedirectToAction(nameof(Index));
+        }
 
         TempData["Success"] = "Department deleted successfully.";
         return RedirectToAction(nameof(Index));

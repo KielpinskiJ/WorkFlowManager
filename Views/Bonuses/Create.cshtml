@@ -23,14 +23,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Amount" class="form-label fw-semibold" style="color: #374151;">
-                        <i class="bi bi-currency-exchange me-1" style="color: #22c55e;"></i>Amount
-                    </label>
+                    <label asp-for="Amount" class="form-label"></label>
                     <div class="input-group">
-                        <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0.01" />
-                        <span class="input-group-text">zł</span>
+                        <input asp-for="Amount" class="form-control" type="number" 
+                            step="0.01" min="0.01" max="1000000" />
+                        <span class="input-group-text">PLN</span>
                     </div>
-                    <span asp-validation-for="Amount" class="text-danger small"></span>
+                    <div class="form-text">Amount must be between 0.01 and 1,000,000 PLN</div>
+                    <span asp-validation-for="Amount" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
