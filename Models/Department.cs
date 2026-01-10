@@ -15,6 +15,7 @@ public class Department
 
     [Required]
     [Range(0.01, 10000, ErrorMessage = "Hourly rate must be between 0.01 and 10000")]
+    [Display(Name = "Hourly Rate")]
     public decimal HourlyRate { get; set; }
 
     // Navigation property

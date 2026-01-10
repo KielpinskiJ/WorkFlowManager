@@ -1,28 +1,40 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WorkFlowManager.Models;
 using WorkFlowManager.Services.Interfaces;
 
 namespace WorkFlowManager.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class DepartmentsController : Controller
 {
     private readonly IDepartmentService _departmentService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public DepartmentsController(IDepartmentService departmentService)
+    public DepartmentsController(
+        IDepartmentService departmentService,
+        UserManager<ApplicationUser> userManager)
     {
         _departmentService = departmentService;
+        _userManager = userManager;
     }
 
-    // GET: Departments
+    // GET: Departments - Available for all logged-in users
     public async Task<IActionResult> Index()
     {
         var departments = await _departmentService.GetAllAsync();
+        
+        // Get current user's department for highlighting
+        var user = await _userManager.GetUserAsync(User);
+        ViewBag.UserDepartmentId = user?.DepartmentId;
+        ViewBag.IsAdmin = User.IsInRole("Admin");
+        
         return View(departments);
     }
 
-    // GET: Departments/Details/5
+    // GET: Departments/Details/5 - Admin only
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Details(int id)
     {
         var department = await _departmentService.GetByIdAsync(id);
@@ -32,15 +44,17 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
-    // GET: Departments/Create
+    // GET: Departments/Create - Admin only
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: Departments/Create
+    // POST: Departments/Create - Admin only
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(Department department)
     {
         if (ModelState.IsValid)
@@ -52,7 +66,8 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
-    // GET: Departments/Edit/5
+    // GET: Departments/Edit/5 - Admin only
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var department = await _departmentService.GetByIdAsync(id);
@@ -62,9 +77,10 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
-    // POST: Departments/Edit/5
+    // POST: Departments/Edit/5 - Admin only
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id, Department department)
     {
         if (id != department.Id)
@@ -82,7 +98,8 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
-    // GET: Departments/Delete/5
+    // GET: Departments/Delete/5 - Admin only
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var department = await _departmentService.GetByIdAsync(id);
@@ -92,9 +109,10 @@ public class DepartmentsController : Controller
         return View(department);
     }
 
-    // POST: Departments/Delete/5
+    // POST: Departments/Delete/5 - Admin only
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var result = await _departmentService.DeleteAsync(id);

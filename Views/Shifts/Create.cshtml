@@ -4,55 +4,60 @@
     ViewData["Title"] = "Create Shift";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-calendar-plus me-2"></i>Create New Shift</h4>
-            </div>
-            <div class="card-body">
-                <form asp-action="Create" method="post">
-                    @Html.AntiForgeryToken()
-                    
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                    
-                    <div class="mb-3">
-                        <label asp-for="UserId" class="form-label"></label>
-                        <select asp-for="UserId" asp-items="Model.Users" class="form-select">
-                            <option value="">-- Select Employee --</option>
-                        </select>
-                        <span asp-validation-for="UserId" class="text-danger"></span>
+<div class="page-header">
+    <h1><i class="bi bi-calendar-plus-fill"></i>Create Shift</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-custom">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                
+                <div asp-validation-summary="ModelOnly" class="alert-custom-danger mb-3" role="alert"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="UserId" class="form-label fw-semibold" style="color: #374151;">
+                        <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>Employee
+                    </label>
+                    <select asp-for="UserId" asp-items="Model.Users" class="form-select">
+                        <option value="">-- Select Employee --</option>
+                    </select>
+                    <span asp-validation-for="UserId" class="text-danger small"></span>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StartTime" class="form-label fw-semibold" style="color: #374151;">
+                            <i class="bi bi-clock me-1" style="color: #22c55e;"></i>Start Time
+                        </label>
+                        <input asp-for="StartTime" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="StartTime" class="text-danger small"></span>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="StartTime" class="form-label"></label>
-                            <input asp-for="StartTime" type="datetime-local" class="form-control" />
-                            <span asp-validation-for="StartTime" class="text-danger"></span>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="EndTime" class="form-label"></label>
-                            <input asp-for="EndTime" type="datetime-local" class="form-control" />
-                            <span asp-validation-for="EndTime" class="text-danger"></span>
-                        </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EndTime" class="form-label fw-semibold" style="color: #374151;">
+                            <i class="bi bi-clock-fill me-1" style="color: #ef4444;"></i>End Time
+                        </label>
+                        <input asp-for="EndTime" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndTime" class="text-danger small"></span>
                     </div>
-                    
-                    <div class="alert alert-light border" role="alert">
-                        <i class="bi bi-lightbulb me-1"></i>
-                        <strong>Tip:</strong> End time must be after start time.
-                    </div>
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <a asp-action="Index" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-1"></i>Back to List
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg me-1"></i>Create Shift
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                
+                <div class="alert-custom-info mb-4">
+                    <i class="bi bi-lightbulb-fill me-2"></i>
+                    <strong>Tip:</strong> End time must be after start time.
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-custom-primary">
+                        <i class="bi bi-check-lg me-1"></i>Create Shift
+                    </button>
+                    <a asp-action="Index" class="btn btn-custom-secondary">
+                        <i class="bi bi-x-lg me-1"></i>Cancel
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -60,4 +65,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
