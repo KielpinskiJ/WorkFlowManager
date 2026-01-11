@@ -12,8 +12,10 @@ public class Bonus
     [Required]
     public string UserId { get; set; } = string.Empty;
 
-    [Required]
-    [Range(0.01, 1000000, ErrorMessage = "Amount must be greater than 0")]
+    [Required(ErrorMessage = "Amount is required")]
+    [Range(0.01, 1000000, ErrorMessage = "Amount must be between 0.01 and 1,000,000 PLN")]
+    [DataType(DataType.Currency)]
+    [Display(Name = "Bonus Amount (PLN)")]
     public decimal Amount { get; set; }
 
     [Required]

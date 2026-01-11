@@ -35,6 +35,8 @@ public class PayrollService : IPayrollService
 
         var entries = new List<PayrollEntryViewModel>();
 
+        var today = DateTime.Today;
+
         foreach (var user in users)
         {
             // Calculate total hours from shifts in the specified month
@@ -45,18 +47,26 @@ public class PayrollService : IPayrollService
             var totalHours = monthlyShifts
                 .Sum(s => (s.EndTime - s.StartTime).TotalHours);
 
-            // Get hourly rate from department (default to 0 if no department)
+            // Calculate base payment using snapshot rates from each shift
+            var basePayment = monthlyShifts
+                .Sum(s => (decimal)(s.EndTime - s.StartTime).TotalHours * s.HourlyRateSnapshot);
+
             var hourlyRate = user.Department?.HourlyRate ?? 0;
 
-            // Calculate base payment
-            var basePayment = (decimal)totalHours * hourlyRate;
-
-            // Sum bonuses granted in the specified month
-            var bonusTotal = user.Bonuses
+            // Get bonuses in the specified month
+            var monthlyBonuses = user.Bonuses
                 .Where(b => b.DateGranted >= startDate && b.DateGranted < endDate)
+                .ToList();
+
+            var bonusTotal = monthlyBonuses
+                .Where(b => b.DateGranted <= today)
                 .Sum(b => b.Amount);
 
-            // Calculate final salary
+            var scheduledBonusTotal = monthlyBonuses
+                .Where(b => b.DateGranted > today)
+                .Sum(b => b.Amount);
+
+            // Calculate final salary (only includes paid bonuses)
             var finalSalary = basePayment + bonusTotal;
 
             entries.Add(new PayrollEntryViewModel
@@ -69,6 +79,7 @@ public class PayrollService : IPayrollService
                 TotalHours = Math.Round(totalHours, 2),
                 BasePayment = Math.Round(basePayment, 2),
                 BonusTotal = bonusTotal,
+                ScheduledBonusTotal = scheduledBonusTotal,
                 FinalSalary = Math.Round(finalSalary, 2)
             });
         }
@@ -93,6 +104,7 @@ public class PayrollService : IPayrollService
     {
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1);
+        var today = DateTime.Today;
 
         var user = await _context.Users
             .Include(u => u.Department)
@@ -110,10 +122,16 @@ public class PayrollService : IPayrollService
             .ToList();
 
         var totalHours = monthlyShifts.Sum(s => (s.EndTime - s.StartTime).TotalHours);
+        
+        // Calculate base payment using snapshot rates from each shift
+        var basePayment = monthlyShifts
+            .Sum(s => (decimal)(s.EndTime - s.StartTime).TotalHours * s.HourlyRateSnapshot);
+        
         var hourlyRate = user.Department?.HourlyRate ?? 0;
-        var basePayment = (decimal)totalHours * hourlyRate;
+        
+        // Only include bonuses that have already been granted (DateGranted <= today)
         var bonusTotal = user.Bonuses
-            .Where(b => b.DateGranted >= startDate && b.DateGranted < endDate)
+            .Where(b => b.DateGranted >= startDate && b.DateGranted < endDate && b.DateGranted <= today)
             .Sum(b => b.Amount);
 
         return new PayrollEntryViewModel

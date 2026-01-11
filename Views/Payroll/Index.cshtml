@@ -32,7 +32,8 @@
         .card-custom {
             border: 1px solid #ccc !important;
             box-shadow: none !important;
-            page-break-inside: avoid;
+            break-inside: auto !important;
+            page-break-inside: auto !important;
         }
         .card-header {
             background-color: #333 !important;
@@ -41,6 +42,29 @@
         }
         .card-body {
             padding: 10px !important;
+        }
+        
+        .summary-cards {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+            margin-bottom: 10px !important;
+        }
+        .summary-cards .card-custom {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+        .summary-cards .card-body {
+            padding: 6px !important;
+        }
+        .summary-cards .fs-3 {
+            font-size: 1rem !important;
+        }
+        .summary-cards .fs-2 {
+            font-size: 1rem !important;
+        }
+        .summary-cards h6 {
+            font-size: 0.7rem !important;
+            margin: 0.25rem 0 !important;
         }
         
         .table-responsive,
@@ -59,6 +83,20 @@
             padding: 4px 6px !important;
             word-wrap: break-word !important;
             overflow-wrap: break-word !important;
+        }
+        
+        .table-custom tbody tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+        
+        .table-custom tfoot {
+            display: table-row-group !important;
+        }
+        
+        .table-custom tfoot tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
         }
         
         .d-none.d-md-table-cell,
@@ -160,7 +198,7 @@
         else
         {
             <!-- Summary Cards -->
-            <div class="row mb-4">
+            <div class="row mb-4 summary-cards">
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="card-custom h-100">
                         <div class="card-body text-center">
@@ -183,8 +221,16 @@
                     <div class="card-custom h-100">
                         <div class="card-body text-center">
                             <i class="bi bi-gift-fill fs-2" style="color: #f59e0b;"></i>
-                            <h6 style="color: #64748b;" class="mt-2 mb-1">Total Bonuses</h6>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">Paid Bonuses</h6>
                             <span class="fs-3 fw-bold" style="color: #f59e0b;">@Model.TotalBonuses.ToString("N2") zł</span>
+                            @if (Model.TotalScheduledBonuses > 0)
+                            {
+                                <div class="mt-2">
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-calendar-event me-1"></i>Scheduled: @Model.TotalScheduledBonuses.ToString("N2") zł
+                                    </span>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -244,6 +290,13 @@
                                         {
                                             <span style="color: #94a3b8;">0.00 zł</span>
                                         }
+                                        @if (entry.ScheduledBonusTotal > 0)
+                                        {
+                                            <br />
+                                            <span class="badge bg-warning text-dark" style="font-size: 0.7rem;" title="Scheduled bonus - date not yet reached">
+                                                <i class="bi bi-calendar-event"></i> +@entry.ScheduledBonusTotal.ToString("N2") zł
+                                            </span>
+                                        }
                                     </td>
                                     <td class="text-end">
                                         <strong style="color: #3b82f6;">@entry.FinalSalary.ToString("N2") zł</strong>
@@ -256,7 +309,16 @@
                                 <th colspan="3" style="color: #1e293b;">TOTAL</th>
                                 <th class="text-end" style="color: #1e293b;">@Model.TotalHours.ToString("N1") h</th>
                                 <th class="text-end d-none d-md-table-cell" style="color: #1e293b;">@Model.Entries.Sum(e => e.BasePayment).ToString("N2") zł</th>
-                                <th class="text-end d-none d-lg-table-cell" style="color: #1e293b;">@Model.TotalBonuses.ToString("N2") zł</th>
+                                <th class="text-end d-none d-lg-table-cell" style="color: #1e293b;">
+                                    @Model.TotalBonuses.ToString("N2") zł
+                                    @if (Model.TotalScheduledBonuses > 0)
+                                    {
+                                        <br />
+                                        <span class="badge bg-warning text-dark" style="font-size: 0.7rem;">
+                                            <i class="bi bi-calendar-event"></i> +@Model.TotalScheduledBonuses.ToString("N2") zł
+                                        </span>
+                                    }
+                                </th>
                                 <th class="text-end fs-5" style="color: #22c55e;">@Model.TotalPayroll.ToString("N2") zł</th>
                             </tr>
                         </tfoot>

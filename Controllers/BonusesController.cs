@@ -15,6 +15,8 @@ namespace WorkFlowManager.Controllers;
 [Authorize(Roles = "Admin")]
 public class BonusesController : Controller
 {
+    private const int PageSizeBuffer = 5;
+
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
 
@@ -24,13 +26,46 @@ public class BonusesController : Controller
         _userManager = userManager;
     }
 
-    // GET: Bonuses
-    public async Task<IActionResult> Index()
+    /// <summary>
+    /// Displays paginated list of all bonuses.
+    /// </summary>
+    /// <param name="page"></param>
+    public async Task<IActionResult> Index(int page = 1)
     {
+        if (page < 1) page = 1;
+
+        //total employee count + buffer
+        var employeeCount = await _context.Users.CountAsync();
+        var pageSize = employeeCount + PageSizeBuffer;
+
+        var totalCount = await _context.Bonuses.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        if (page > totalPages && totalPages > 0) page = totalPages;
+
         var bonuses = await _context.Bonuses
             .Include(b => b.User)
             .OrderByDescending(b => b.DateGranted)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        var allBonusesStats = await _context.Bonuses
+            .GroupBy(_ => 1)
+            .Select(g => new 
+            { 
+                TotalAmount = g.Sum(b => b.Amount),
+                Count = g.Count(),
+                AvgAmount = g.Average(b => b.Amount)
+            })
+            .FirstOrDefaultAsync();
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalBonusAmount = allBonusesStats?.TotalAmount ?? 0;
+        ViewBag.BonusCount = allBonusesStats?.Count ?? 0;
+        ViewBag.AvgBonusAmount = allBonusesStats?.AvgAmount ?? 0;
 
         return View(bonuses);
     }

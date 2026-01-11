@@ -22,6 +22,13 @@ public class ShiftService : IShiftService
     {
         ValidateShiftTimes(shift);
         
+        // Snapshot the hourly rate at shift creation time for accurate payroll
+        var user = await _context.Users
+            .Include(u => u.Department)
+            .FirstOrDefaultAsync(u => u.Id == shift.UserId);
+        
+        shift.HourlyRateSnapshot = user?.Department?.HourlyRate ?? 0;
+        
         _context.WorkShifts.Add(shift);
         await _context.SaveChangesAsync();
         return shift;
@@ -63,18 +70,20 @@ public class ShiftService : IShiftService
     }
 
     /// <summary>
-    /// Gets work statistics grouped by department for the last 3 months.
+    /// Gets work statistics grouped by department for a specified number of months.
     /// </summary>
+    /// <param name="months">Defaults to 3.</param>
     /// <returns>Collection of department statistics ordered by total hours descending.</returns>
-    public async Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync()
+    public async Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync(int months = 3)
     {
-        var threeMonthsAgo = DateTime.Now.AddMonths(-3);
+        var startDate = DateTime.Today.AddMonths(-months);
+        var today = DateTime.Today;
         
-        // Fetch data to memory first, then perform grouping with calculations
+        // Fetch completed shifts only (not future scheduled shifts)
         var shifts = await _context.WorkShifts
             .Include(s => s.User)
                 .ThenInclude(u => u!.Department)
-            .Where(s => s.StartTime >= threeMonthsAgo)
+            .Where(s => s.StartTime >= startDate && s.StartTime <= today)
             .Where(s => s.User != null && s.User.Department != null)
             .ToListAsync();
         
@@ -91,6 +100,40 @@ public class ShiftService : IShiftService
             .ToList();
         
         return stats;
+    }
+
+    /// <summary>
+    /// Gets paginated shifts for a specific date or all shifts if date is null.
+    /// </summary>
+    public async Task<(IEnumerable<WorkShift> Shifts, int TotalCount)> GetShiftsByDatePagedAsync(DateTime? date, int page, int pageSize)
+    {
+        var query = _context.WorkShifts
+            .Include(s => s.User)
+            .AsQueryable();
+
+        if (date.HasValue)
+        {
+            var targetDate = date.Value.Date;
+            query = query.Where(s => s.StartTime.Date == targetDate);
+        }
+
+        var totalCount = await query.CountAsync();
+        
+        var shifts = await query
+            .OrderByDescending(s => s.StartTime)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (shifts, totalCount);
+    }
+
+    /// <summary>
+    /// Gets the total count of all employees in the system (active and inactive).
+    /// </summary>
+    public async Task<int> GetTotalEmployeeCountAsync()
+    {
+        return await _context.Users.CountAsync();
     }
 
     /// <summary>

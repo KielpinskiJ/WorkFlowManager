@@ -24,6 +24,8 @@ public class RequestService : IRequestService
             throw new ArgumentException("Start date must be before end date.");
         }
 
+        await ValidateNoDuplicateRequestAsync(userId, type, startDate, endDate, targetDepartmentId);
+
         var request = new LeaveRequest
         {
             UserId = userId,
@@ -41,6 +43,30 @@ public class RequestService : IRequestService
         return request;
     }
 
+    /// <summary>
+    /// Validates that no duplicate pending request exists for the user.
+    /// </summary>
+    private async Task ValidateNoDuplicateRequestAsync(string userId, RequestType type, DateTime startDate, DateTime endDate, int? targetDepartmentId)
+    {
+        var pendingRequestsQuery = _context.LeaveRequests
+            .Where(r => r.UserId == userId && r.Status == RequestStatus.Pending && r.Type == type);
+
+        bool duplicateExists = type == RequestType.Vacation
+            ? await pendingRequestsQuery
+                .AnyAsync(r => r.StartDate == startDate && r.EndDate == endDate)
+            : await pendingRequestsQuery
+                .AnyAsync(r => r.TargetDepartmentId == targetDepartmentId);
+
+        if (duplicateExists)
+        {
+            var message = type == RequestType.Vacation
+                ? "You already have a pending vacation request for the same dates. Please wait for it to be processed."
+                : "You already have a pending department change request for this department. Please wait for it to be processed.";
+
+            throw new InvalidOperationException(message);
+        }
+    }
+
     public async Task<IEnumerable<LeaveRequest>> GetPendingRequestsAsync()
     {
         return await _context.LeaveRequests
@@ -51,10 +77,50 @@ public class RequestService : IRequestService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(string userId)
+    public async Task<(IEnumerable<LeaveRequest> Requests, int TotalCount)> GetPendingRequestsPagedAsync(RequestType? requestType, int page, int pageSize)
     {
-        return await _context.LeaveRequests
-            .Where(r => r.UserId == userId)
+        var query = _context.LeaveRequests
+            .Include(r => r.User)
+            .Include(r => r.TargetDepartment)
+            .Where(r => r.Status == RequestStatus.Pending);
+
+        if (requestType.HasValue)
+        {
+            query = query.Where(r => r.Type == requestType.Value);
+        }
+
+        var totalCount = await query.CountAsync();
+        
+        var requests = await query
+            .OrderBy(r => r.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (requests, totalCount);
+    }
+
+    public async Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(
+        string userId, 
+        int? months = null, 
+        IEnumerable<RequestStatus>? excludeStatuses = null)
+    {
+        var query = _context.LeaveRequests
+            .Where(r => r.UserId == userId);
+
+        if (months.HasValue)
+        {
+            var startDate = DateTime.Today.AddMonths(-months.Value);
+            query = query.Where(r => r.CreatedAt >= startDate);
+        }
+
+        if (excludeStatuses != null && excludeStatuses.Any())
+        {
+            var excludeList = excludeStatuses.ToList();
+            query = query.Where(r => !excludeList.Contains(r.Status));
+        }
+
+        return await query
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
     }

@@ -23,11 +23,37 @@ public class UsersController : Controller
         _departmentService = departmentService;
     }
 
-    // GET: Users
-    public async Task<IActionResult> Index()
+    /// <summary>
+    /// Displays list of users with optional filtering by department and status.
+    /// </summary>
+    /// <param name="departmentId">Null shows all, 0 shows unassigned.</param>
+    /// <param name="status">"active", "inactive", or null for all.</param>
+    public async Task<IActionResult> Index(int? departmentId = null, string? status = null)
     {
-        var users = await _userManager.Users
+        var query = _userManager.Users
             .Include(u => u.Department)
+            .AsQueryable();
+
+        if (departmentId.HasValue)
+        {
+            query = departmentId.Value == 0
+                ? query.Where(u => u.DepartmentId == null)
+                : query.Where(u => u.DepartmentId == departmentId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(status))
+        {
+            if (status.Equals("active", StringComparison.OrdinalIgnoreCase))
+            {
+                query = query.Where(u => u.IsActive);
+            }
+            else if (status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+            {
+                query = query.Where(u => !u.IsActive);
+            }
+        }
+
+        var users = await query
             .OrderBy(u => u.LastName)
             .ThenBy(u => u.FirstName)
             .ToListAsync();
@@ -47,6 +73,12 @@ public class UsersController : Controller
                 Roles = roles
             });
         }
+
+        var departments = await _departmentService.GetAllAsync();
+        ViewBag.Departments = departments;
+        ViewBag.SelectedDepartmentId = departmentId;
+        ViewBag.SelectedStatus = status;
+        ViewBag.TotalCount = userViewModels.Count;
 
         return View(userViewModels);
     }

@@ -23,13 +23,27 @@ public interface IRequestService
     /// </summary>
     /// <returns>List of pending leave requests.</returns>
     Task<IEnumerable<LeaveRequest>> GetPendingRequestsAsync();
+    
+    /// <summary>
+    /// Gets paginated pending requests with optional type filtering.
+    /// </summary>
+    /// <param name="requestType">Optional filter specifying the type of requests to include; null returns all types.</param>
+    /// <param name="page">The page number to retrieve (1-based index).</param>
+    /// <param name="pageSize">The number of requests to include per page.</param>
+    /// <returns>Tuple with requests collection and total count.</returns>
+    Task<(IEnumerable<LeaveRequest> Requests, int TotalCount)> GetPendingRequestsPagedAsync(RequestType? requestType, int page, int pageSize);
 
     /// <summary>
-    /// Gets all requests for a specific user.
+    /// Gets all requests for a specific user with optional filtering.
     /// </summary>
     /// <param name="userId">The user ID.</param>
+    /// <param name="months">Number of months to include (null for all time).</param>
+    /// <param name="excludeStatuses">Statuses to exclude from results.</param>
     /// <returns>List of user's leave requests.</returns>
-    Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(string userId);
+    Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(
+        string userId, 
+        int? months = null, 
+        IEnumerable<RequestStatus>? excludeStatuses = null);
 
     /// <summary>
     /// Gets a single request by ID with user details.

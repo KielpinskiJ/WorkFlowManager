@@ -13,6 +13,7 @@ public class PayrollEntryViewModel
     public double TotalHours { get; set; }
     public decimal BasePayment { get; set; }
     public decimal BonusTotal { get; set; }
+    public decimal ScheduledBonusTotal { get; set; }
     public decimal FinalSalary { get; set; }
 }
 
@@ -31,6 +32,7 @@ public class PayrollReportViewModel
     // Summary
     public decimal TotalPayroll => Entries.Sum(e => e.FinalSalary);
     public decimal TotalBonuses => Entries.Sum(e => e.BonusTotal);
+    public decimal TotalScheduledBonuses => Entries.Sum(e => e.ScheduledBonusTotal);
     public double TotalHours => Entries.Sum(e => e.TotalHours);
     public int EmployeeCount => Entries.Count;
 }

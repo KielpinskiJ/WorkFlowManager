@@ -77,6 +77,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await DbSeeder.SeedRolesAndAdminAsync(services);
+    
+    if (app.Environment.IsDevelopment())
+    {
+        await DbSeeder.SeedDevelopmentDataAsync(services);
+    }
 }
 
 // Configure the HTTP request pipeline

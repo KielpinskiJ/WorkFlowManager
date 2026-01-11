@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "User Management";
+    var departments = (IEnumerable<WorkFlowManager.Models.Department>?)ViewBag.Departments ?? Enumerable.Empty<WorkFlowManager.Models.Department>();
+    var selectedDepartmentId = (int?)ViewBag.SelectedDepartmentId;
+    var selectedStatus = (string?)ViewBag.SelectedStatus;
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var hasFilters = selectedDepartmentId.HasValue || !string.IsNullOrEmpty(selectedStatus);
 }
 
 <div class="page-header">
@@ -16,11 +21,78 @@
     </div>
 }
 
+<div class="card-custom mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-3 align-items-end">
+            <!-- Department Filter -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1" style="color: #374151;">
+                    <i class="bi bi-building me-1" style="color: #3b82f6;"></i>Department
+                </label>
+                <select name="departmentId" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">All Departments</option>
+                    <option value="0" selected="@(selectedDepartmentId == 0)">
+                        <i class="bi bi-dash-circle"></i> Not Assigned
+                    </option>
+                    @foreach (var dept in departments)
+                    {
+                        <option value="@dept.Id" selected="@(selectedDepartmentId == dept.Id)">@dept.Name</option>
+                    }
+                </select>
+            </div>
+            
+            <div class="col-md-4">
+                <label class="form-label fw-semibold mb-1" style="color: #374151;">
+                    <i class="bi bi-toggle-on me-1" style="color: #3b82f6;"></i>Status
+                </label>
+                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="active" selected="@(selectedStatus == "active")">Active</option>
+                    <option value="inactive" selected="@(selectedStatus == "inactive")">Inactive</option>
+                </select>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="d-flex gap-2 align-items-center">
+                    @if (hasFilters)
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1"></i>Clear Filters
+                        </a>
+                    }
+                    <span class="text-muted small ms-auto">
+                        <i class="bi bi-people me-1"></i><strong>@totalCount</strong> user@(totalCount != 1 ? "s" : "")
+                        @if (hasFilters)
+                        {
+                            <span class="ms-1">(filtered)</span>
+                        }
+                    </span>
+                    <noscript>
+                        <button type="submit" class="btn btn-custom-primary btn-sm">
+                            <i class="bi bi-funnel me-1"></i>Apply
+                        </button>
+                    </noscript>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 @if (!Model.Any())
 {
     <div class="alert-custom-info">
         <i class="bi bi-info-circle-fill me-2"></i>
-        <strong>No users found.</strong>
+        @if (hasFilters)
+        {
+            <strong>No users match your filters.</strong>
+            <p class="mb-0 mt-2">
+                <a asp-action="Index">Clear filters</a> to see all users.
+            </p>
+        }
+        else
+        {
+            <strong>No users found.</strong>
+        }
     </div>
 }
 else
@@ -41,7 +113,7 @@ else
                 <tbody>
                     @foreach (var user in Model)
                     {
-                        <tr>
+                        <tr class="@(!user.IsActive ? "opacity-75" : "")">
                             <td>
                                 <strong style="color: #1e293b;">@user.FullName</strong>
                                 <span class="d-md-none d-block small" style="color: #64748b;">@user.Email</span>
