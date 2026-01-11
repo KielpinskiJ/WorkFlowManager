@@ -63,4 +63,244 @@
   <data name="Payroll" xml:space="preserve"><value>Payroll</value></data>
   <data name="PayrollDescription" xml:space="preserve"><value>Automatic payroll calculation based on hours worked and bonuses.</value></data>
 
+  <!-- Common actions -->
+  <data name="Create" xml:space="preserve"><value>Create</value></data>
+  <data name="Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Details" xml:space="preserve"><value>Details</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+  <data name="SaveChanges" xml:space="preserve"><value>Save Changes</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="BackToList" xml:space="preserve"><value>Back to List</value></data>
+  <data name="Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="Apply" xml:space="preserve"><value>Apply</value></data>
+  <data name="ClearFilters" xml:space="preserve"><value>Clear Filters</value></data>
+  <data name="ResetFilters" xml:space="preserve"><value>Reset Filters</value></data>
+  <data name="Approve" xml:space="preserve"><value>Approve</value></data>
+  <data name="Reject" xml:space="preserve"><value>Reject</value></data>
+  <data name="Submit" xml:space="preserve"><value>Submit</value></data>
+  <data name="Print" xml:space="preserve"><value>Print</value></data>
+  <data name="Go" xml:space="preserve"><value>Go</value></data>
+
+  <!-- Common labels -->
+  <data name="Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Description" xml:space="preserve"><value>Description</value></data>
+  <data name="Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Date" xml:space="preserve"><value>Date</value></data>
+  <data name="Amount" xml:space="preserve"><value>Amount</value></data>
+  <data name="Type" xml:space="preserve"><value>Type</value></data>
+  <data name="Employee" xml:space="preserve"><value>Employee</value></data>
+  <data name="Department" xml:space="preserve"><value>Department</value></data>
+  <data name="HourlyRate" xml:space="preserve"><value>Hourly Rate</value></data>
+  <data name="Duration" xml:space="preserve"><value>Duration</value></data>
+  <data name="StartDate" xml:space="preserve"><value>Start Date</value></data>
+  <data name="EndDate" xml:space="preserve"><value>End Date</value></data>
+  <data name="StartTime" xml:space="preserve"><value>Start Time</value></data>
+  <data name="EndTime" xml:space="preserve"><value>End Time</value></data>
+  <data name="Reason" xml:space="preserve"><value>Reason</value></data>
+  <data name="Comment" xml:space="preserve"><value>Comment</value></data>
+  <data name="Employees" xml:space="preserve"><value>Employees</value></data>
+
+  <!-- Status labels -->
+  <data name="Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Inactive" xml:space="preserve"><value>Inactive</value></data>
+  <data name="Pending" xml:space="preserve"><value>Pending</value></data>
+  <data name="Approved" xml:space="preserve"><value>Approved</value></data>
+  <data name="Rejected" xml:space="preserve"><value>Rejected</value></data>
+  <data name="Completed" xml:space="preserve"><value>Completed</value></data>
+  <data name="Upcoming" xml:space="preserve"><value>Upcoming</value></data>
+  <data name="Today" xml:space="preserve"><value>Today</value></data>
+  <data name="AllStatuses" xml:space="preserve"><value>All Statuses</value></data>
+
+  <!-- Time periods -->
+  <data name="TimePeriod" xml:space="preserve"><value>Time Period</value></data>
+  <data name="CurrentWeek" xml:space="preserve"><value>Current week</value></data>
+  <data name="PreviousWeek" xml:space="preserve"><value>Previous week</value></data>
+  <data name="CurrentMonth" xml:space="preserve"><value>Current month</value></data>
+  <data name="PreviousMonth" xml:space="preserve"><value>Previous month</value></data>
+  <data name="AllTime" xml:space="preserve"><value>All time</value></data>
+  <data name="LastMonth" xml:space="preserve"><value>Last month</value></data>
+  <data name="Last3Months" xml:space="preserve"><value>Last 3 months</value></data>
+  <data name="Last6Months" xml:space="preserve"><value>Last 6 months</value></data>
+  <data name="Last12Months" xml:space="preserve"><value>Last 12 months</value></data>
+  <data name="Month" xml:space="preserve"><value>Month</value></data>
+  <data name="Year" xml:space="preserve"><value>Year</value></data>
+
+  <!-- Users page -->
+  <data name="UserManagement" xml:space="preserve"><value>User Management</value></data>
+  <data name="EditUser" xml:space="preserve"><value>Edit User</value></data>
+  <data name="FirstName" xml:space="preserve"><value>First Name</value></data>
+  <data name="LastName" xml:space="preserve"><value>Last Name</value></data>
+  <data name="Roles" xml:space="preserve"><value>Roles</value></data>
+  <data name="AllDepartments" xml:space="preserve"><value>All Departments</value></data>
+  <data name="NotAssigned" xml:space="preserve"><value>Not Assigned</value></data>
+  <data name="SelectDepartment" xml:space="preserve"><value>-- Select Department --</value></data>
+  <data name="MaxCharacters" xml:space="preserve"><value>Maximum {0} characters</value></data>
+  <data name="NoUsersMatchFilters" xml:space="preserve"><value>No users match your filters.</value></data>
+  <data name="NoUsersFound" xml:space="preserve"><value>No users found.</value></data>
+  <data name="User" xml:space="preserve"><value>user</value></data>
+  <data name="UsersCount" xml:space="preserve"><value>users</value></data>
+  <data name="Filtered" xml:space="preserve"><value>(filtered)</value></data>
+
+  <!-- Departments page -->
+  <data name="CreateDepartment" xml:space="preserve"><value>Create Department</value></data>
+  <data name="EditDepartment" xml:space="preserve"><value>Edit Department</value></data>
+  <data name="DeleteDepartment" xml:space="preserve"><value>Delete Department</value></data>
+  <data name="DepartmentDetails" xml:space="preserve"><value>Department Details</value></data>
+  <data name="DepartmentName" xml:space="preserve"><value>Department Name</value></data>
+  <data name="AddDepartment" xml:space="preserve"><value>Add Department</value></data>
+  <data name="YourDepartment" xml:space="preserve"><value>Your Department</value></data>
+  <data name="YourDept" xml:space="preserve"><value>Your Dept</value></data>
+  <data name="Rate" xml:space="preserve"><value>Rate</value></data>
+  <data name="NoDepartmentsFound" xml:space="preserve"><value>No departments found.</value></data>
+  <data name="CreateFirstDepartment" xml:space="preserve"><value>Create your first department to get started.</value></data>
+  <data name="NoDescription" xml:space="preserve"><value>No description</value></data>
+  <data name="NoEmployeesAssigned" xml:space="preserve"><value>No employees assigned</value></data>
+  <data name="EmployeesCount" xml:space="preserve"><value>{0} employee(s)</value></data>
+  <data name="DeleteDepartmentWarning" xml:space="preserve"><value>Are you sure you want to delete this department? This action cannot be undone.</value></data>
+  <data name="Warning" xml:space="preserve"><value>Warning!</value></data>
+
+  <!-- Shifts page -->
+  <data name="WorkShifts" xml:space="preserve"><value>Work Shifts</value></data>
+  <data name="CreateShift" xml:space="preserve"><value>Create Shift</value></data>
+  <data name="ShiftDetails" xml:space="preserve"><value>Shift Details</value></data>
+  <data name="AddShift" xml:space="preserve"><value>Add Shift</value></data>
+  <data name="FilterByDate" xml:space="preserve"><value>Filter by Date</value></data>
+  <data name="QuickActions" xml:space="preserve"><value>Quick Actions</value></data>
+  <data name="ShowAll" xml:space="preserve"><value>Show All</value></data>
+  <data name="ShowingAllShifts" xml:space="preserve"><value>Showing All Shifts</value></data>
+  <data name="NoShiftsScheduledYet" xml:space="preserve"><value>No shifts scheduled yet. Click "Add Shift" to create one.</value></data>
+  <data name="NoShiftsForDate" xml:space="preserve"><value>No shifts scheduled for</value></data>
+  <data name="TryAnotherDateOrViewAll" xml:space="preserve"><value>Try checking another date or</value></data>
+  <data name="ViewAllShifts" xml:space="preserve"><value>view all shifts</value></data>
+  <data name="UnknownUser" xml:space="preserve"><value>Unknown User</value></data>
+  <data name="Unknown" xml:space="preserve"><value>Unknown</value></data>
+  <data name="Hours" xml:space="preserve"><value>hours</value></data>
+  <data name="Hrs" xml:space="preserve"><value>hrs</value></data>
+  <data name="TotalShifts" xml:space="preserve"><value>Total shifts</value></data>
+  <data name="ConfirmDeleteShift" xml:space="preserve"><value>Are you sure you want to delete this shift?</value></data>
+  <data name="Showing" xml:space="preserve"><value>Showing</value></data>
+  <data name="Of" xml:space="preserve"><value>of</value></data>
+  <data name="Shifts" xml:space="preserve"><value>shifts</value></data>
+  <data name="SelectEmployee" xml:space="preserve"><value>-- Select Employee --</value></data>
+  <data name="TipEndTimeAfterStart" xml:space="preserve"><value>End time must be after start time.</value></data>
+  <data name="Tip" xml:space="preserve"><value>Tip:</value></data>
+  <data name="Start" xml:space="preserve"><value>Start</value></data>
+  <data name="End" xml:space="preserve"><value>End</value></data>
+
+  <!-- My Schedule page -->
+  <data name="HideStatus" xml:space="preserve"><value>Hide Status</value></data>
+  <data name="NoShiftsMatchFilters" xml:space="preserve"><value>No shifts match your filters.</value></data>
+  <data name="ClearStatusFilters" xml:space="preserve"><value>Clear status filters</value></data>
+  <data name="ToSeeAllShifts" xml:space="preserve"><value>to see all shifts for this period.</value></data>
+  <data name="NoShiftsScheduledFor" xml:space="preserve"><value>No shifts scheduled for</value></data>
+  <data name="NoShiftsForPeriod" xml:space="preserve"><value>You don't have any work shifts assigned for this period. Contact your manager if you believe this is an error.</value></data>
+  <data name="TotalHours" xml:space="preserve"><value>Total Hours</value></data>
+  <data name="AvgShiftLength" xml:space="preserve"><value>Avg. Shift Length</value></data>
+
+  <!-- Requests page -->
+  <data name="NewRequest" xml:space="preserve"><value>New Request</value></data>
+  <data name="SubmitRequest" xml:space="preserve"><value>Submit Request</value></data>
+  <data name="RequestDetails" xml:space="preserve"><value>Request Details</value></data>
+  <data name="RequestType" xml:space="preserve"><value>Request Type</value></data>
+  <data name="Vacation" xml:space="preserve"><value>Vacation</value></data>
+  <data name="DepartmentChange" xml:space="preserve"><value>Department Change</value></data>
+  <data name="DeptChange" xml:space="preserve"><value>Dept. Change</value></data>
+  <data name="TargetDepartment" xml:space="preserve"><value>Target Department</value></data>
+  <data name="SubmittedOn" xml:space="preserve"><value>Submitted On</value></data>
+  <data name="Submitted" xml:space="preserve"><value>Submitted</value></data>
+  <data name="AdminComment" xml:space="preserve"><value>Admin Comment</value></data>
+  <data name="BackToMyRequests" xml:space="preserve"><value>Back to My Requests</value></data>
+  <data name="NoRequestsMatchFilters" xml:space="preserve"><value>No requests match your current filters.</value></data>
+  <data name="ClearFiltersToSeeAll" xml:space="preserve"><value>Clear filters to see all requests.</value></data>
+  <data name="NoRequestsYet" xml:space="preserve"><value>You haven't submitted any requests yet.</value></data>
+  <data name="Days" xml:space="preserve"><value>days</value></data>
+  <data name="SelectType" xml:space="preserve"><value>-- Select Type --</value></data>
+  <data name="VacationDescription" xml:space="preserve"><value>Request time off for holidays or personal days. Select start and end dates for your leave.</value></data>
+  <data name="DepartmentChangeDescription" xml:space="preserve"><value>Request transfer to a different department. Select the department you wish to join.</value></data>
+  <data name="RequestReviewNote" xml:space="preserve"><value>Your request will be reviewed by an administrator. You will be notified once a decision has been made.</value></data>
+  <data name="Information" xml:space="preserve"><value>Information</value></data>
+
+  <!-- Manage Requests page -->
+  <data name="FilterByType" xml:space="preserve"><value>Filter by Type</value></data>
+  <data name="AllTypes" xml:space="preserve"><value>All Types</value></data>
+  <data name="PendingRequest" xml:space="preserve"><value>pending request</value></data>
+  <data name="PendingRequests" xml:space="preserve"><value>pending requests</value></data>
+  <data name="NoPendingRequests" xml:space="preserve"><value>No pending requests to review.</value></data>
+  <data name="NoPendingVacation" xml:space="preserve"><value>No pending vacation requests.</value></data>
+  <data name="NoPendingDeptChange" xml:space="preserve"><value>No pending department change requests.</value></data>
+  <data name="ViewAllTypes" xml:space="preserve"><value>View all types</value></data>
+  <data name="Target" xml:space="preserve"><value>Target</value></data>
+  <data name="NotSpecified" xml:space="preserve"><value>Not specified</value></data>
+  <data name="ApproveVacationRequest" xml:space="preserve"><value>Approve Vacation Request</value></data>
+  <data name="ApproveDepartmentChange" xml:space="preserve"><value>Approve Department Change</value></data>
+  <data name="RejectRequest" xml:space="preserve"><value>Reject Request</value></data>
+  <data name="ApproveVacationFor" xml:space="preserve"><value>Approve vacation request for</value></data>
+  <data name="WantsToTransferTo" xml:space="preserve"><value>wants to transfer to</value></data>
+  <data name="AutoTransfer" xml:space="preserve"><value>Automatically transfer employee to</value></data>
+  <data name="AutoTransferNote" xml:space="preserve"><value>If unchecked, you will need to manually change the employee's department.</value></data>
+  <data name="CommentOptional" xml:space="preserve"><value>Comment (optional)</value></data>
+  <data name="AddNote" xml:space="preserve"><value>Add a note...</value></data>
+  <data name="ReasonForRejection" xml:space="preserve"><value>Reason for rejection...</value></data>
+  <data name="MaxCharactersNote" xml:space="preserve"><value>Maximum 500 characters</value></data>
+  <data name="ApproveRequest" xml:space="preserve"><value>Approve Request</value></data>
+  <data name="AreYouSureReject" xml:space="preserve"><value>Are you sure you want to reject this request from</value></data>
+  <data name="Requests" xml:space="preserve"><value>requests</value></data>
+
+  <!-- Payroll pages -->
+  <data name="PayrollStatement" xml:space="preserve"><value>Payroll Statement</value></data>
+  <data name="ViewPayroll" xml:space="preserve"><value>View Payroll</value></data>
+  <data name="GenerateReport" xml:space="preserve"><value>Generate Report</value></data>
+  <data name="PayrollSummary" xml:space="preserve"><value>Payroll Summary</value></data>
+  <data name="Generated" xml:space="preserve"><value>Generated</value></data>
+  <data name="NoPayrollData" xml:space="preserve"><value>No payroll data available for</value></data>
+  <data name="PayrollDataNote" xml:space="preserve"><value>Employees need assigned shifts and/or bonuses in this period.</value></data>
+  <data name="TotalEmployees" xml:space="preserve"><value>Total Employees</value></data>
+  <data name="PaidBonuses" xml:space="preserve"><value>Paid Bonuses</value></data>
+  <data name="Scheduled" xml:space="preserve"><value>Scheduled</value></data>
+  <data name="TotalPayroll" xml:space="preserve"><value>Total Payroll</value></data>
+  <data name="RatePerHour" xml:space="preserve"><value>Rate/h</value></data>
+  <data name="Base" xml:space="preserve"><value>Base</value></data>
+  <data name="Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Unassigned" xml:space="preserve"><value>Unassigned</value></data>
+  <data name="HoursWorked" xml:space="preserve"><value>Hours Worked</value></data>
+  <data name="BasePayment" xml:space="preserve"><value>Base Payment</value></data>
+  <data name="TotalSalary" xml:space="preserve"><value>Total Salary</value></data>
+  <data name="TotalFor" xml:space="preserve"><value>Total for</value></data>
+  <data name="NoShiftsOrBonuses" xml:space="preserve"><value>No shifts or bonuses recorded for this month.</value></data>
+
+  <!-- Bonuses pages -->
+  <data name="EmployeeBonuses" xml:space="preserve"><value>Employee Bonuses</value></data>
+  <data name="AddBonus" xml:space="preserve"><value>Add Bonus</value></data>
+  <data name="BonusDetails" xml:space="preserve"><value>Bonus Details</value></data>
+  <data name="DeleteBonus" xml:space="preserve"><value>Delete Bonus</value></data>
+  <data name="DateGranted" xml:space="preserve"><value>Date Granted</value></data>
+  <data name="NoBonusesYet" xml:space="preserve"><value>No bonuses have been granted yet.</value></data>
+  <data name="TotalBonuses" xml:space="preserve"><value>Total Bonuses</value></data>
+  <data name="BonusesCount" xml:space="preserve"><value>Bonuses Count</value></data>
+  <data name="AverageBonus" xml:space="preserve"><value>Average Bonus</value></data>
+  <data name="BonusDescription" xml:space="preserve"><value>Bonuses are additional payments granted to employees for exceptional performance, achievements, or other reasons.</value></data>
+  <data name="BonusNote" xml:space="preserve"><value>Bonuses will be included in the employee's payroll calculation for the month in which they were granted.</value></data>
+  <data name="Note" xml:space="preserve"><value>Note:</value></data>
+  <data name="AmountRange" xml:space="preserve"><value>Amount must be between 0.01 and 1,000,000 PLN</value></data>
+  <data name="EnterBonusReason" xml:space="preserve"><value>Enter reason for this bonus...</value></data>
+  <data name="DeleteBonusWarning" xml:space="preserve"><value>Are you sure you want to delete this bonus? This action cannot be undone.</value></data>
+
+  <!-- Statistics page -->
+  <data name="StatisticsDashboard" xml:space="preserve"><value>Statistics Dashboard</value></data>
+  <data name="WorkHoursByDepartment" xml:space="preserve"><value>Work hours by department</value></data>
+  <data name="HoursByDepartment" xml:space="preserve"><value>Hours by Department</value></data>
+  <data name="ChartTitleHoursByDept" xml:space="preserve"><value>Work Hours by Department</value></data>
+  <data name="NoDataAvailable" xml:space="preserve"><value>No data available.</value></data>
+  <data name="NoShiftsInPeriod" xml:space="preserve"><value>There are no shifts recorded in the selected period, or users don't have departments assigned.</value></data>
+  <data name="TotalHoursWorked" xml:space="preserve"><value>Total Hours Worked</value></data>
+  <data name="ActiveDepartments" xml:space="preserve"><value>Active Departments</value></data>
+  <data name="DetailedStatistics" xml:space="preserve"><value>Detailed Statistics</value></data>
+  <data name="Avg" xml:space="preserve"><value>Avg.</value></data>
+
+  <!-- Privacy page -->
+  <data name="PrivacyPolicy" xml:space="preserve"><value>Privacy Policy</value></data>
+  <data name="PrivacyContent" xml:space="preserve"><value>Use this page to detail your site's privacy policy.</value></data>
+
 </root>

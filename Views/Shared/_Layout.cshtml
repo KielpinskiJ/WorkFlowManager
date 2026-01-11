@@ -109,13 +109,15 @@
                                 </ul>
                             </li>
                         }
-                        
-                        <!-- Language Switcher -->
+                    </ul>
+                    
+                    <!-- Language Switcher (moved next to profile) -->
+                    <ul class="navbar-nav me-2">
                         <li class="nav-item dropdown">
                             <a class="nav-link nav-link-custom dropdown-toggle dropdown-toggle-custom" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-globe me-1"></i>@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToUpper()
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-custom">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
                                 <li>
                                     <a class="dropdown-item dropdown-item-custom @(System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en" ? "active" : "")" href="/SetLanguage/en">
                                         🇬🇧 English
@@ -156,7 +158,7 @@
                     <ul class="footer-nav">
                         <li><a class="footer-nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill me-1"></i>@L["Home"]</a></li>
                         <li><a class="footer-nav-link" asp-controller="Departments" asp-action="Index"><i class="bi bi-building-fill me-1"></i>@L["Departments"]</a></li>
-                        <li><a class="footer-nav-link" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check me-1"></i>Privacy</a></li>
+                        <li><a class="footer-nav-link" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check me-1"></i>@L["PrivacyPolicy"]</a></li>
                     </ul>
                 </div>
                 

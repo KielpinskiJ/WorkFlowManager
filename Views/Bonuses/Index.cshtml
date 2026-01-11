@@ -1,7 +1,8 @@
 @model IEnumerable<WorkFlowManager.Models.Bonus>
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Bonuses";
+    ViewData["Title"] = L["Bonuses"].Value;
     var currentPage = (int)(ViewBag.CurrentPage ?? 1);
     var totalPages = (int)(ViewBag.TotalPages ?? 1);
     var totalCount = (int)(ViewBag.TotalCount ?? 0);
@@ -12,9 +13,9 @@
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-gift-fill"></i>Employee Bonuses</h1>
+    <h1><i class="bi bi-gift-fill"></i>@L["EmployeeBonuses"]</h1>
     <a asp-action="Create" class="btn btn-custom-primary">
-        <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">Add </span>Bonus
+        <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">@L["AddBonus"]</span>
     </a>
 </div>
 
@@ -28,7 +29,7 @@
 @if (!Model.Any())
 {
     <div class="alert-custom-info">
-        <i class="bi bi-info-circle-fill me-2"></i>No bonuses have been granted yet.
+        <i class="bi bi-info-circle-fill me-2"></i>@L["NoBonusesYet"]
     </div>
 }
 else
@@ -38,11 +39,11 @@ else
             <table class="table table-custom mb-0">
                 <thead>
                     <tr>
-                        <th><i class="bi bi-person-fill me-1"></i>Employee</th>
-                        <th><i class="bi bi-currency-exchange me-1"></i>Amount</th>
-                        <th class="d-none d-md-table-cell"><i class="bi bi-calendar-fill me-1"></i>Date</th>
-                        <th class="d-none d-lg-table-cell"><i class="bi bi-card-text me-1"></i>Reason</th>
-                        <th class="text-end">Actions</th>
+                        <th><i class="bi bi-person-fill me-1"></i>@L["Employee"]</th>
+                        <th><i class="bi bi-currency-exchange me-1"></i>@L["Amount"]</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-calendar-fill me-1"></i>@L["Date"]</th>
+                        <th class="d-none d-lg-table-cell"><i class="bi bi-card-text me-1"></i>@L["Reason"]</th>
+                        <th class="text-end">@L["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,10 +69,10 @@ else
                                 }
                             </td>
                             <td class="text-end" style="white-space: nowrap;">
-                                <a asp-action="Details" asp-route-id="@bonus.Id" class="btn btn-custom-info btn-custom-sm" title="Details">
+                                <a asp-action="Details" asp-route-id="@bonus.Id" class="btn btn-custom-info btn-custom-sm" title="@L["Details"]">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@bonus.Id" class="btn btn-custom-danger btn-custom-sm" title="Delete">
+                                <a asp-action="Delete" asp-route-id="@bonus.Id" class="btn btn-custom-danger btn-custom-sm" title="@L["Delete"]">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
                             </td>
@@ -140,15 +141,15 @@ else
         <div class="card-body">
             <div class="row text-center">
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 style="color: #64748b;" class="mb-1">Total Bonuses</h5>
+                    <h5 style="color: #64748b;" class="mb-1">@L["TotalBonuses"]</h5>
                     <span class="fs-3 fw-bold" style="color: #22c55e;">@totalBonusAmount.ToString("N2") zł</span>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 style="color: #64748b;" class="mb-1">Bonuses Count</h5>
+                    <h5 style="color: #64748b;" class="mb-1">@L["BonusesCount"]</h5>
                     <span class="fs-3 fw-bold" style="color: #1e293b;">@bonusCount</span>
                 </div>
                 <div class="col-md-4">
-                    <h5 style="color: #64748b;" class="mb-1">Average Bonus</h5>
+                    <h5 style="color: #64748b;" class="mb-1">@L["AverageBonus"]</h5>
                     <span class="fs-3 fw-bold" style="color: #3b82f6;">@avgBonusAmount.ToString("N2") zł</span>
                 </div>
             </div>

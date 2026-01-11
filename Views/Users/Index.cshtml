@@ -1,7 +1,8 @@
 @model IEnumerable<WorkFlowManager.ViewModels.UserListViewModel>
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "User Management";
+    ViewData["Title"] = L["UserManagement"].Value;
     var departments = (IEnumerable<WorkFlowManager.Models.Department>?)ViewBag.Departments ?? Enumerable.Empty<WorkFlowManager.Models.Department>();
     var selectedDepartmentId = (int?)ViewBag.SelectedDepartmentId;
     var selectedStatus = (string?)ViewBag.SelectedStatus;
@@ -10,7 +11,7 @@
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-people-fill"></i>User Management</h1>
+    <h1><i class="bi bi-people-fill"></i>@L["UserManagement"]</h1>
 </div>
 
 @if (TempData["Success"] != null)
@@ -27,12 +28,12 @@
             <!-- Department Filter -->
             <div class="col-md-4">
                 <label class="form-label fw-semibold mb-1" style="color: #374151;">
-                    <i class="bi bi-building me-1" style="color: #3b82f6;"></i>Department
+                    <i class="bi bi-building me-1" style="color: #3b82f6;"></i>@L["Department"]
                 </label>
                 <select name="departmentId" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="">All Departments</option>
+                    <option value="">@L["AllDepartments"]</option>
                     <option value="0" selected="@(selectedDepartmentId == 0)">
-                        <i class="bi bi-dash-circle"></i> Not Assigned
+                        <i class="bi bi-dash-circle"></i> @L["NotAssigned"]
                     </option>
                     @foreach (var dept in departments)
                     {
@@ -43,12 +44,12 @@
             
             <div class="col-md-4">
                 <label class="form-label fw-semibold mb-1" style="color: #374151;">
-                    <i class="bi bi-toggle-on me-1" style="color: #3b82f6;"></i>Status
+                    <i class="bi bi-toggle-on me-1" style="color: #3b82f6;"></i>@L["Status"]
                 </label>
                 <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="">All Statuses</option>
-                    <option value="active" selected="@(selectedStatus == "active")">Active</option>
-                    <option value="inactive" selected="@(selectedStatus == "inactive")">Inactive</option>
+                    <option value="">@L["AllStatuses"]</option>
+                    <option value="active" selected="@(selectedStatus == "active")">@L["Active"]</option>
+                    <option value="inactive" selected="@(selectedStatus == "inactive")">@L["Inactive"]</option>
                 </select>
             </div>
             
@@ -57,19 +58,19 @@
                     @if (hasFilters)
                     {
                         <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1"></i>Clear Filters
+                            <i class="bi bi-x-circle me-1"></i>@L["ClearFilters"]
                         </a>
                     }
                     <span class="text-muted small ms-auto">
-                        <i class="bi bi-people me-1"></i><strong>@totalCount</strong> user@(totalCount != 1 ? "s" : "")
+                        <i class="bi bi-people me-1"></i><strong>@totalCount</strong> @(totalCount != 1 ? L["UsersCount"] : L["User"])
                         @if (hasFilters)
                         {
-                            <span class="ms-1">(filtered)</span>
+                            <span class="ms-1">@L["Filtered"]</span>
                         }
                     </span>
                     <noscript>
                         <button type="submit" class="btn btn-custom-primary btn-sm">
-                            <i class="bi bi-funnel me-1"></i>Apply
+                            <i class="bi bi-funnel me-1"></i>@L["Apply"]
                         </button>
                     </noscript>
                 </div>
@@ -84,14 +85,14 @@
         <i class="bi bi-info-circle-fill me-2"></i>
         @if (hasFilters)
         {
-            <strong>No users match your filters.</strong>
+            <strong>@L["NoUsersMatchFilters"]</strong>
             <p class="mb-0 mt-2">
-                <a asp-action="Index">Clear filters</a> to see all users.
+                <a asp-action="Index">@L["ClearFilters"]</a>
             </p>
         }
         else
         {
-            <strong>No users found.</strong>
+            <strong>@L["NoUsersFound"]</strong>
         }
     </div>
 }
@@ -102,12 +103,12 @@ else
             <table class="table table-custom mb-0">
                 <thead>
                     <tr>
-                        <th><i class="bi bi-person-fill me-1"></i>Name</th>
-                        <th class="d-none d-md-table-cell"><i class="bi bi-envelope-fill me-1"></i>Email</th>
-                        <th><i class="bi bi-building-fill me-1"></i>Department</th>
-                        <th class="d-none d-lg-table-cell"><i class="bi bi-shield-fill me-1"></i>Roles</th>
-                        <th class="d-none d-sm-table-cell"><i class="bi bi-toggle-on me-1"></i>Status</th>
-                        <th class="text-end">Actions</th>
+                        <th><i class="bi bi-person-fill me-1"></i>@L["Name"]</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-envelope-fill me-1"></i>@L["Email"]</th>
+                        <th><i class="bi bi-building-fill me-1"></i>@L["Department"]</th>
+                        <th class="d-none d-lg-table-cell"><i class="bi bi-shield-fill me-1"></i>@L["Roles"]</th>
+                        <th class="d-none d-sm-table-cell"><i class="bi bi-toggle-on me-1"></i>@L["Status"]</th>
+                        <th class="text-end">@L["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,7 +127,7 @@ else
                                 }
                                 else
                                 {
-                                    <span style="color: #94a3b8;">Not assigned</span>
+                                    <span style="color: #94a3b8;">@L["NotAssigned"]</span>
                                 }
                             </td>
                             <td class="d-none d-lg-table-cell">
@@ -145,11 +146,11 @@ else
                             <td class="d-none d-sm-table-cell">
                                 @if (user.IsActive)
                                 {
-                                    <span class="badge-custom-success">Active</span>
+                                    <span class="badge-custom-success">@L["Active"]</span>
                                 }
                                 else
                                 {
-                                    <span class="badge-custom-warning">Inactive</span>
+                                    <span class="badge-custom-warning">@L["Inactive"]</span>
                                 }
                             </td>
                             <td class="text-end" style="white-space: nowrap;">

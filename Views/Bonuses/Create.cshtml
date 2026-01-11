@@ -1,11 +1,12 @@
 @model WorkFlowManager.ViewModels.CreateBonusViewModel
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Add Bonus";
+    ViewData["Title"] = L["AddBonus"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-gift-fill"></i>Add Bonus</h1>
+    <h1><i class="bi bi-gift-fill"></i>@L["AddBonus"]</h1>
 </div>
 
 <div class="row">
@@ -14,28 +15,30 @@
             <form asp-action="Create" method="post">
                 <div class="mb-3">
                     <label asp-for="UserId" class="form-label fw-semibold" style="color: #374151;">
-                        <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>Employee
+                        <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>@L["Employee"]
                     </label>
                     <select asp-for="UserId" class="form-select" asp-items="Model.Users">
-                        <option value="">-- Select Employee --</option>
+                        <option value="">@L["SelectEmployee"]</option>
                     </select>
                     <span asp-validation-for="UserId" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Amount" class="form-label"></label>
+                    <label asp-for="Amount" class="form-label fw-semibold" style="color: #374151;">
+                        <i class="bi bi-currency-exchange me-1" style="color: #3b82f6;"></i>@L["Amount"]
+                    </label>
                     <div class="input-group">
                         <input asp-for="Amount" class="form-control" type="number" 
                             step="0.01" min="0.01" max="1000000" />
                         <span class="input-group-text">PLN</span>
                     </div>
-                    <div class="form-text">Amount must be between 0.01 and 1,000,000 PLN</div>
+                    <div class="form-text">@L["AmountRange"]</div>
                     <span asp-validation-for="Amount" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label asp-for="DateGranted" class="form-label fw-semibold" style="color: #374151;">
-                        <i class="bi bi-calendar-fill me-1" style="color: #3b82f6;"></i>Date Granted
+                        <i class="bi bi-calendar-fill me-1" style="color: #3b82f6;"></i>@L["DateGranted"]
                     </label>
                     <input asp-for="DateGranted" class="form-control" type="date" />
                     <span asp-validation-for="DateGranted" class="text-danger small"></span>
@@ -43,18 +46,18 @@
 
                 <div class="mb-4">
                     <label asp-for="Reason" class="form-label fw-semibold" style="color: #374151;">
-                        <i class="bi bi-card-text me-1" style="color: #3b82f6;"></i>Reason
+                        <i class="bi bi-card-text me-1" style="color: #3b82f6;"></i>@L["Reason"]
                     </label>
-                    <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Enter reason for this bonus..."></textarea>
+                    <textarea asp-for="Reason" class="form-control" rows="3" placeholder="@L["EnterBonusReason"]"></textarea>
                     <span asp-validation-for="Reason" class="text-danger small"></span>
                 </div>
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-custom-primary">
-                        <i class="bi bi-check-lg me-1"></i>Add Bonus
+                        <i class="bi bi-check-lg me-1"></i>@L["AddBonus"]
                     </button>
                     <a asp-action="Index" class="btn btn-custom-secondary">
-                        <i class="bi bi-x-lg me-1"></i>Cancel
+                        <i class="bi bi-x-lg me-1"></i>@L["Cancel"]
                     </a>
                 </div>
             </form>
@@ -63,18 +66,16 @@
     <div class="col-md-6 mt-4 mt-md-0">
         <div class="card-custom">
             <div class="card-header">
-                <h5 class="mb-0"><i class="bi bi-info-circle-fill me-2"></i>Information</h5>
+                <h5 class="mb-0"><i class="bi bi-info-circle-fill me-2"></i>@L["Information"]</h5>
             </div>
             <div class="card-body">
                 <p style="color: #1e293b;">
-                    Bonuses are additional payments granted to employees for exceptional performance, 
-                    achievements, or other reasons.
+                    @L["BonusDescription"]
                 </p>
             </div>
             <div class="card-footer">
                 <small style="color: #64748b;">
-                    <i class="bi bi-info-circle me-1"></i><strong>Note:</strong> Bonuses will be included in the employee's payroll calculation 
-                    for the month in which they were granted.
+                    <i class="bi bi-info-circle me-1"></i><strong>@L["Note"]</strong> @L["BonusNote"]
                 </small>
             </div>
         </div>

@@ -1,7 +1,8 @@
 @model IEnumerable<WorkFlowManager.Models.LeaveRequest>
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "My Requests";
+    ViewData["Title"] = L["MyRequests"].Value;
     var selectedMonths = (int?)ViewBag.SelectedMonths;
     var hidePending = (bool)(ViewBag.HidePending ?? false);
     var hideApproved = (bool)(ViewBag.HideApproved ?? false);
@@ -12,18 +13,18 @@
     
     var periodLabel = selectedMonths switch
     {
-        1 => "Last month",
-        3 => "Last 3 months",
-        6 => "Last 6 months",
-        12 => "Last 12 months",
-        _ => "All time"
+        1 => L["LastMonth"].Value,
+        3 => L["Last3Months"].Value,
+        6 => L["Last6Months"].Value,
+        12 => L["Last12Months"].Value,
+        _ => L["AllTime"].Value
     };
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-inbox-fill"></i>My Requests</h1>
+    <h1><i class="bi bi-inbox-fill"></i>@L["MyRequests"]</h1>
     <a asp-action="Create" class="btn btn-custom-primary">
-        <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">New </span>Request
+        <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">@L["NewRequest"]</span>
     </a>
 </div>
 
@@ -33,41 +34,41 @@
             <!-- Time Period Filter -->
             <div class="col-md-3">
                 <label class="form-label fw-semibold mb-1" style="color: #374151;">
-                    <i class="bi bi-calendar-range me-1" style="color: #3b82f6;"></i>Time Period
+                    <i class="bi bi-calendar-range me-1" style="color: #3b82f6;"></i>@L["TimePeriod"]
                 </label>
                 <select name="months" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="" selected="@(selectedMonths == null)">All time</option>
-                    <option value="1" selected="@(selectedMonths == 1)">Last month</option>
-                    <option value="3" selected="@(selectedMonths == 3)">Last 3 months</option>
-                    <option value="6" selected="@(selectedMonths == 6)">Last 6 months</option>
-                    <option value="12" selected="@(selectedMonths == 12)">Last 12 months</option>
+                    <option value="" selected="@(selectedMonths == null)">@L["AllTime"]</option>
+                    <option value="1" selected="@(selectedMonths == 1)">@L["LastMonth"]</option>
+                    <option value="3" selected="@(selectedMonths == 3)">@L["Last3Months"]</option>
+                    <option value="6" selected="@(selectedMonths == 6)">@L["Last6Months"]</option>
+                    <option value="12" selected="@(selectedMonths == 12)">@L["Last12Months"]</option>
                 </select>
             </div>
             
             <div class="col-md-6">
                 <label class="form-label fw-semibold mb-1" style="color: #374151;">
-                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>Hide Status
+                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>@L["HideStatus"]
                 </label>
                 <div class="d-flex gap-3 flex-wrap">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="hidePending" value="true" 
                                id="hidePending" checked="@hidePending" onchange="this.form.submit()">
                         <label class="form-check-label" for="hidePending" style="color: #f59e0b;">
-                            <i class="bi bi-hourglass-split me-1"></i>Pending
+                            <i class="bi bi-hourglass-split me-1"></i>@L["Pending"]
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="hideApproved" value="true" 
                                id="hideApproved" checked="@hideApproved" onchange="this.form.submit()">
                         <label class="form-check-label" for="hideApproved" style="color: #22c55e;">
-                            <i class="bi bi-check-lg me-1"></i>Approved
+                            <i class="bi bi-check-lg me-1"></i>@L["Approved"]
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="hideRejected" value="true" 
                                id="hideRejected" checked="@hideRejected" onchange="this.form.submit()">
                         <label class="form-check-label" for="hideRejected" style="color: #ef4444;">
-                            <i class="bi bi-x-lg me-1"></i>Rejected
+                            <i class="bi bi-x-lg me-1"></i>@L["Rejected"]
                         </label>
                     </div>
                 </div>
@@ -75,11 +76,11 @@
             
             <div class="col-md-3 text-md-end">
                 <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filters
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>@L["ResetFilters"]
                 </a>
                 <noscript>
                     <button type="submit" class="btn btn-custom-primary btn-sm">
-                        <i class="bi bi-funnel me-1"></i>Apply
+                        <i class="bi bi-funnel me-1"></i>@L["Apply"]
                     </button>
                 </noscript>
             </div>
@@ -100,11 +101,11 @@
         <i class="bi bi-info-circle-fill me-2"></i>
         @if (selectedMonths.HasValue || hidePending || hideApproved || hideRejected)
         {
-            <span>No requests match your current filters. <a asp-action="Index">Clear filters</a> to see all requests.</span>
+            <span>@L["NoRequestsMatchFilters"] <a asp-action="Index">@L["ClearFiltersToSeeAll"]</a></span>
         }
         else
         {
-            <span>You haven't submitted any requests yet.</span>
+            <span>@L["NoRequestsYet"]</span>
         }
     </div>
 }
@@ -115,12 +116,12 @@ else
             <table class="table table-custom mb-0">
                 <thead>
                     <tr>
-                        <th><i class="bi bi-tag-fill me-1"></i>Type</th>
-                        <th class="d-none d-md-table-cell"><i class="bi bi-calendar-fill me-1"></i>Start</th>
-                        <th class="d-none d-md-table-cell"><i class="bi bi-calendar-check-fill me-1"></i>End</th>
-                        <th><i class="bi bi-flag-fill me-1"></i>Status</th>
-                        <th class="d-none d-lg-table-cell"><i class="bi bi-clock-fill me-1"></i>Submitted</th>
-                        <th class="text-end">Actions</th>
+                        <th><i class="bi bi-tag-fill me-1"></i>@L["Type"]</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-calendar-fill me-1"></i>@L["Start"]</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-calendar-check-fill me-1"></i>@L["End"]</th>
+                        <th><i class="bi bi-flag-fill me-1"></i>@L["Status"]</th>
+                        <th class="d-none d-lg-table-cell"><i class="bi bi-clock-fill me-1"></i>@L["Submitted"]</th>
+                        <th class="text-end">@L["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,13 +132,13 @@ else
                                 @if (request.Type == WorkFlowManager.Models.RequestType.Vacation)
                                 {
                                     <span class="badge-custom-info">
-                                        <i class="bi bi-umbrella-fill me-1"></i>Vacation
+                                        <i class="bi bi-umbrella-fill me-1"></i>@L["Vacation"]
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="badge-custom">
-                                        <i class="bi bi-building me-1"></i>Dept. Change
+                                        <i class="bi bi-building me-1"></i>@L["DeptChange"]
                                     </span>
                                 }
                             </td>
@@ -148,24 +149,24 @@ else
                                 {
                                     case WorkFlowManager.Models.RequestStatus.Pending:
                                         <span class="badge-custom-warning">
-                                            <i class="bi bi-hourglass-split me-1"></i>Pending
+                                            <i class="bi bi-hourglass-split me-1"></i>@L["Pending"]
                                         </span>
                                         break;
                                     case WorkFlowManager.Models.RequestStatus.Approved:
                                         <span class="badge-custom-success">
-                                            <i class="bi bi-check-lg me-1"></i>Approved
+                                            <i class="bi bi-check-lg me-1"></i>@L["Approved"]
                                         </span>
                                         break;
                                     case WorkFlowManager.Models.RequestStatus.Rejected:
                                         <span class="badge-custom-danger">
-                                            <i class="bi bi-x-lg me-1"></i>Rejected
+                                            <i class="bi bi-x-lg me-1"></i>@L["Rejected"]
                                         </span>
                                         break;
                                 }
                             </td>
                             <td class="d-none d-lg-table-cell" style="color: #64748b;">@request.CreatedAt.ToString("dd MMM yyyy")</td>
                             <td class="text-end" style="white-space: nowrap;">
-                                <a asp-action="Details" asp-route-id="@request.Id" class="btn btn-custom-info btn-custom-sm" title="Details">
+                                <a asp-action="Details" asp-route-id="@request.Id" class="btn btn-custom-info btn-custom-sm" title="@L["Details"]">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
                             </td>
@@ -180,7 +181,7 @@ else
         <nav aria-label="Page navigation" class="mt-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <span class="text-muted small">
-                    Showing @((currentPage - 1) * 20 + 1)-@(Math.Min(currentPage * 20, totalCount)) of @totalCount requests
+                    @L["Showing"] @((currentPage - 1) * 20 + 1)-@(Math.Min(currentPage * 20, totalCount)) @L["Of"] @totalCount @L["Requests"]
                 </span>
                 <ul class="pagination pagination-sm mb-0">
                     <li class="page-item @(currentPage == 1 ? "disabled" : "")">

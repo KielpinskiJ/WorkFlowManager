@@ -1,17 +1,18 @@
 @model IEnumerable<WorkFlowManager.Models.Department>
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Departments";
+    ViewData["Title"] = L["Departments"].Value;
     var userDepartmentId = ViewBag.UserDepartmentId as int?;
     var isAdmin = ViewBag.IsAdmin as bool? ?? false;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-building-fill"></i>Departments</h1>
+    <h1><i class="bi bi-building-fill"></i>@L["Departments"]</h1>
     @if (isAdmin)
     {
         <a asp-action="Create" class="btn btn-custom-primary">
-            <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">Add </span>Department
+            <i class="bi bi-plus-lg me-1"></i><span class="d-none d-sm-inline">@L["AddDepartment"]</span>
         </a>
     }
 </div>
@@ -23,7 +24,7 @@
     {
         <div class="alert-custom-info mb-4">
             <i class="bi bi-info-circle-fill me-2"></i>
-            <strong>Your Department:</strong> @myDepartment.Name
+            <strong>@L["YourDepartment"]:</strong> @myDepartment.Name
             @if (!string.IsNullOrEmpty(myDepartment.Description))
             {
                 <span class="text-muted">— @myDepartment.Description</span>
@@ -52,10 +53,10 @@
 {
     <div class="alert-custom-info">
         <i class="bi bi-info-circle-fill me-2"></i>
-        <strong>No departments found.</strong>
+        <strong>@L["NoDepartmentsFound"]</strong>
         @if (isAdmin)
         {
-            <span>Create your first department to get started.</span>
+            <span>@L["CreateFirstDepartment"]</span>
         }
     </div>
 }
@@ -66,12 +67,12 @@ else
             <table class="table table-custom mb-0">
                 <thead>
                     <tr>
-                        <th><i class="bi bi-tag-fill me-1"></i>Name</th>
-                        <th class="d-none d-md-table-cell"><i class="bi bi-card-text me-1"></i>Description</th>
+                        <th><i class="bi bi-tag-fill me-1"></i>@L["Name"]</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-card-text me-1"></i>@L["Description"]</th>
                         @if (isAdmin)
                         {
-                            <th><i class="bi bi-currency-exchange me-1"></i>Rate</th>
-                            <th class="text-end">Actions</th>
+                            <th><i class="bi bi-currency-exchange me-1"></i>@L["Rate"]</th>
+                            <th class="text-end">@L["Actions"]</th>
                         }
                     </tr>
                 </thead>
@@ -84,8 +85,8 @@ else
                                 <strong>@item.Name</strong>
                                 @if (isMyDepartment)
                                 {
-                                    <span class="badge-custom ms-2 d-none d-sm-inline-block">Your Dept</span>
-                                    <span class="badge-custom d-sm-none d-block mt-1" style="font-size: 0.7em;">Your Dept</span>
+                                    <span class="badge-custom ms-2 d-none d-sm-inline-block">@L["YourDept"]</span>
+                                    <span class="badge-custom d-sm-none d-block mt-1" style="font-size: 0.7em;">@L["YourDept"]</span>
                                 }
                             </td>
                             <td class="d-none d-md-table-cell text-secondary">
@@ -97,13 +98,13 @@ else
                                     <span class="badge-custom-success">@item.HourlyRate.ToString("N2") zł</span>
                                 </td>
                                 <td class="text-end" style="white-space: nowrap;">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-custom-info btn-custom-sm" title="Details">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-custom-info btn-custom-sm" title="@L["Details"]">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-custom-warning btn-custom-sm" title="Edit">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-custom-warning btn-custom-sm" title="@L["Edit"]">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-custom-danger btn-custom-sm" title="Delete">
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-custom-danger btn-custom-sm" title="@L["Delete"]">
                                         <i class="bi bi-trash-fill"></i>
                                     </a>
                                 </td>

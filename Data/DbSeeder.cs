@@ -3,33 +3,74 @@ using Microsoft.EntityFrameworkCore;
 using WorkFlowManager.Models;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace WorkFlowManager.Data;
 
 public static class DbSeeder
 {
+    private const string DefaultAdminPassword = "Admin123!";
+    
     public const string AdminEmail = "admin@wsb.pl";
     private static readonly string AdminPassword = GetAdminPassword();
 
     private static string GetAdminPassword()
     {
-        var password = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
-        if (!string.IsNullOrEmpty(password))
+        // Try to load from .env file first
+        var envPassword = LoadPasswordFromEnvFile();
+        if (!string.IsNullOrEmpty(envPassword))
         {
-            return password;
+            return envPassword;
         }
 
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (string.Equals(environment, "Development", StringComparison.OrdinalIgnoreCase))
+        // Fallback to hardcoded default password
+        Debug.WriteLine(
+            "Info: No .env file found or ADMIN_PASSWORD not set. Using default admin password.");
+        return DefaultAdminPassword;
+    }
+
+    private static string? LoadPasswordFromEnvFile()
+    {
+        var envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+        
+        if (!File.Exists(envFilePath))
         {
-            const string defaultDevPassword = "Admin123!";
-            Debug.WriteLine(
-                "Warning: ADMIN_PASSWORD environment variable is not set. Using a default development admin password.");
-            return defaultDevPassword;
+            return null;
         }
 
-        throw new InvalidOperationException(
-            "Admin password is not configured. Set the ADMIN_PASSWORD environment variable.");
+        try
+        {
+            var lines = File.ReadAllLines(envFilePath);
+            foreach (var line in lines)
+            {
+                // Skip empty lines and comments
+                var trimmedLine = line.Trim();
+                if (string.IsNullOrEmpty(trimmedLine) || trimmedLine.StartsWith('#'))
+                {
+                    continue;
+                }
+
+                var separatorIndex = trimmedLine.IndexOf('=');
+                if (separatorIndex <= 0)
+                {
+                    continue;
+                }
+
+                var key = trimmedLine.Substring(0, separatorIndex).Trim();
+                var value = trimmedLine.Substring(separatorIndex + 1).Trim();
+
+                if (key == "ADMIN_PASSWORD" && !string.IsNullOrEmpty(value))
+                {
+                    return value;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Warning: Failed to read .env file: {ex.Message}");
+        }
+
+        return null;
     }
     
     public const string RoleAdmin = "Admin";
@@ -48,6 +89,12 @@ public static class DbSeeder
         await AssignEmployeeRoleToUsersWithoutRole(userManager);
     }
 
+    // ============================================================================
+    // DEVELOPMENT DATA SEEDING - REMOVE IN PRODUCTION!
+    // This method generates fake employees, shifts, bonuses, and leave requests
+    // for testing purposes only. Delete or comment out this entire section
+    // and its helper methods before deploying to production.
+    // ============================================================================
     public static async Task SeedDevelopmentDataAsync(IServiceProvider serviceProvider)
     {
         var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
@@ -78,6 +125,9 @@ public static class DbSeeder
 
         await context.SaveChangesAsync();
     }
+    // ============================================================================
+    // HELPER METHODS FOR DEVELOPMENT DATA - REMOVE IN PRODUCTION!
+    // ============================================================================
 
     private static List<Department> CreateDepartments()
     {
@@ -398,6 +448,10 @@ public static class DbSeeder
         };
         return reasons[random.Next(reasons.Length)];
     }
+
+    // ============================================================================
+    // END OF DEVELOPMENT HELPER METHODS
+    // ============================================================================
 
     private static async Task AssignEmployeeRoleToUsersWithoutRole(UserManager<ApplicationUser> userManager)
     {

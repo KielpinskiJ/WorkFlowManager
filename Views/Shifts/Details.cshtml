@@ -1,11 +1,12 @@
 @model WorkFlowManager.Models.WorkShift
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Shift Details";
+    ViewData["Title"] = L["ShiftDetails"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-calendar-event-fill"></i>Shift Details</h1>
+    <h1><i class="bi bi-calendar-event-fill"></i>@L["ShiftDetails"]</h1>
 </div>
 
 <div class="row">
@@ -17,7 +18,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-person-fill me-1"></i>Employee
+                        <i class="bi bi-person-fill me-1"></i>@L["Employee"]
                     </label>
                     <p class="mb-0">
                         @if (Model.User != null)
@@ -27,7 +28,7 @@
                         }
                         else
                         {
-                            <span style="color: #94a3b8;">Unknown</span>
+                            <span style="color: #94a3b8;">@L["Unknown"]</span>
                         }
                     </p>
                 </div>
@@ -35,7 +36,7 @@
                 <div class="row mb-3">
                     <div class="col-6">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-clock me-1"></i>Start Time
+                            <i class="bi bi-clock me-1"></i>@L["StartTime"]
                         </label>
                         <p class="mb-0">
                             <span class="badge-custom-success" style="font-size: 1.1rem;">@Model.StartTime.ToString("HH:mm")</span>
@@ -43,7 +44,7 @@
                     </div>
                     <div class="col-6">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-clock-fill me-1"></i>End Time
+                            <i class="bi bi-clock-fill me-1"></i>@L["EndTime"]
                         </label>
                         <p class="mb-0">
                             <span class="badge-custom-danger" style="font-size: 1.1rem;">@Model.EndTime.ToString("HH:mm")</span>
@@ -53,22 +54,22 @@
                 
                 <div>
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-hourglass-split me-1"></i>Duration
+                        <i class="bi bi-hourglass-split me-1"></i>@L["Duration"]
                     </label>
                     <p class="mb-0">
-                        <span class="badge-custom-info" style="font-size: 1.1rem;">@Model.DurationHours.ToString("F1") hours</span>
+                        <span class="badge-custom-info" style="font-size: 1.1rem;">@Model.DurationHours.ToString("F1") @L["Hours"]</span>
                     </p>
                 </div>
             </div>
             <div class="card-footer d-flex gap-2">
                 <a asp-action="Index" class="btn btn-custom-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Back to List
+                    <i class="bi bi-arrow-left me-1"></i>@L["BackToList"]
                 </a>
                 <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline"
-                      onsubmit="return confirm('Are you sure you want to delete this shift?');">
+                      onsubmit="return confirm('@L["ConfirmDeleteShift"]');">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn btn-custom-danger">
-                        <i class="bi bi-trash-fill me-1"></i>Delete
+                        <i class="bi bi-trash-fill me-1"></i>@L["Delete"]
                     </button>
                 </form>
             </div>
