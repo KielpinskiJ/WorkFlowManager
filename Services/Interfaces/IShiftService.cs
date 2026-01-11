@@ -46,9 +46,25 @@ public interface IShiftService
     Task<bool> DeleteAsync(int id);
     
     /// <summary>
-    /// Gets statistics grouped by department for the last 3 months.
+    /// Gets statistics grouped by department for a specified number of months.
     /// </summary>
+    /// <param name="months">Number of months to include (1, 3, 6, or 12). Defaults to 3.</param>
     /// <returns>Collection of department statistics with total hours worked.</returns>
-    Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync();
+    Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync(int months = 3);
+    
+    /// <summary>
+    /// Gets paginated shifts for a specific date or all shifts if date is null.
+    /// </summary>
+    /// <param name="date">Optional date to filter shifts. Null returns all shifts.</param>
+    /// <param name="page">Page number (1-based).</param>
+    /// <param name="pageSize">Number of items per page.</param>
+    /// <returns>Tuple with shifts collection and total count.</returns>
+    Task<(IEnumerable<WorkShift> Shifts, int TotalCount)> GetShiftsByDatePagedAsync(DateTime? date, int page, int pageSize);
+    
+    /// <summary>
+    /// Gets the total count of all employees in the system (active and inactive).
+    /// </summary>
+    /// <returns>Total number of employees.</returns>
+    Task<int> GetTotalEmployeeCountAsync();
 }
 
