@@ -36,14 +36,9 @@ public class UsersController : Controller
 
         if (departmentId.HasValue)
         {
-            if (departmentId.Value == 0)
-            {
-                query = query.Where(u => u.DepartmentId == null);
-            }
-            else
-            {
-                query = query.Where(u => u.DepartmentId == departmentId.Value);
-            }
+            query = departmentId.Value == 0
+                ? query.Where(u => u.DepartmentId == null)
+                : query.Where(u => u.DepartmentId == departmentId.Value);
         }
 
         if (!string.IsNullOrEmpty(status))
