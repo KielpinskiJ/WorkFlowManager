@@ -120,11 +120,23 @@ public class ShiftsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    private const int ShiftsPageSize = 32;
+
     /// <summary>
-    /// Displays the current user's schedule for the current week.
+    /// Displays the current user's schedule with optional filtering.
     /// Available for all authenticated users.
     /// </summary>
-    public async Task<IActionResult> MySchedule()
+    /// <param name="period">Time periods: currentWeek, previousWeek, currentMonth, previousMonth</param>
+    /// <param name="hideCompleted"></param>
+    /// <param name="hideToday"></param>
+    /// <param name="hideUpcoming"></param>
+    /// <param name="page"></param>
+    public async Task<IActionResult> MySchedule(
+        string period = "currentWeek",
+        bool hideCompleted = false,
+        bool hideToday = false,
+        bool hideUpcoming = false,
+        int page = 1)
     {
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
@@ -132,19 +144,82 @@ public class ShiftsController : Controller
             return NotFound("User not found.");
         }
 
-        // Get current week boundaries (Monday to Sunday)
-        var today = DateTime.Today;
-        var daysUntilMonday = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
-        var weekStart = today.AddDays(-daysUntilMonday);
-        var weekEnd = weekStart.AddDays(7).AddMilliseconds(-1); // End of Sunday
+        if (page < 1) page = 1;
 
-        var shifts = await _shiftService.GetShiftsForUserAsync(user.Id, weekStart, weekEnd);
-        
-        ViewBag.WeekStart = weekStart;
-        ViewBag.WeekEnd = weekEnd;
+        // Calculate date range based on selected period
+        var today = DateTime.Today;
+        var now = DateTime.Now;
+        DateTime periodStart, periodEnd;
+
+        switch (period)
+        {
+            case "previousWeek":
+                var daysUntilMondayPrev = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+                var thisWeekStart = today.AddDays(-daysUntilMondayPrev);
+                periodStart = thisWeekStart.AddDays(-7);
+                periodEnd = thisWeekStart.AddMilliseconds(-1);
+                break;
+            case "currentMonth":
+                periodStart = new DateTime(today.Year, today.Month, 1);
+                periodEnd = periodStart.AddMonths(1).AddMilliseconds(-1);
+                break;
+            case "previousMonth":
+                var firstOfCurrentMonth = new DateTime(today.Year, today.Month, 1);
+                periodStart = firstOfCurrentMonth.AddMonths(-1);
+                periodEnd = firstOfCurrentMonth.AddMilliseconds(-1);
+                break;
+            case "currentWeek":
+            default:
+                var daysUntilMonday = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+                periodStart = today.AddDays(-daysUntilMonday);
+                periodEnd = periodStart.AddDays(7).AddMilliseconds(-1);
+                period = "currentWeek";
+                break;
+        }
+
+        var allShifts = await _shiftService.GetShiftsForUserAsync(user.Id, periodStart, periodEnd);
+
+        var filteredShifts = allShifts.Where(s =>
+        {
+            var isCompleted = s.EndTime < now;
+            var isToday = s.StartTime.Date == today;
+            var isUpcoming = s.StartTime.Date > today;
+
+            if (hideCompleted && isCompleted && !isToday) return false;
+            if (hideToday && isToday) return false;
+            if (hideUpcoming && isUpcoming) return false;
+
+            return true;
+        }).ToList();
+
+        // Calculate totals for entire period
+        var totalCount = filteredShifts.Count;
+        var totalHours = filteredShifts.Sum(s => s.DurationHours);
+        var avgShiftLength = totalCount > 0 ? totalHours / totalCount : 0;
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)ShiftsPageSize);
+        if (page > totalPages && totalPages > 0) page = totalPages;
+
+        var pagedShifts = filteredShifts
+            .OrderBy(s => s.StartTime)
+            .Skip((page - 1) * ShiftsPageSize)
+            .Take(ShiftsPageSize)
+            .ToList();
+
+        ViewBag.PeriodStart = periodStart;
+        ViewBag.PeriodEnd = periodEnd;
         ViewBag.UserName = $"{user.FirstName} {user.LastName}";
+        ViewBag.SelectedPeriod = period;
+        ViewBag.HideCompleted = hideCompleted;
+        ViewBag.HideToday = hideToday;
+        ViewBag.HideUpcoming = hideUpcoming;
+        ViewBag.TotalHours = totalHours;
+        ViewBag.AvgShiftLength = avgShiftLength;
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
         
-        return View(shifts);
+        return View(pagedShifts);
     }
 
     /// <summary>

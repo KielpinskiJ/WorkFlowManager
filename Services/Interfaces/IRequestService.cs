@@ -25,11 +25,16 @@ public interface IRequestService
     Task<IEnumerable<LeaveRequest>> GetPendingRequestsAsync();
 
     /// <summary>
-    /// Gets all requests for a specific user.
+    /// Gets all requests for a specific user with optional filtering.
     /// </summary>
     /// <param name="userId">The user ID.</param>
+    /// <param name="months">Number of months to include (null for all time).</param>
+    /// <param name="excludeStatuses">Statuses to exclude from results.</param>
     /// <returns>List of user's leave requests.</returns>
-    Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(string userId);
+    Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(
+        string userId, 
+        int? months = null, 
+        IEnumerable<RequestStatus>? excludeStatuses = null);
 
     /// <summary>
     /// Gets a single request by ID with user details.

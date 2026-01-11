@@ -21,9 +21,16 @@ public class StatsController : Controller
     /// <summary>
     /// Displays the statistics dashboard with Chart.js visualization.
     /// </summary>
-    public async Task<IActionResult> Index()
+    /// <param name="months">Defaults to 3.</param>
+    public async Task<IActionResult> Index(int months = 3)
     {
-        var stats = await _shiftService.GetMonthlyStatsAsync();
+        var validMonths = new[] { 1, 3, 6, 12 };
+        if (!validMonths.Contains(months))
+        {
+            months = 3;
+        }
+
+        var stats = await _shiftService.GetMonthlyStatsAsync(months);
         
         // Serialize data for Chart.js
         var labels = stats.Select(s => s.DepartmentName).ToList();
@@ -33,6 +40,7 @@ public class StatsController : Controller
         ViewBag.ChartLabels = JsonSerializer.Serialize(labels);
         ViewBag.ChartHours = JsonSerializer.Serialize(hours);
         ViewBag.ChartCounts = JsonSerializer.Serialize(counts);
+        ViewBag.SelectedMonths = months;
         
         return View(stats);
     }

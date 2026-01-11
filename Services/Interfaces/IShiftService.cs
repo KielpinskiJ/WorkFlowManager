@@ -46,9 +46,10 @@ public interface IShiftService
     Task<bool> DeleteAsync(int id);
     
     /// <summary>
-    /// Gets statistics grouped by department for the last 3 months.
+    /// Gets statistics grouped by department for a specified number of months.
     /// </summary>
+    /// <param name="months">Number of months to include (1, 3, 6, or 12). Defaults to 3.</param>
     /// <returns>Collection of department statistics with total hours worked.</returns>
-    Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync();
+    Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync(int months = 3);
 }
 

@@ -84,10 +84,27 @@ public class RequestService : IRequestService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(string userId)
+    public async Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(
+        string userId, 
+        int? months = null, 
+        IEnumerable<RequestStatus>? excludeStatuses = null)
     {
-        return await _context.LeaveRequests
-            .Where(r => r.UserId == userId)
+        var query = _context.LeaveRequests
+            .Where(r => r.UserId == userId);
+
+        if (months.HasValue)
+        {
+            var startDate = DateTime.Today.AddMonths(-months.Value);
+            query = query.Where(r => r.CreatedAt >= startDate);
+        }
+
+        if (excludeStatuses != null && excludeStatuses.Any())
+        {
+            var excludeList = excludeStatuses.ToList();
+            query = query.Where(r => !excludeList.Contains(r.Status));
+        }
+
+        return await query
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
     }

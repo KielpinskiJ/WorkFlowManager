@@ -30,8 +30,15 @@ public class RequestsController : Controller
         _userManager = userManager;
     }
 
-    // GET: Requests - Show current user's requests
-    public async Task<IActionResult> Index()
+    private const int RequestsPageSize = 20;
+
+    // GET: Requests - Show current user's requests with optional filtering
+    public async Task<IActionResult> Index(
+        int? months = null, 
+        bool hidePending = false, 
+        bool hideApproved = false, 
+        bool hideRejected = false,
+        int page = 1)
     {
         var userId = _userManager.GetUserId(User);
         if (string.IsNullOrEmpty(userId))
@@ -39,8 +46,43 @@ public class RequestsController : Controller
             return Unauthorized();
         }
 
-        var requests = await _requestService.GetUserRequestsAsync(userId);
-        return View(requests);
+        var validMonths = new int?[] { null, 1, 3, 6, 12 };
+        if (!validMonths.Contains(months))
+        {
+            months = null;
+        }
+
+        if (page < 1) page = 1;
+
+        var excludeStatuses = new List<RequestStatus>();
+        if (hidePending) excludeStatuses.Add(RequestStatus.Pending);
+        if (hideApproved) excludeStatuses.Add(RequestStatus.Approved);
+        if (hideRejected) excludeStatuses.Add(RequestStatus.Rejected);
+
+        var allRequests = await _requestService.GetUserRequestsAsync(
+            userId, 
+            months, 
+            excludeStatuses.Any() ? excludeStatuses : null);
+
+        // Pagination
+        var totalCount = allRequests.Count();
+        var totalPages = (int)Math.Ceiling(totalCount / (double)RequestsPageSize);
+        if (page > totalPages && totalPages > 0) page = totalPages;
+
+        var pagedRequests = allRequests
+            .Skip((page - 1) * RequestsPageSize)
+            .Take(RequestsPageSize)
+            .ToList();
+
+        ViewBag.SelectedMonths = months;
+        ViewBag.HidePending = hidePending;
+        ViewBag.HideApproved = hideApproved;
+        ViewBag.HideRejected = hideRejected;
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
+
+        return View(pagedRequests);
     }
 
     // GET: Requests/Create

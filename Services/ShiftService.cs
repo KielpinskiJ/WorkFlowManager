@@ -70,18 +70,20 @@ public class ShiftService : IShiftService
     }
 
     /// <summary>
-    /// Gets work statistics grouped by department for the last 3 months.
+    /// Gets work statistics grouped by department for a specified number of months.
     /// </summary>
+    /// <param name="months">Defaults to 3.</param>
     /// <returns>Collection of department statistics ordered by total hours descending.</returns>
-    public async Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync()
+    public async Task<IEnumerable<DepartmentStatsDto>> GetMonthlyStatsAsync(int months = 3)
     {
-        var threeMonthsAgo = DateTime.Now.AddMonths(-3);
+        var startDate = DateTime.Today.AddMonths(-months);
+        var today = DateTime.Today;
         
-        // Fetch data to memory first, then perform grouping with calculations
+        // Fetch completed shifts only (not future scheduled shifts)
         var shifts = await _context.WorkShifts
             .Include(s => s.User)
                 .ThenInclude(u => u!.Department)
-            .Where(s => s.StartTime >= threeMonthsAgo)
+            .Where(s => s.StartTime >= startDate && s.StartTime <= today)
             .Where(s => s.User != null && s.User.Department != null)
             .ToListAsync();
         

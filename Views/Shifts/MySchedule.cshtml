@@ -2,9 +2,26 @@
 
 @{
     ViewData["Title"] = "My Schedule";
-    var weekStart = (DateTime)ViewBag.WeekStart;
-    var weekEnd = (DateTime)ViewBag.WeekEnd;
+    var periodStart = (DateTime)ViewBag.PeriodStart;
+    var periodEnd = (DateTime)ViewBag.PeriodEnd;
     var userName = (string)ViewBag.UserName;
+    var selectedPeriod = (string)(ViewBag.SelectedPeriod ?? "currentWeek");
+    var hideCompleted = (bool)(ViewBag.HideCompleted ?? false);
+    var hideToday = (bool)(ViewBag.HideToday ?? false);
+    var hideUpcoming = (bool)(ViewBag.HideUpcoming ?? false);
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var totalHours = (double)(ViewBag.TotalHours ?? 0.0);
+    var avgShiftLength = (double)(ViewBag.AvgShiftLength ?? 0.0);
+    
+    var periodLabel = selectedPeriod switch
+    {
+        "previousWeek" => "Previous week",
+        "currentMonth" => "Current month",
+        "previousMonth" => "Previous month",
+        _ => "Current week"
+    };
 }
 
 <div class="page-header">
@@ -12,27 +29,94 @@
         <h1><i class="bi bi-calendar-check-fill"></i>My Schedule</h1>
         <p class="mb-0" style="color: #64748b;">
             <i class="bi bi-person-circle me-1"></i>@userName
+            <span class="ms-2">|</span>
+            <span class="ms-2">@periodStart.ToString("dd MMM") - @periodEnd.ToString("dd MMM yyyy")</span>
         </p>
     </div>
-    <span class="badge-custom-info" style="font-size: 1rem;">
-        <i class="bi bi-calendar-range me-1"></i>
-        @weekStart.ToString("dd MMM") - @weekEnd.ToString("dd MMM yyyy")
-    </span>
+</div>
+
+<div class="card-custom mb-4">
+    <div class="card-body py-3">
+        <form method="get" class="row g-3 align-items-center">
+            <!-- Time Period Filter -->
+            <div class="col-md-3">
+                <label class="form-label fw-semibold mb-1" style="color: #374151;">
+                    <i class="bi bi-calendar-range me-1" style="color: #3b82f6;"></i>Time Period
+                </label>
+                <select name="period" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="currentWeek" selected="@(selectedPeriod == "currentWeek")">Current week</option>
+                    <option value="previousWeek" selected="@(selectedPeriod == "previousWeek")">Previous week</option>
+                    <option value="currentMonth" selected="@(selectedPeriod == "currentMonth")">Current month</option>
+                    <option value="previousMonth" selected="@(selectedPeriod == "previousMonth")">Previous month</option>
+                </select>
+            </div>
+            
+            <div class="col-md-6">
+                <label class="form-label fw-semibold mb-1" style="color: #374151;">
+                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>Hide Status
+                </label>
+                <div class="d-flex gap-3 flex-wrap">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="hideCompleted" value="true" 
+                               id="hideCompleted" checked="@hideCompleted" onchange="this.form.submit()">
+                        <label class="form-check-label" for="hideCompleted" style="color: #64748b;">
+                            <i class="bi bi-check-circle me-1"></i>Completed
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="hideToday" value="true" 
+                               id="hideToday" checked="@hideToday" onchange="this.form.submit()">
+                        <label class="form-check-label" for="hideToday" style="color: #f59e0b;">
+                            <i class="bi bi-calendar-day me-1"></i>Today
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="hideUpcoming" value="true" 
+                               id="hideUpcoming" checked="@hideUpcoming" onchange="this.form.submit()">
+                        <label class="form-check-label" for="hideUpcoming" style="color: #22c55e;">
+                            <i class="bi bi-calendar-plus me-1"></i>Upcoming
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 text-md-end">
+                <a asp-action="MySchedule" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filters
+                </a>
+                <noscript>
+                    <button type="submit" class="btn btn-custom-primary btn-sm">
+                        <i class="bi bi-funnel me-1"></i>Apply
+                    </button>
+                </noscript>
+            </div>
+        </form>
+    </div>
 </div>
 
 @if (!Model.Any())
 {
     <div class="alert-custom-info">
         <i class="bi bi-info-circle-fill me-2"></i>
-        <strong>No shifts scheduled this week.</strong>
-        <p class="mb-0 mt-2">You don't have any work shifts assigned for the current week. 
-        Contact your manager if you believe this is an error.</p>
+        @if (hideCompleted || hideToday || hideUpcoming)
+        {
+            <strong>No shifts match your filters.</strong>
+            <p class="mb-0 mt-2">
+                <a asp-action="MySchedule" asp-route-period="@selectedPeriod">Clear status filters</a> to see all shifts for this period.
+            </p>
+        }
+        else
+        {
+            <strong>No shifts scheduled for @periodLabel.ToLower().</strong>
+            <p class="mb-0 mt-2">You don't have any work shifts assigned for this period. 
+            Contact your manager if you believe this is an error.</p>
+        }
     </div>
 }
 else
 {
     <div class="row">
-        @foreach (var shift in Model.OrderBy(s => s.StartTime))
+        @foreach (var shift in Model)
         {
             var isToday = shift.StartTime.Date == DateTime.Today;
             var isPast = shift.EndTime < DateTime.Now;
@@ -93,6 +177,49 @@ else
             </div>
         }
     </div>
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Page navigation" class="my-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="text-muted small">
+                    Showing @((currentPage - 1) * 32 + 1)-@(Math.Min(currentPage * 32, totalCount)) of @totalCount shifts
+                </span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="MySchedule" 
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-period="@selectedPeriod"
+                           asp-route-hideCompleted="@(hideCompleted ? "true" : null)"
+                           asp-route-hideToday="@(hideToday ? "true" : null)"
+                           asp-route-hideUpcoming="@(hideUpcoming ? "true" : null)">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="MySchedule" 
+                               asp-route-page="@i"
+                               asp-route-period="@selectedPeriod"
+                               asp-route-hideCompleted="@(hideCompleted ? "true" : null)"
+                               asp-route-hideToday="@(hideToday ? "true" : null)"
+                               asp-route-hideUpcoming="@(hideUpcoming ? "true" : null)">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="MySchedule" 
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-period="@selectedPeriod"
+                           asp-route-hideCompleted="@(hideCompleted ? "true" : null)"
+                           asp-route-hideToday="@(hideToday ? "true" : null)"
+                           asp-route-hideUpcoming="@(hideUpcoming ? "true" : null)">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    }
     
     <hr class="my-4" style="border-color: #e2e8f0;" />
     
@@ -101,15 +228,15 @@ else
             <div class="row text-center">
                 <div class="col-md-4 mb-3 mb-md-0">
                     <h5 style="color: #64748b;" class="mb-1">Total Shifts</h5>
-                    <span class="fs-3 fw-bold" style="color: #3b82f6;">@Model.Count()</span>
+                    <span class="fs-3 fw-bold" style="color: #3b82f6;">@totalCount</span>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
                     <h5 style="color: #64748b;" class="mb-1">Total Hours</h5>
-                    <span class="fs-3 fw-bold" style="color: #22c55e;">@Model.Sum(s => s.DurationHours).ToString("F1")</span>
+                    <span class="fs-3 fw-bold" style="color: #22c55e;">@totalHours.ToString("F1")</span>
                 </div>
                 <div class="col-md-4">
                     <h5 style="color: #64748b;" class="mb-1">Avg. Shift Length</h5>
-                    <span class="fs-3 fw-bold" style="color: #0ea5e9;">@Model.Average(s => s.DurationHours).ToString("F1") hrs</span>
+                    <span class="fs-3 fw-bold" style="color: #0ea5e9;">@avgShiftLength.ToString("F1") hrs</span>
                 </div>
             </div>
         </div>
