@@ -23,6 +23,15 @@ public interface IRequestService
     /// </summary>
     /// <returns>List of pending leave requests.</returns>
     Task<IEnumerable<LeaveRequest>> GetPendingRequestsAsync();
+    
+    /// <summary>
+    /// Gets paginated pending requests with optional type filtering.
+    /// </summary>
+    /// <param name="requestType"></param>
+    /// <param name="page"></param>
+    /// <param name="pageSize"></param>
+    /// <returns>Tuple with requests collection and total count.</returns>
+    Task<(IEnumerable<LeaveRequest> Requests, int TotalCount)> GetPendingRequestsPagedAsync(RequestType? requestType, int page, int pageSize);
 
     /// <summary>
     /// Gets all requests for a specific user with optional filtering.

@@ -2,6 +2,16 @@
 
 @{
     ViewData["Title"] = "Work Shifts";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var showAll = (bool)(ViewBag.ShowAll ?? false);
+    var selectedDate = (DateTime)(ViewBag.SelectedDate ?? DateTime.Today);
+    var previousDate = (string)(ViewBag.PreviousDate ?? "");
+    var nextDate = (string)(ViewBag.NextDate ?? "");
+    var todayDate = (string)(ViewBag.TodayDate ?? "");
+    var isToday = selectedDate.Date == DateTime.Today;
 }
 
 <div class="page-header">
@@ -25,10 +35,100 @@
     </div>
 }
 
+<div class="card-custom mb-4">
+    <div class="card-body py-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-6">
+                <label class="form-label fw-semibold mb-2" style="color: #374151;">
+                    <i class="bi bi-calendar-range me-1" style="color: #3b82f6;"></i>Filter by Date
+                </label>
+                <div class="d-flex gap-2 flex-wrap align-items-center">
+                    @if (!showAll)
+                    {
+                        <a asp-action="Index" asp-route-selectedDate="@previousDate" 
+                           class="btn btn-outline-secondary" title="Previous day (@previousDate)">
+                            <i class="bi bi-chevron-left me-1"></i>@DateTime.Parse(previousDate).ToString("dd MMM")
+                        </a>
+                        
+                        <div class="d-flex align-items-center px-3 py-2 rounded @(isToday ? "bg-primary text-white" : "")" 
+                             style="@(isToday ? "" : "background-color: #f1f5f9; color: #1e293b;")">
+                            <i class="bi bi-calendar-day me-2"></i>
+                            <strong>@selectedDate.ToString("dddd, dd MMMM yyyy")</strong>
+                            @if (isToday)
+                            {
+                                <span class="badge bg-warning text-dark ms-2">Today</span>
+                            }
+                        </div>
+                        
+                        <a asp-action="Index" asp-route-selectedDate="@nextDate" 
+                           class="btn btn-outline-secondary" title="Next day (@nextDate)">
+                            @DateTime.Parse(nextDate).ToString("dd MMM")<i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center px-3 py-2 rounded" style="background-color: #e0f2fe; color: #0369a1;">
+                            <i class="bi bi-calendar-range me-2"></i>
+                            <strong>Showing All Shifts</strong>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <label class="form-label fw-semibold mb-2" style="color: #374151;">
+                    <i class="bi bi-sliders me-1" style="color: #3b82f6;"></i>Quick Actions
+                </label>
+                <div class="d-flex gap-2 flex-wrap">
+                    <form method="get" class="d-inline-flex gap-2">
+                        <input type="date" name="selectedDate" class="form-control form-control-sm" 
+                               value="@selectedDate.ToString("yyyy-MM-dd")" 
+                               style="width: auto; min-width: 150px;">
+                        <button type="submit" class="btn btn-custom-primary btn-sm">
+                            <i class="bi bi-search me-1"></i>Go
+                        </button>
+                    </form>
+                    
+                    <div class="vr d-none d-md-block"></div>
+                    
+                    @if (!isToday || showAll)
+                    {
+                        <a asp-action="Index" asp-route-selectedDate="@todayDate" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-calendar-check me-1"></i>Today
+                        </a>
+                    }
+                    
+                    @if (showAll)
+                    {
+                        <a asp-action="Index" class="btn btn-warning btn-sm">
+                            <i class="bi bi-funnel me-1"></i>Filter by Date
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" asp-route-showAll="true" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-collection me-1"></i>Show All
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (!Model.Any())
 {
     <div class="alert-custom-info">
-        <i class="bi bi-info-circle-fill me-2"></i>No shifts scheduled yet. Click "Add Shift" to create one.
+        <i class="bi bi-info-circle-fill me-2"></i>
+        @if (showAll)
+        {
+            <span>No shifts scheduled yet. Click "Add Shift" to create one.</span>
+        }
+        else
+        {
+            <span>No shifts scheduled for <strong>@selectedDate.ToString("dd MMMM yyyy")</strong>. 
+            Try checking another date or <a asp-action="Index" asp-route-showAll="true">view all shifts</a>.</span>
+        }
     </div>
 }
 else
@@ -49,7 +149,10 @@ else
                 <tbody>
                     @foreach (var shift in Model)
                     {
-                        <tr>
+                        var shiftIsToday = shift.StartTime.Date == DateTime.Today;
+                        var isPast = shift.EndTime < DateTime.Now;
+                        
+                        <tr class="@(shiftIsToday ? "table-primary" : (isPast ? "opacity-75" : ""))">
                             <td>
                                 @if (shift.User != null)
                                 {
@@ -62,7 +165,13 @@ else
                                 }
                             </td>
                             <td class="d-none d-md-table-cell">
-                                <span class="badge-custom">@shift.StartTime.ToString("dddd")</span>
+                                <span class="badge-custom @(shiftIsToday ? "badge-custom-warning" : "")">
+                                    @shift.StartTime.ToString("dddd")
+                                    @if (shiftIsToday)
+                                    {
+                                        <i class="bi bi-star-fill ms-1"></i>
+                                    }
+                                </span>
                                 <span class="d-block small mt-1" style="color: #475569;">@shift.StartTime.ToString("dd MMM yyyy")</span>
                             </td>
                             <td>
@@ -93,7 +202,113 @@ else
         </div>
     </div>
     
-    <div class="mt-3" style="color: #64748b;">
-        <small><i class="bi bi-info-circle me-1"></i>Total shifts: @Model.Count()</small>
-    </div>
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Shifts pagination" class="my-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="text-muted small">
+                    Showing @((currentPage - 1) * pageSize + 1)-@(Math.Min(currentPage * pageSize, totalCount)) of @totalCount shifts
+                </span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        @if (showAll)
+                        {
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-page="@(currentPage - 1)"
+                               asp-route-showAll="true">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-page="@(currentPage - 1)"
+                               asp-route-selectedDate="@selectedDate.ToString("yyyy-MM-dd")">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        }
+                    </li>
+                    @{
+                        var startPage = Math.Max(1, currentPage - 2);
+                        var endPage = Math.Min(totalPages, currentPage + 2);
+                        
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                @if (showAll)
+                                {
+                                    <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-showAll="true">1</a>
+                                }
+                                else
+                                {
+                                    <a class="page-link" asp-action="Index" asp-route-page="1" 
+                                       asp-route-selectedDate="@selectedDate.ToString("yyyy-MM-dd")">1</a>
+                                }
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                        }
+                    }
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            @if (showAll)
+                            {
+                                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-showAll="true">@i</a>
+                            }
+                            else
+                            {
+                                <a class="page-link" asp-action="Index" asp-route-page="@i" 
+                                   asp-route-selectedDate="@selectedDate.ToString("yyyy-MM-dd")">@i</a>
+                            }
+                        </li>
+                    }
+                    @if (endPage < totalPages)
+                    {
+                        if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item">
+                            @if (showAll)
+                            {
+                                <a class="page-link" asp-action="Index" asp-route-page="@totalPages" asp-route-showAll="true">@totalPages</a>
+                            }
+                            else
+                            {
+                                <a class="page-link" asp-action="Index" asp-route-page="@totalPages" 
+                                   asp-route-selectedDate="@selectedDate.ToString("yyyy-MM-dd")">@totalPages</a>
+                            }
+                        </li>
+                    }
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        @if (showAll)
+                        {
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-page="@(currentPage + 1)"
+                               asp-route-showAll="true">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-page="@(currentPage + 1)"
+                               asp-route-selectedDate="@selectedDate.ToString("yyyy-MM-dd")">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        }
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    }
+    else
+    {
+        <div class="mt-3" style="color: #64748b;">
+            <small><i class="bi bi-info-circle me-1"></i>Total shifts: @totalCount</small>
+        </div>
+    }
 }

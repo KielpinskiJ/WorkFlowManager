@@ -84,6 +84,29 @@ public class RequestService : IRequestService
             .ToListAsync();
     }
 
+    public async Task<(IEnumerable<LeaveRequest> Requests, int TotalCount)> GetPendingRequestsPagedAsync(RequestType? requestType, int page, int pageSize)
+    {
+        var query = _context.LeaveRequests
+            .Include(r => r.User)
+            .Include(r => r.TargetDepartment)
+            .Where(r => r.Status == RequestStatus.Pending);
+
+        if (requestType.HasValue)
+        {
+            query = query.Where(r => r.Type == requestType.Value);
+        }
+
+        var totalCount = await query.CountAsync();
+        
+        var requests = await query
+            .OrderBy(r => r.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (requests, totalCount);
+    }
+
     public async Task<IEnumerable<LeaveRequest>> GetUserRequestsAsync(
         string userId, 
         int? months = null, 

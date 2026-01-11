@@ -2,6 +2,13 @@
 
 @{
     ViewData["Title"] = "Bonuses";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var pageSize = (int)(ViewBag.PageSize ?? 10);
+    var totalBonusAmount = (decimal)(ViewBag.TotalBonusAmount ?? 0m);
+    var bonusCount = (int)(ViewBag.BonusCount ?? 0);
+    var avgBonusAmount = (decimal)(ViewBag.AvgBonusAmount ?? 0m);
 }
 
 <div class="page-header">
@@ -75,20 +82,74 @@ else
         </div>
     </div>
     
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Bonuses pagination" class="my-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="text-muted small">
+                    Showing @((currentPage - 1) * pageSize + 1)-@(Math.Min(currentPage * pageSize, totalCount)) of @totalCount bonuses
+                </span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    @{
+                        var startPage = Math.Max(1, currentPage - 2);
+                        var endPage = Math.Min(totalPages, currentPage + 2);
+                        
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="1">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                        }
+                    }
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                    @if (endPage < totalPages)
+                    {
+                        if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-page="@totalPages">@totalPages</a>
+                        </li>
+                    }
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    }
+    
     <div class="card-custom mt-4">
         <div class="card-body">
             <div class="row text-center">
                 <div class="col-md-4 mb-3 mb-md-0">
                     <h5 style="color: #64748b;" class="mb-1">Total Bonuses</h5>
-                    <span class="fs-3 fw-bold" style="color: #22c55e;">@Model.Sum(b => b.Amount).ToString("N2") zł</span>
+                    <span class="fs-3 fw-bold" style="color: #22c55e;">@totalBonusAmount.ToString("N2") zł</span>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
                     <h5 style="color: #64748b;" class="mb-1">Bonuses Count</h5>
-                    <span class="fs-3 fw-bold" style="color: #1e293b;">@Model.Count()</span>
+                    <span class="fs-3 fw-bold" style="color: #1e293b;">@bonusCount</span>
                 </div>
                 <div class="col-md-4">
                     <h5 style="color: #64748b;" class="mb-1">Average Bonus</h5>
-                    <span class="fs-3 fw-bold" style="color: #3b82f6;">@(Model.Any() ? Model.Average(b => b.Amount).ToString("N2") : "0.00") zł</span>
+                    <span class="fs-3 fw-bold" style="color: #3b82f6;">@avgBonusAmount.ToString("N2") zł</span>
                 </div>
             </div>
         </div>

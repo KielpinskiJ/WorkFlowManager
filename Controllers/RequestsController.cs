@@ -209,12 +209,36 @@ public class RequestsController : Controller
         return View(request);
     }
 
-    // GET: Requests/Manage - Admin only, show pending requests
+    private const int ManageRequestsPageSize = 20;
+
+    /// <summary>
+    /// Displays paginated pending requests with optional type filtering. Admin only.
+    /// </summary>
+    /// <param name="requestType">"Vacation" or "DepartmentChange". Null shows all.</param>
+    /// <param name="page"></param>
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Manage()
+    public async Task<IActionResult> Manage(string? requestType = null, int page = 1)
     {
-        var pendingRequests = await _requestService.GetPendingRequestsAsync();
-        return View(pendingRequests);
+        if (page < 1) page = 1;
+
+        RequestType? filterType = null;
+        if (!string.IsNullOrEmpty(requestType) && Enum.TryParse<RequestType>(requestType, out var parsedType))
+        {
+            filterType = parsedType;
+        }
+
+        var (requests, totalCount) = await _requestService.GetPendingRequestsPagedAsync(
+            filterType, page, ManageRequestsPageSize);
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)ManageRequestsPageSize);
+        if (page > totalPages && totalPages > 0) page = totalPages;
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
+        ViewBag.SelectedType = requestType;
+
+        return View(requests);
     }
 
     // POST: Requests/Approve/5

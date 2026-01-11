@@ -23,13 +23,56 @@ public class ShiftsController : Controller
         _userManager = userManager;
     }
 
+    private const int AdminShiftsPageSizeBuffer = 5;
+
     /// <summary>
-    /// Displays a list of all shifts sorted by date descending. Admin only.
+    /// Displays a paginated list of shifts with date filtering. Admin only.
+    /// Default shows today's shifts.
     /// </summary>
+    /// <param name="selectedDate">(YYYY-MM-DD).</param>
+    /// <param name="showAll">shows all shifts regardless of date.</param>
+    /// <param name="page"></param>
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? selectedDate = null, bool showAll = false, int page = 1)
     {
-        var shifts = await _shiftService.GetAllShiftsAsync();
+        if (page < 1) page = 1;
+
+        // Calculate dynamic page size: total employee count + buffer
+        var employeeCount = await _shiftService.GetTotalEmployeeCountAsync();
+        var pageSize = employeeCount + AdminShiftsPageSizeBuffer;
+
+        DateTime? filterDate = null;
+        DateTime displayDate = DateTime.Today;
+
+        if (!showAll)
+        {
+            if (!string.IsNullOrEmpty(selectedDate) && DateTime.TryParse(selectedDate, out var parsedDate))
+            {
+                filterDate = parsedDate;
+                displayDate = parsedDate;
+            }
+            else
+            {
+                filterDate = DateTime.Today;
+                displayDate = DateTime.Today;
+            }
+        }
+
+        var (shifts, totalCount) = await _shiftService.GetShiftsByDatePagedAsync(filterDate, page, pageSize);
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        if (page > totalPages && totalPages > 0) page = totalPages;
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
+        ViewBag.PageSize = pageSize;
+        ViewBag.ShowAll = showAll;
+        ViewBag.SelectedDate = displayDate;
+        ViewBag.PreviousDate = displayDate.AddDays(-1).ToString("yyyy-MM-dd");
+        ViewBag.NextDate = displayDate.AddDays(1).ToString("yyyy-MM-dd");
+        ViewBag.TodayDate = DateTime.Today.ToString("yyyy-MM-dd");
+
         return View(shifts);
     }
 

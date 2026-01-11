@@ -103,6 +103,40 @@ public class ShiftService : IShiftService
     }
 
     /// <summary>
+    /// Gets paginated shifts for a specific date or all shifts if date is null.
+    /// </summary>
+    public async Task<(IEnumerable<WorkShift> Shifts, int TotalCount)> GetShiftsByDatePagedAsync(DateTime? date, int page, int pageSize)
+    {
+        var query = _context.WorkShifts
+            .Include(s => s.User)
+            .AsQueryable();
+
+        if (date.HasValue)
+        {
+            var targetDate = date.Value.Date;
+            query = query.Where(s => s.StartTime.Date == targetDate);
+        }
+
+        var totalCount = await query.CountAsync();
+        
+        var shifts = await query
+            .OrderByDescending(s => s.StartTime)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (shifts, totalCount);
+    }
+
+    /// <summary>
+    /// Gets the total count of all employees in the system (active and inactive).
+    /// </summary>
+    public async Task<int> GetTotalEmployeeCountAsync()
+    {
+        return await _context.Users.CountAsync();
+    }
+
+    /// <summary>
     /// Validates that EndTime is greater than StartTime.
     /// </summary>
     /// <param name="shift">The shift to validate.</param>

@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Manage Requests";
+    var currentPage = (int)(ViewBag.CurrentPage ?? 1);
+    var totalPages = (int)(ViewBag.TotalPages ?? 1);
+    var totalCount = (int)(ViewBag.TotalCount ?? 0);
+    var selectedType = (string?)ViewBag.SelectedType;
 }
 
 <div class="page-header">
@@ -22,10 +26,67 @@
     </div>
 }
 
+<div class="card-custom mb-4">
+    <div class="card-body py-3">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold mb-2" style="color: #374151;">
+                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>Filter by Type
+                </label>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Manage" 
+                       class="btn @(string.IsNullOrEmpty(selectedType) ? "btn-primary" : "btn-outline-primary") btn-sm">
+                        <i class="bi bi-collection me-1"></i>All Types
+                        @if (string.IsNullOrEmpty(selectedType))
+                        {
+                            <span class="badge bg-white text-primary ms-1">@totalCount</span>
+                        }
+                    </a>
+                    <a asp-action="Manage" asp-route-requestType="Vacation" 
+                       class="btn @(selectedType == "Vacation" ? "btn-info" : "btn-outline-info") btn-sm">
+                        <i class="bi bi-umbrella-fill me-1"></i>Vacation
+                        @if (selectedType == "Vacation")
+                        {
+                            <span class="badge bg-white text-info ms-1">@totalCount</span>
+                        }
+                    </a>
+                    <a asp-action="Manage" asp-route-requestType="DepartmentChange" 
+                       class="btn @(selectedType == "DepartmentChange" ? "btn-secondary" : "btn-outline-secondary") btn-sm">
+                        <i class="bi bi-building me-1"></i>Dept. Change
+                        @if (selectedType == "DepartmentChange")
+                        {
+                            <span class="badge bg-white text-secondary ms-1">@totalCount</span>
+                        }
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <span class="text-muted">
+                    <i class="bi bi-hourglass-split me-1"></i>
+                    <strong>@totalCount</strong> pending request@(totalCount != 1 ? "s" : "")
+                    @if (!string.IsNullOrEmpty(selectedType))
+                    {
+                        <span class="ms-1">(filtered)</span>
+                    }
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (!Model.Any())
 {
     <div class="alert-custom-info">
-        <i class="bi bi-inbox-fill me-2"></i>No pending requests to review.
+        <i class="bi bi-inbox-fill me-2"></i>
+        @if (!string.IsNullOrEmpty(selectedType))
+        {
+            <span>No pending <strong>@(selectedType == "Vacation" ? "vacation" : "department change")</strong> requests. 
+            <a asp-action="Manage">View all types</a>.</span>
+        }
+        else
+        {
+            <span>No pending requests to review.</span>
+        }
     </div>
 }
 else
@@ -214,4 +275,65 @@ else
             </table>
         </div>
     </div>
+    
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Requests pagination" class="my-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="text-muted small">
+                    Showing @((currentPage - 1) * 20 + 1)-@(Math.Min(currentPage * 20, totalCount)) of @totalCount requests
+                </span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Manage" 
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-requestType="@selectedType">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    @{
+                        var startPage = Math.Max(1, currentPage - 2);
+                        var endPage = Math.Min(totalPages, currentPage + 2);
+                        
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Manage" asp-route-page="1" 
+                                   asp-route-requestType="@selectedType">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+                        }
+                    }
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Manage" asp-route-page="@i" 
+                               asp-route-requestType="@selectedType">@i</a>
+                        </li>
+                    }
+                    @if (endPage < totalPages)
+                    {
+                        if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Manage" asp-route-page="@totalPages" 
+                               asp-route-requestType="@selectedType">@totalPages</a>
+                        </li>
+                    }
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Manage" 
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-requestType="@selectedType">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    }
 }
