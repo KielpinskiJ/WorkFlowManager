@@ -1,7 +1,8 @@
 @model IEnumerable<WorkFlowManager.Models.WorkShift>
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "My Schedule";
+    ViewData["Title"] = L["MySchedule"].Value;
     var periodStart = (DateTime)ViewBag.PeriodStart;
     var periodEnd = (DateTime)ViewBag.PeriodEnd;
     var userName = (string)ViewBag.UserName;
@@ -17,16 +18,16 @@
     
     var periodLabel = selectedPeriod switch
     {
-        "previousWeek" => "Previous week",
-        "currentMonth" => "Current month",
-        "previousMonth" => "Previous month",
-        _ => "Current week"
+        "previousWeek" => L["PreviousWeek"].Value,
+        "currentMonth" => L["CurrentMonth"].Value,
+        "previousMonth" => L["PreviousMonth"].Value,
+        _ => L["CurrentWeek"].Value
     };
 }
 
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-calendar-check-fill"></i>My Schedule</h1>
+        <h1><i class="bi bi-calendar-check-fill"></i>@L["MySchedule"]</h1>
         <p class="mb-0" style="color: #64748b;">
             <i class="bi bi-person-circle me-1"></i>@userName
             <span class="ms-2">|</span>
@@ -41,40 +42,40 @@
             <!-- Time Period Filter -->
             <div class="col-md-3">
                 <label class="form-label fw-semibold mb-1" style="color: #374151;">
-                    <i class="bi bi-calendar-range me-1" style="color: #3b82f6;"></i>Time Period
+                    <i class="bi bi-calendar-range me-1" style="color: #3b82f6;"></i>@L["TimePeriod"]
                 </label>
                 <select name="period" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="currentWeek" selected="@(selectedPeriod == "currentWeek")">Current week</option>
-                    <option value="previousWeek" selected="@(selectedPeriod == "previousWeek")">Previous week</option>
-                    <option value="currentMonth" selected="@(selectedPeriod == "currentMonth")">Current month</option>
-                    <option value="previousMonth" selected="@(selectedPeriod == "previousMonth")">Previous month</option>
+                    <option value="currentWeek" selected="@(selectedPeriod == "currentWeek")">@L["CurrentWeek"]</option>
+                    <option value="previousWeek" selected="@(selectedPeriod == "previousWeek")">@L["PreviousWeek"]</option>
+                    <option value="currentMonth" selected="@(selectedPeriod == "currentMonth")">@L["CurrentMonth"]</option>
+                    <option value="previousMonth" selected="@(selectedPeriod == "previousMonth")">@L["PreviousMonth"]</option>
                 </select>
             </div>
             
             <div class="col-md-6">
                 <label class="form-label fw-semibold mb-1" style="color: #374151;">
-                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>Hide Status
+                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>@L["HideStatus"]
                 </label>
                 <div class="d-flex gap-3 flex-wrap">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="hideCompleted" value="true" 
                                id="hideCompleted" checked="@hideCompleted" onchange="this.form.submit()">
                         <label class="form-check-label" for="hideCompleted" style="color: #64748b;">
-                            <i class="bi bi-check-circle me-1"></i>Completed
+                            <i class="bi bi-check-circle me-1"></i>@L["Completed"]
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="hideToday" value="true" 
                                id="hideToday" checked="@hideToday" onchange="this.form.submit()">
                         <label class="form-check-label" for="hideToday" style="color: #f59e0b;">
-                            <i class="bi bi-calendar-day me-1"></i>Today
+                            <i class="bi bi-calendar-day me-1"></i>@L["Today"]
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="hideUpcoming" value="true" 
                                id="hideUpcoming" checked="@hideUpcoming" onchange="this.form.submit()">
                         <label class="form-check-label" for="hideUpcoming" style="color: #22c55e;">
-                            <i class="bi bi-calendar-plus me-1"></i>Upcoming
+                            <i class="bi bi-calendar-plus me-1"></i>@L["Upcoming"]
                         </label>
                     </div>
                 </div>
@@ -82,11 +83,11 @@
             
             <div class="col-md-3 text-md-end">
                 <a asp-action="MySchedule" class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Filters
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>@L["ResetFilters"]
                 </a>
                 <noscript>
                     <button type="submit" class="btn btn-custom-primary btn-sm">
-                        <i class="bi bi-funnel me-1"></i>Apply
+                        <i class="bi bi-funnel me-1"></i>@L["Apply"]
                     </button>
                 </noscript>
             </div>
@@ -100,16 +101,15 @@
         <i class="bi bi-info-circle-fill me-2"></i>
         @if (hideCompleted || hideToday || hideUpcoming)
         {
-            <strong>No shifts match your filters.</strong>
+            <strong>@L["NoShiftsMatchFilters"]</strong>
             <p class="mb-0 mt-2">
-                <a asp-action="MySchedule" asp-route-period="@selectedPeriod">Clear status filters</a> to see all shifts for this period.
+                <a asp-action="MySchedule" asp-route-period="@selectedPeriod">@L["ClearStatusFilters"]</a> @L["ToSeeAllShifts"]
             </p>
         }
         else
         {
-            <strong>No shifts scheduled for @periodLabel.ToLower().</strong>
-            <p class="mb-0 mt-2">You don't have any work shifts assigned for this period. 
-            Contact your manager if you believe this is an error.</p>
+            <strong>@L["NoShiftsScheduledFor"] @periodLabel.ToLower().</strong>
+            <p class="mb-0 mt-2">@L["NoShiftsForPeriod"]</p>
         }
     </div>
 }
@@ -131,15 +131,15 @@ else
                             </strong>
                             @if (isToday)
                             {
-                                <span class="badge-custom-warning">Today</span>
+                                <span class="badge-custom-warning">@L["Today"]</span>
                             }
                             else if (isPast)
                             {
-                                <span class="badge-custom">Completed</span>
+                                <span class="badge-custom">@L["Completed"]</span>
                             }
                             else
                             {
-                                <span class="badge-custom-success">Upcoming</span>
+                                <span class="badge-custom-success">@L["Upcoming"]</span>
                             }
                         </div>
                         <small class="@(isToday ? "opacity-75" : "")" style="color: @(isToday ? "#fff" : "#64748b");">
@@ -153,7 +153,7 @@ else
                                     <i class="bi bi-box-arrow-in-right fs-4"></i>
                                 </div>
                                 <div class="fw-bold fs-5" style="color: #1e293b;">@shift.StartTime.ToString("HH:mm")</div>
-                                <small style="color: #64748b;">Start</small>
+                                <small style="color: #64748b;">@L["Start"]</small>
                             </div>
                             <div class="col-2 d-flex align-items-center justify-content-center">
                                 <i class="bi bi-arrow-right" style="color: #94a3b8;"></i>
@@ -163,15 +163,15 @@ else
                                     <i class="bi bi-box-arrow-right fs-4"></i>
                                 </div>
                                 <div class="fw-bold fs-5" style="color: #1e293b;">@shift.EndTime.ToString("HH:mm")</div>
-                                <small style="color: #64748b;">End</small>
+                                <small style="color: #64748b;">@L["End"]</small>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <span style="color: #64748b;">
-                            <i class="bi bi-clock-history me-1"></i>Duration
+                            <i class="bi bi-clock-history me-1"></i>@L["Duration"]
                         </span>
-                        <span class="badge-custom-info">@shift.DurationHours.ToString("F1") hours</span>
+                        <span class="badge-custom-info">@shift.DurationHours.ToString("F1") @L["Hours"]</span>
                     </div>
                 </div>
             </div>
@@ -227,16 +227,16 @@ else
         <div class="card-body">
             <div class="row text-center">
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 style="color: #64748b;" class="mb-1">Total Shifts</h5>
+                    <h5 style="color: #64748b;" class="mb-1">@L["TotalShifts"]</h5>
                     <span class="fs-3 fw-bold" style="color: #3b82f6;">@totalCount</span>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 style="color: #64748b;" class="mb-1">Total Hours</h5>
+                    <h5 style="color: #64748b;" class="mb-1">@L["TotalHours"]</h5>
                     <span class="fs-3 fw-bold" style="color: #22c55e;">@totalHours.ToString("F1")</span>
                 </div>
                 <div class="col-md-4">
-                    <h5 style="color: #64748b;" class="mb-1">Avg. Shift Length</h5>
-                    <span class="fs-3 fw-bold" style="color: #0ea5e9;">@avgShiftLength.ToString("F1") hrs</span>
+                    <h5 style="color: #64748b;" class="mb-1">@L["AvgShiftLength"]</h5>
+                    <span class="fs-3 fw-bold" style="color: #0ea5e9;">@avgShiftLength.ToString("F1") @L["Hrs"]</span>
                 </div>
             </div>
         </div>

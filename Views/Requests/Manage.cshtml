@@ -1,7 +1,8 @@
 @model IEnumerable<WorkFlowManager.Models.LeaveRequest>
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Manage Requests";
+    ViewData["Title"] = L["ManageRequests"].Value;
     var currentPage = (int)(ViewBag.CurrentPage ?? 1);
     var totalPages = (int)(ViewBag.TotalPages ?? 1);
     var totalCount = (int)(ViewBag.TotalCount ?? 0);
@@ -9,7 +10,7 @@
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-clipboard-check-fill"></i>Manage Requests</h1>
+    <h1><i class="bi bi-clipboard-check-fill"></i>@L["ManageRequests"]</h1>
 </div>
 
 @if (TempData["Success"] != null)
@@ -31,12 +32,12 @@
         <div class="row g-3 align-items-center">
             <div class="col-md-6">
                 <label class="form-label fw-semibold mb-2" style="color: #374151;">
-                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>Filter by Type
+                    <i class="bi bi-funnel me-1" style="color: #3b82f6;"></i>@L["FilterByType"]
                 </label>
                 <div class="d-flex gap-2 flex-wrap">
                     <a asp-action="Manage" 
                        class="btn @(string.IsNullOrEmpty(selectedType) ? "btn-primary" : "btn-outline-primary") btn-sm">
-                        <i class="bi bi-collection me-1"></i>All Types
+                        <i class="bi bi-collection me-1"></i>@L["AllTypes"]
                         @if (string.IsNullOrEmpty(selectedType))
                         {
                             <span class="badge bg-white text-primary ms-1">@totalCount</span>
@@ -44,7 +45,7 @@
                     </a>
                     <a asp-action="Manage" asp-route-requestType="Vacation" 
                        class="btn @(selectedType == "Vacation" ? "btn-info" : "btn-outline-info") btn-sm">
-                        <i class="bi bi-umbrella-fill me-1"></i>Vacation
+                        <i class="bi bi-umbrella-fill me-1"></i>@L["Vacation"]
                         @if (selectedType == "Vacation")
                         {
                             <span class="badge bg-white text-info ms-1">@totalCount</span>
@@ -52,10 +53,10 @@
                     </a>
                     <a asp-action="Manage" asp-route-requestType="DepartmentChange" 
                        class="btn @(selectedType == "DepartmentChange" ? "btn-secondary" : "btn-outline-secondary") btn-sm">
-                        <i class="bi bi-building me-1"></i>Dept. Change
+                        <i class="bi bi-building me-1"></i>@L["DeptChange"]
                         @if (selectedType == "DepartmentChange")
                         {
-                            <span class="badge bg-white text-secondary ms-1">@totalCount</span>
+                            <span class="badge bg-white text-dark ms-1">@totalCount</span>
                         }
                     </a>
                 </div>
@@ -63,10 +64,10 @@
             <div class="col-md-6 text-md-end">
                 <span class="text-muted">
                     <i class="bi bi-hourglass-split me-1"></i>
-                    <strong>@totalCount</strong> pending request@(totalCount != 1 ? "s" : "")
+                    <strong>@totalCount</strong> @(totalCount != 1 ? L["PendingRequests"] : L["PendingRequest"])
                     @if (!string.IsNullOrEmpty(selectedType))
                     {
-                        <span class="ms-1">(filtered)</span>
+                        <span class="ms-1">@L["Filtered"]</span>
                     }
                 </span>
             </div>
@@ -80,12 +81,12 @@
         <i class="bi bi-inbox-fill me-2"></i>
         @if (!string.IsNullOrEmpty(selectedType))
         {
-            <span>No pending <strong>@(selectedType == "Vacation" ? "vacation" : "department change")</strong> requests. 
-            <a asp-action="Manage">View all types</a>.</span>
+            <span>@(selectedType == "Vacation" ? L["NoPendingVacation"] : L["NoPendingDeptChange"]) 
+            <a asp-action="Manage">@L["ViewAllTypes"]</a>.</span>
         }
         else
         {
-            <span>No pending requests to review.</span>
+            <span>@L["NoPendingRequests"]</span>
         }
     </div>
 }
@@ -96,11 +97,11 @@ else
             <table class="table table-custom mb-0">
                 <thead>
                     <tr>
-                        <th><i class="bi bi-person-fill me-1"></i>Employee</th>
-                        <th><i class="bi bi-tag-fill me-1"></i>Type</th>
-                        <th class="d-none d-md-table-cell"><i class="bi bi-info-circle-fill me-1"></i>Details</th>
-                        <th class="d-none d-lg-table-cell"><i class="bi bi-clock-fill me-1"></i>Submitted</th>
-                        <th class="text-end">Actions</th>
+                        <th><i class="bi bi-person-fill me-1"></i>@L["Employee"]</th>
+                        <th><i class="bi bi-tag-fill me-1"></i>@L["Type"]</th>
+                        <th class="d-none d-md-table-cell"><i class="bi bi-info-circle-fill me-1"></i>@L["Details"]</th>
+                        <th class="d-none d-lg-table-cell"><i class="bi bi-clock-fill me-1"></i>@L["Submitted"]</th>
+                        <th class="text-end">@L["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,13 +116,13 @@ else
                                 @if (request.Type == WorkFlowManager.Models.RequestType.Vacation)
                                 {
                                     <span class="badge-custom-info">
-                                        <i class="bi bi-umbrella-fill me-1"></i>Vacation
+                                        <i class="bi bi-umbrella-fill me-1"></i>@L["Vacation"]
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="badge-custom">
-                                        <i class="bi bi-building me-1"></i>Dept. Change
+                                        <i class="bi bi-building me-1"></i>@L["DeptChange"]
                                     </span>
                                 }
                             </td>
@@ -130,13 +131,13 @@ else
                                 {
                                     <small style="color: #475569;">
                                         @request.StartDate.ToString("dd MMM") - @request.EndDate.ToString("dd MMM yyyy")
-                                        <span class="d-block" style="color: #94a3b8;">(@((request.EndDate - request.StartDate).Days + 1) days)</span>
+                                        <span class="d-block" style="color: #94a3b8;">(@((request.EndDate - request.StartDate).Days + 1) @L["Days"])</span>
                                     </small>
                                 }
                                 else
                                 {
                                     <small style="color: #475569;">
-                                        Target: <strong>@(request.TargetDepartment?.Name ?? "Not specified")</strong>
+                                        @L["Target"]: <strong>@(request.TargetDepartment?.Name ?? L["NotSpecified"].Value)</strong>
                                     </small>
                                 }
                             </td>
@@ -146,15 +147,15 @@ else
                                     <button type="button" class="btn btn-custom-success btn-custom-sm mb-1" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#approveModal-@request.Id" 
-                                            title="Approve">
-                                        <i class="bi bi-check-lg"></i> Approve
+                                            title="@L["Approve"]">
+                                        <i class="bi bi-check-lg"></i> @L["Approve"]
                                     </button>
                                     
                                     <button type="button" class="btn btn-custom-danger btn-custom-sm" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#rejectModal-@request.Id" 
-                                            title="Reject">
-                                        <i class="bi bi-x-lg"></i> Reject
+                                            title="@L["Reject"]">
+                                        <i class="bi bi-x-lg"></i> @L["Reject"]
                                     </button>
                                 </div>
 
@@ -165,30 +166,30 @@ else
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white;">
-                                                    <h5 class="modal-title"><i class="bi bi-check-circle-fill me-2"></i>Approve Vacation Request</h5>
+                                                    <h5 class="modal-title"><i class="bi bi-check-circle-fill me-2"></i>@L["ApproveVacationRequest"]</h5>
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <form asp-action="Approve" asp-route-id="@request.Id" method="post">
                                                     <div class="modal-body">
                                                         <p style="color: #1e293b;">
-                                                            Approve vacation request for <strong>@request.User?.FirstName @request.User?.LastName</strong>?
+                                                            @L["ApproveVacationFor"] <strong>@request.User?.FirstName @request.User?.LastName</strong>?
                                                         </p>
                                                         <p style="color: #475569;">
                                                             <i class="bi bi-calendar-range me-1"></i>
                                                             @request.StartDate.ToString("dd MMM") - @request.EndDate.ToString("dd MMM yyyy")
-                                                            <span class="text-muted">(@((request.EndDate - request.StartDate).Days + 1) days)</span>
+                                                            <span class="text-muted">(@((request.EndDate - request.StartDate).Days + 1) @L["Days"])</span>
                                                         </p>
                                                         
                                                         <div class="mb-3">
-                                                            <label class="form-label" style="color: #374151;">Comment (optional)</label>
-                                                            <textarea name="adminComment" class="form-control" rows="2" placeholder="Add a note..." maxlength="500"></textarea>
-                                                            <div class="form-text">Maximum 500 characters</div>
+                                                            <label class="form-label" style="color: #374151;">@L["CommentOptional"]</label>
+                                                            <textarea name="adminComment" class="form-control" rows="2" placeholder="@L["AddNote"]" maxlength="500"></textarea>
+                                                            <div class="form-text">@L["MaxCharactersNote"]</div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                                                         <button type="submit" class="btn btn-custom-success">
-                                                            <i class="bi bi-check-lg me-1"></i>Approve Request
+                                                            <i class="bi bi-check-lg me-1"></i>@L["ApproveRequest"]
                                                         </button>
                                                     </div>
                                                 </form>
@@ -203,36 +204,36 @@ else
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white;">
-                                                    <h5 class="modal-title"><i class="bi bi-check-circle-fill me-2"></i>Approve Department Change</h5>
+                                                    <h5 class="modal-title"><i class="bi bi-check-circle-fill me-2"></i>@L["ApproveDepartmentChange"]</h5>
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <form asp-action="Approve" asp-route-id="@request.Id" method="post">
                                                     <div class="modal-body">
                                                         <p style="color: #1e293b;">
                                                             <strong>@request.User?.FirstName @request.User?.LastName</strong> 
-                                                            wants to transfer to <strong>@request.TargetDepartment?.Name</strong>.
+                                                            @L["WantsToTransferTo"] <strong>@request.TargetDepartment?.Name</strong>.
                                                         </p>
                                                         
                                                         <div class="form-check mb-3">
                                                             <input class="form-check-input" type="checkbox" name="autoTransfer" value="true" id="autoTransfer-@request.Id" checked>
                                                             <label class="form-check-label" for="autoTransfer-@request.Id" style="color: #374151;">
-                                                                <strong>Automatically transfer employee to @request.TargetDepartment?.Name</strong>
+                                                                <strong>@L["AutoTransfer"] @request.TargetDepartment?.Name</strong>
                                                             </label>
                                                             <div class="form-text">
-                                                                If unchecked, you will need to manually change the employee's department.
+                                                                @L["AutoTransferNote"]
                                                             </div>
                                                         </div>
                                                         
                                                         <div class="mb-3">
-                                                            <label class="form-label" style="color: #374151;">Comment (optional)</label>
-                                                            <textarea name="adminComment" class="form-control" rows="2" placeholder="Add a note..." maxlength="500"></textarea>
-                                                            <div class="form-text">Maximum 500 characters</div>
+                                                            <label class="form-label" style="color: #374151;">@L["CommentOptional"]</label>
+                                                            <textarea name="adminComment" class="form-control" rows="2" placeholder="@L["AddNote"]" maxlength="500"></textarea>
+                                                            <div class="form-text">@L["MaxCharactersNote"]</div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                                                         <button type="submit" class="btn btn-custom-success">
-                                                            <i class="bi bi-check-lg me-1"></i>Approve Request
+                                                            <i class="bi bi-check-lg me-1"></i>@L["ApproveRequest"]
                                                         </button>
                                                     </div>
                                                 </form>
@@ -246,22 +247,22 @@ else
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
-                                                <h5 class="modal-title"><i class="bi bi-x-circle-fill me-2"></i>Reject Request</h5>
+                                                <h5 class="modal-title"><i class="bi bi-x-circle-fill me-2"></i>@L["RejectRequest"]</h5>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form asp-action="Reject" asp-route-id="@request.Id" method="post">
                                                 <div class="modal-body">
-                                                    <p style="color: #1e293b;">Are you sure you want to reject this request from <strong>@request.User?.FirstName @request.User?.LastName</strong>?</p>
+                                                    <p style="color: #1e293b;">@L["AreYouSureReject"] <strong>@request.User?.FirstName @request.User?.LastName</strong>?</p>
                                                     <div class="mb-3">
-                                                        <label class="form-label" style="color: #374151;">Comment (optional)</label>
-                                                        <textarea name="adminComment" class="form-control" rows="3" placeholder="Reason for rejection..." maxlength="500"></textarea>
-                                                        <div class="form-text">Maximum 500 characters</div>
+                                                        <label class="form-label" style="color: #374151;">@L["CommentOptional"]</label>
+                                                        <textarea name="adminComment" class="form-control" rows="3" placeholder="@L["ReasonForRejection"]" maxlength="500"></textarea>
+                                                        <div class="form-text">@L["MaxCharactersNote"]</div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-custom-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
                                                     <button type="submit" class="btn btn-custom-danger">
-                                                        <i class="bi bi-x-lg me-1"></i>Reject Request
+                                                        <i class="bi bi-x-lg me-1"></i>@L["RejectRequest"]
                                                     </button>
                                                 </div>
                                             </form>
@@ -281,7 +282,7 @@ else
         <nav aria-label="Requests pagination" class="my-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <span class="text-muted small">
-                    Showing @((currentPage - 1) * 20 + 1)-@(Math.Min(currentPage * 20, totalCount)) of @totalCount requests
+                    @L["Showing"] @((currentPage - 1) * 20 + 1)-@(Math.Min(currentPage * 20, totalCount)) @L["Of"] @totalCount @L["Requests"]
                 </span>
                 <ul class="pagination pagination-sm mb-0">
                     <li class="page-item @(currentPage == 1 ? "disabled" : "")">

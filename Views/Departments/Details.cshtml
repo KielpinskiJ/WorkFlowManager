@@ -1,11 +1,12 @@
 @model WorkFlowManager.Models.Department
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Department Details";
+    ViewData["Title"] = L["DepartmentDetails"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-building-fill"></i>Department Details</h1>
+    <h1><i class="bi bi-building-fill"></i>@L["DepartmentDetails"]</h1>
 </div>
 
 <div class="row">
@@ -17,7 +18,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-card-text me-1"></i>Description
+                        <i class="bi bi-card-text me-1"></i>@L["Description"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">
                         @if (!string.IsNullOrEmpty(Model.Description))
@@ -26,14 +27,14 @@
                         }
                         else
                         {
-                            <span style="color: #94a3b8;">No description</span>
+                            <span style="color: #94a3b8;">@L["NoDescription"]</span>
                         }
                     </p>
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-currency-exchange me-1"></i>Hourly Rate
+                        <i class="bi bi-currency-exchange me-1"></i>@L["HourlyRate"]
                     </label>
                     <p class="mb-0">
                         <span class="badge-custom-success">@Model.HourlyRate.ToString("N2") zł/h</span>
@@ -42,26 +43,26 @@
                 
                 <div>
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-people-fill me-1"></i>Employees
+                        <i class="bi bi-people-fill me-1"></i>@L["Employees"]
                     </label>
                     <p class="mb-0">
                         @if (Model.Users != null && Model.Users.Any())
                         {
-                            <span class="badge-custom-info">@Model.Users.Count employee(s)</span>
+                            <span class="badge-custom-info">@string.Format(L["EmployeesCount"].Value, Model.Users.Count)</span>
                         }
                         else
                         {
-                            <span style="color: #94a3b8;">No employees assigned</span>
+                            <span style="color: #94a3b8;">@L["NoEmployeesAssigned"]</span>
                         }
                     </p>
                 </div>
             </div>
             <div class="card-footer d-flex gap-2">
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-custom-warning">
-                    <i class="bi bi-pencil-fill me-1"></i>Edit
+                    <i class="bi bi-pencil-fill me-1"></i>@L["Edit"]
                 </a>
                 <a asp-action="Index" class="btn btn-custom-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Back to List
+                    <i class="bi bi-arrow-left me-1"></i>@L["BackToList"]
                 </a>
             </div>
         </div>

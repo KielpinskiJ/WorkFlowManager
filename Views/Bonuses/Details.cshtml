@@ -1,11 +1,12 @@
 @model WorkFlowManager.Models.Bonus
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Bonus Details";
+    ViewData["Title"] = L["BonusDetails"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-gift-fill"></i>Bonus Details</h1>
+    <h1><i class="bi bi-gift-fill"></i>@L["BonusDetails"]</h1>
 </div>
 
 <div class="row">
@@ -18,7 +19,7 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-person-fill me-1"></i>Employee
+                        <i class="bi bi-person-fill me-1"></i>@L["Employee"]
                     </label>
                     <p class="mb-0">
                         <strong style="color: #1e293b;">@Model.User?.FirstName @Model.User?.LastName</strong>
@@ -28,31 +29,31 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-currency-exchange me-1"></i>Amount
+                        <i class="bi bi-currency-exchange me-1"></i>@L["Amount"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">@Model.Amount.ToString("N2") zł</p>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-calendar-fill me-1"></i>Date Granted
+                        <i class="bi bi-calendar-fill me-1"></i>@L["DateGranted"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">@Model.DateGranted.ToString("dddd, dd MMMM yyyy")</p>
                 </div>
 
                 <div>
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-card-text me-1"></i>Reason
+                        <i class="bi bi-card-text me-1"></i>@L["Reason"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">@Model.Reason</p>
                 </div>
             </div>
             <div class="card-footer d-flex gap-2">
                 <a asp-action="Index" class="btn btn-custom-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Back to List
+                    <i class="bi bi-arrow-left me-1"></i>@L["BackToList"]
                 </a>
                 <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-custom-danger">
-                    <i class="bi bi-trash-fill me-1"></i>Delete
+                    <i class="bi bi-trash-fill me-1"></i>@L["Delete"]
                 </a>
             </div>
         </div>

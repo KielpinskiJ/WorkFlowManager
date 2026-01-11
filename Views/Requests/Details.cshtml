@@ -1,11 +1,12 @@
 @model WorkFlowManager.Models.LeaveRequest
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Request Details";
+    ViewData["Title"] = L["RequestDetails"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-file-text-fill"></i>Request Details</h1>
+    <h1><i class="bi bi-file-text-fill"></i>@L["RequestDetails"]</h1>
 </div>
 
 <div class="row">
@@ -16,13 +17,13 @@
                 @switch (Model.Status)
                 {
                     case WorkFlowManager.Models.RequestStatus.Pending:
-                        <span class="badge-custom-warning">Pending</span>
+                        <span class="badge-custom-warning">@L["Pending"]</span>
                         break;
                     case WorkFlowManager.Models.RequestStatus.Approved:
-                        <span class="badge-custom-success">Approved</span>
+                        <span class="badge-custom-success">@L["Approved"]</span>
                         break;
                     case WorkFlowManager.Models.RequestStatus.Rejected:
-                        <span class="badge-custom-danger">Rejected</span>
+                        <span class="badge-custom-danger">@L["Rejected"]</span>
                         break;
                 }
             </div>
@@ -30,26 +31,26 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-tag-fill me-1"></i>Request Type
+                            <i class="bi bi-tag-fill me-1"></i>@L["RequestType"]
                         </label>
                         <p class="mb-0">
                             @if (Model.Type == WorkFlowManager.Models.RequestType.Vacation)
                             {
                                 <span class="badge-custom-info">
-                                    <i class="bi bi-umbrella-fill me-1"></i>Vacation
+                                    <i class="bi bi-umbrella-fill me-1"></i>@L["Vacation"]
                                 </span>
                             }
                             else
                             {
                                 <span class="badge-custom">
-                                    <i class="bi bi-building me-1"></i>Department Change
+                                    <i class="bi bi-building me-1"></i>@L["DepartmentChange"]
                                 </span>
                             }
                         </p>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-person-fill me-1"></i>Employee
+                            <i class="bi bi-person-fill me-1"></i>@L["Employee"]
                         </label>
                         <p class="mb-0" style="color: #1e293b;">@Model.User?.FirstName @Model.User?.LastName</p>
                     </div>
@@ -58,13 +59,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-calendar-fill me-1"></i>Start Date
+                            <i class="bi bi-calendar-fill me-1"></i>@L["StartDate"]
                         </label>
                         <p class="mb-0" style="color: #1e293b;">@Model.StartDate.ToString("dddd, dd MMMM yyyy")</p>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-calendar-check-fill me-1"></i>End Date
+                            <i class="bi bi-calendar-check-fill me-1"></i>@L["EndDate"]
                         </label>
                         <p class="mb-0" style="color: #1e293b;">@Model.EndDate.ToString("dddd, dd MMMM yyyy")</p>
                     </div>
@@ -73,15 +74,15 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-hourglass-split me-1"></i>Duration
+                            <i class="bi bi-hourglass-split me-1"></i>@L["Duration"]
                         </label>
                         <p class="mb-0">
-                            <span class="badge-custom-info">@((Model.EndDate - Model.StartDate).Days + 1) days</span>
+                            <span class="badge-custom-info">@((Model.EndDate - Model.StartDate).Days + 1) @L["Days"]</span>
                         </p>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-clock-fill me-1"></i>Submitted On
+                            <i class="bi bi-clock-fill me-1"></i>@L["SubmittedOn"]
                         </label>
                         <p class="mb-0" style="color: #1e293b;">@Model.CreatedAt.ToString("dd MMM yyyy, HH:mm")</p>
                     </div>
@@ -91,7 +92,7 @@
                 {
                     <div class="mt-3">
                         <label class="form-label fw-semibold" style="color: #64748b;">
-                            <i class="bi bi-chat-left-text-fill me-1"></i>Admin Comment
+                            <i class="bi bi-chat-left-text-fill me-1"></i>@L["AdminComment"]
                         </label>
                         <div class="alert-custom-info mb-0">
                             @Model.AdminComment
@@ -101,7 +102,7 @@
             </div>
             <div class="card-footer">
                 <a asp-action="Index" class="btn btn-custom-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Back to My Requests
+                    <i class="bi bi-arrow-left me-1"></i>@L["BackToMyRequests"]
                 </a>
             </div>
         </div>

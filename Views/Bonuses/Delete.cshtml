@@ -1,16 +1,17 @@
 @model WorkFlowManager.Models.Bonus
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Delete Bonus";
+    ViewData["Title"] = L["DeleteBonus"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-trash-fill"></i>Delete Bonus</h1>
+    <h1><i class="bi bi-trash-fill"></i>@L["DeleteBonus"]</h1>
 </div>
 
 <div class="alert-custom-warning mb-4">
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    <strong>Warning!</strong> Are you sure you want to delete this bonus? This action cannot be undone.
+    <strong>@L["Warning"]</strong> @L["DeleteBonusWarning"]
 </div>
 
 <div class="row">
@@ -23,21 +24,21 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-person-fill me-1"></i>Employee
+                        <i class="bi bi-person-fill me-1"></i>@L["Employee"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">@Model.User?.FirstName @Model.User?.LastName</p>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-calendar-fill me-1"></i>Date Granted
+                        <i class="bi bi-calendar-fill me-1"></i>@L["DateGranted"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">@Model.DateGranted.ToString("dd MMM yyyy")</p>
                 </div>
 
                 <div>
                     <label class="form-label fw-semibold" style="color: #64748b;">
-                        <i class="bi bi-card-text me-1"></i>Reason
+                        <i class="bi bi-card-text me-1"></i>@L["Reason"]
                     </label>
                     <p class="mb-0" style="color: #1e293b;">@Model.Reason</p>
                 </div>
@@ -45,10 +46,10 @@
             <div class="card-footer">
                 <form asp-action="Delete" method="post" class="d-flex gap-2 mb-0">
                     <button type="submit" class="btn btn-custom-danger">
-                        <i class="bi bi-trash-fill me-1"></i>Delete Bonus
+                        <i class="bi bi-trash-fill me-1"></i>@L["DeleteBonus"]
                     </button>
                     <a asp-action="Index" class="btn btn-custom-secondary">
-                        <i class="bi bi-x-lg me-1"></i>Cancel
+                        <i class="bi bi-x-lg me-1"></i>@L["Cancel"]
                     </a>
                 </form>
             </div>

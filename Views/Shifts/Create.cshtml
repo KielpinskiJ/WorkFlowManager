@@ -1,11 +1,12 @@
 @model WorkFlowManager.ViewModels.CreateShiftViewModel
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Create Shift";
+    ViewData["Title"] = L["CreateShift"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-calendar-plus-fill"></i>Create Shift</h1>
+    <h1><i class="bi bi-calendar-plus-fill"></i>@L["CreateShift"]</h1>
 </div>
 
 <div class="row">
@@ -18,10 +19,10 @@
                 
                 <div class="mb-3">
                     <label asp-for="UserId" class="form-label fw-semibold" style="color: #374151;">
-                        <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>Employee
+                        <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>@L["Employee"]
                     </label>
                     <select asp-for="UserId" asp-items="Model.Users" class="form-select">
-                        <option value="">-- Select Employee --</option>
+                        <option value="">@L["SelectEmployee"]</option>
                     </select>
                     <span asp-validation-for="UserId" class="text-danger small"></span>
                 </div>
@@ -29,7 +30,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="StartTime" class="form-label fw-semibold" style="color: #374151;">
-                            <i class="bi bi-clock me-1" style="color: #22c55e;"></i>Start Time
+                            <i class="bi bi-clock me-1" style="color: #22c55e;"></i>@L["StartTime"]
                         </label>
                         <input asp-for="StartTime" type="datetime-local" class="form-control" />
                         <span asp-validation-for="StartTime" class="text-danger small"></span>
@@ -37,7 +38,7 @@
                     
                     <div class="col-md-6 mb-3">
                         <label asp-for="EndTime" class="form-label fw-semibold" style="color: #374151;">
-                            <i class="bi bi-clock-fill me-1" style="color: #ef4444;"></i>End Time
+                            <i class="bi bi-clock-fill me-1" style="color: #ef4444;"></i>@L["EndTime"]
                         </label>
                         <input asp-for="EndTime" type="datetime-local" class="form-control" />
                         <span asp-validation-for="EndTime" class="text-danger small"></span>
@@ -46,15 +47,15 @@
                 
                 <div class="alert-custom-info mb-4">
                     <i class="bi bi-lightbulb-fill me-2"></i>
-                    <strong>Tip:</strong> End time must be after start time.
+                    <strong>@L["Tip"]</strong> @L["TipEndTimeAfterStart"]
                 </div>
                 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-custom-primary">
-                        <i class="bi bi-check-lg me-1"></i>Create Shift
+                        <i class="bi bi-check-lg me-1"></i>@L["CreateShift"]
                     </button>
                     <a asp-action="Index" class="btn btn-custom-secondary">
-                        <i class="bi bi-x-lg me-1"></i>Cancel
+                        <i class="bi bi-x-lg me-1"></i>@L["Cancel"]
                     </a>
                 </div>
             </form>

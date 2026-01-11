@@ -1,11 +1,12 @@
 @model WorkFlowManager.ViewModels.UserEditViewModel
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Edit User";
+    ViewData["Title"] = L["EditUser"].Value;
 }
 
 <div class="page-header">
-    <h1><i class="bi bi-person-gear"></i>Edit User</h1>
+    <h1><i class="bi bi-person-gear"></i>@L["EditUser"]</h1>
 </div>
 
 <div class="row">
@@ -23,43 +24,43 @@
                     
                     <div class="mb-3">
                         <label asp-for="FirstName" class="form-label fw-semibold" style="color: #374151;">
-                            <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>First Name
+                            <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>@L["FirstName"]
                         </label>
                         <input asp-for="FirstName" class="form-control" />
-                        <div class="form-text">Maximum 100 characters</div>
+                        <div class="form-text">@string.Format(L["MaxCharacters"].Value, 100)</div>
                         <span asp-validation-for="FirstName" class="text-danger small"></span>
                     </div>
                     
                     <div class="mb-3">
                         <label asp-for="LastName" class="form-label fw-semibold" style="color: #374151;">
-                            <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>Last Name
+                            <i class="bi bi-person-fill me-1" style="color: #3b82f6;"></i>@L["LastName"]
                         </label>
                         <input asp-for="LastName" class="form-control" />
-                        <div class="form-text">Maximum 100 characters</div>
+                        <div class="form-text">@string.Format(L["MaxCharacters"].Value, 100)</div>
                         <span asp-validation-for="LastName" class="text-danger small"></span>
                     </div>
                     
                     <div class="mb-3">
                         <label asp-for="DepartmentId" class="form-label fw-semibold" style="color: #374151;">
-                            <i class="bi bi-building-fill me-1" style="color: #3b82f6;"></i>Department
+                            <i class="bi bi-building-fill me-1" style="color: #3b82f6;"></i>@L["Department"]
                         </label>
                         <select asp-for="DepartmentId" asp-items="Model.Departments" class="form-select">
-                            <option>-- Select Department --</option>
+                            <option>@L["SelectDepartment"]</option>
                         </select>
                         <span asp-validation-for="DepartmentId" class="text-danger small"></span>
                     </div>
                     
                     <div class="mb-4 form-check">
                         <input asp-for="IsActive" class="form-check-input" />
-                        <label asp-for="IsActive" class="form-check-label" style="color: #374151;">Active</label>
+                        <label asp-for="IsActive" class="form-check-label" style="color: #374151;">@L["Active"]</label>
                     </div>
                     
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-custom-primary">
-                            <i class="bi bi-check-lg me-1"></i>Save Changes
+                            <i class="bi bi-check-lg me-1"></i>@L["SaveChanges"]
                         </button>
                         <a asp-action="Index" class="btn btn-custom-secondary">
-                            <i class="bi bi-x-lg me-1"></i>Cancel
+                            <i class="bi bi-x-lg me-1"></i>@L["Cancel"]
                         </a>
                     </div>
                 </form>

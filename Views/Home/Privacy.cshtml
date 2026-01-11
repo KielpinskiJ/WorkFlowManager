@@ -1,6 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+﻿@inject IHtmlLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["PrivacyPolicy"].Value;
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<p>@L["PrivacyContent"]</p>

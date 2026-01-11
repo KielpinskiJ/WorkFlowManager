@@ -1,7 +1,8 @@
 @model WorkFlowManager.ViewModels.PayrollReportViewModel
+@inject IHtmlLocalizer<SharedResource> L
 
 @{
-    ViewData["Title"] = "Payroll Report";
+    ViewData["Title"] = L["PayrollReport"].Value;
 }
 
 <style>
@@ -136,9 +137,9 @@
 </style>
 
 <div class="page-header no-print">
-    <h1><i class="bi bi-cash-stack"></i>Payroll Report</h1>
+    <h1><i class="bi bi-cash-stack"></i>@L["PayrollReport"]</h1>
     <button onclick="window.print()" class="btn btn-custom-secondary">
-        <i class="bi bi-printer-fill me-1"></i>Print
+        <i class="bi bi-printer-fill me-1"></i>@L["Print"]
     </button>
 </div>
 
@@ -147,7 +148,7 @@
     <form method="get" class="row g-3 align-items-end">
         <div class="col-md-3">
             <label class="form-label fw-semibold" style="color: #374151;">
-                <i class="bi bi-calendar-month me-1" style="color: #3b82f6;"></i>Month
+                <i class="bi bi-calendar-month me-1" style="color: #3b82f6;"></i>@L["Month"]
             </label>
             <select name="month" class="form-select">
                 @for (int m = 1; m <= 12; m++)
@@ -160,7 +161,7 @@
         </div>
         <div class="col-md-3">
             <label class="form-label fw-semibold" style="color: #374151;">
-                <i class="bi bi-calendar-fill me-1" style="color: #3b82f6;"></i>Year
+                <i class="bi bi-calendar-fill me-1" style="color: #3b82f6;"></i>@L["Year"]
             </label>
             <select name="year" class="form-select">
                 @foreach (var y in (List<int>)ViewBag.AvailableYears)
@@ -171,7 +172,7 @@
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-custom-primary">
-                <i class="bi bi-search me-1"></i>Generate Report
+                <i class="bi bi-search me-1"></i>@L["GenerateReport"]
             </button>
         </div>
     </form>
@@ -182,17 +183,17 @@
     <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h5 class="mb-0">
             <i class="bi bi-file-earmark-spreadsheet me-2"></i>
-            @Model.MonthName @Model.Year - Payroll Summary
+            @Model.MonthName @Model.Year - @L["PayrollSummary"]
         </h5>
-        <small style="color: rgba(255,255,255,0.8);">Generated: @Model.GeneratedAt.ToString("dd MMM yyyy, HH:mm")</small>
+        <small style="color: rgba(255,255,255,0.8);">@L["Generated"]: @Model.GeneratedAt.ToString("dd MMM yyyy, HH:mm")</small>
     </div>
     <div class="card-body">
         @if (!Model.Entries.Any())
         {
             <div class="alert-custom-info mb-0">
                 <i class="bi bi-info-circle-fill me-2"></i>
-                No payroll data available for @Model.MonthName @Model.Year.
-                Employees need assigned shifts and/or bonuses in this period.
+                @L["NoPayrollData"] @Model.MonthName @Model.Year.
+                @L["PayrollDataNote"]
             </div>
         }
         else
@@ -203,7 +204,7 @@
                     <div class="card-custom h-100">
                         <div class="card-body text-center">
                             <i class="bi bi-people-fill fs-2" style="color: #3b82f6;"></i>
-                            <h6 style="color: #64748b;" class="mt-2 mb-1">Total Employees</h6>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">@L["TotalEmployees"]</h6>
                             <span class="fs-3 fw-bold" style="color: #3b82f6;">@Model.EmployeeCount</span>
                         </div>
                     </div>
@@ -212,7 +213,7 @@
                     <div class="card-custom h-100">
                         <div class="card-body text-center">
                             <i class="bi bi-clock-fill fs-2" style="color: #0ea5e9;"></i>
-                            <h6 style="color: #64748b;" class="mt-2 mb-1">Total Hours</h6>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">@L["TotalHours"]</h6>
                             <span class="fs-3 fw-bold" style="color: #0ea5e9;">@Model.TotalHours.ToString("N1") h</span>
                         </div>
                     </div>
@@ -221,13 +222,13 @@
                     <div class="card-custom h-100">
                         <div class="card-body text-center">
                             <i class="bi bi-gift-fill fs-2" style="color: #f59e0b;"></i>
-                            <h6 style="color: #64748b;" class="mt-2 mb-1">Paid Bonuses</h6>
+                            <h6 style="color: #64748b;" class="mt-2 mb-1">@L["PaidBonuses"]</h6>
                             <span class="fs-3 fw-bold" style="color: #f59e0b;">@Model.TotalBonuses.ToString("N2") zł</span>
                             @if (Model.TotalScheduledBonuses > 0)
                             {
                                 <div class="mt-2">
                                     <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-calendar-event me-1"></i>Scheduled: @Model.TotalScheduledBonuses.ToString("N2") zł
+                                        <i class="bi bi-calendar-event me-1"></i>@L["Scheduled"]: @Model.TotalScheduledBonuses.ToString("N2") zł
                                     </span>
                                 </div>
                             }
@@ -238,7 +239,7 @@
                     <div class="card-custom card-highlight h-100" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
                         <div class="card-body text-center text-white">
                             <i class="bi bi-cash-coin fs-2"></i>
-                            <h6 class="mt-2 mb-1 opacity-75">Total Payroll</h6>
+                            <h6 class="mt-2 mb-1 opacity-75">@L["TotalPayroll"]</h6>
                             <span class="fs-3 fw-bold">@Model.TotalPayroll.ToString("N2") zł</span>
                         </div>
                     </div>
@@ -251,13 +252,13 @@
                     <table class="table table-custom mb-0">
                         <thead>
                             <tr>
-                                <th><i class="bi bi-person-fill me-1"></i>Employee</th>
-                                <th class="d-none d-md-table-cell"><i class="bi bi-building-fill me-1"></i>Department</th>
-                                <th class="text-end d-none d-lg-table-cell"><i class="bi bi-currency-exchange me-1"></i>Rate/h</th>
-                                <th class="text-end"><i class="bi bi-clock me-1"></i>Hours</th>
-                                <th class="text-end d-none d-md-table-cell"><i class="bi bi-wallet2 me-1"></i>Base</th>
-                                <th class="text-end d-none d-lg-table-cell"><i class="bi bi-gift me-1"></i>Bonuses</th>
-                                <th class="text-end"><strong>Total</strong></th>
+                                <th><i class="bi bi-person-fill me-1"></i>@L["Employee"]</th>
+                                <th class="d-none d-md-table-cell"><i class="bi bi-building-fill me-1"></i>@L["Department"]</th>
+                                <th class="text-end d-none d-lg-table-cell"><i class="bi bi-currency-exchange me-1"></i>@L["RatePerHour"]</th>
+                                <th class="text-end"><i class="bi bi-clock me-1"></i>@L["Hours"]</th>
+                                <th class="text-end d-none d-md-table-cell"><i class="bi bi-wallet2 me-1"></i>@L["Base"]</th>
+                                <th class="text-end d-none d-lg-table-cell"><i class="bi bi-gift me-1"></i>@L["Bonuses"]</th>
+                                <th class="text-end"><strong>@L["Total"]</strong></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -271,7 +272,7 @@
                                     <td class="d-none d-md-table-cell">
                                         @if (entry.DepartmentName == "Unassigned")
                                         {
-                                            <span class="badge-custom">@entry.DepartmentName</span>
+                                            <span class="badge-custom">@L["Unassigned"]</span>
                                         }
                                         else
                                         {

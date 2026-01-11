@@ -24,25 +24,24 @@ public class PayrollService : IPayrollService
         // Define the date range for the month
         var startDate = new DateTime(year, month, 1);
         var endDate = startDate.AddMonths(1);
+        var today = DateTime.Today;
 
-        // Get all active users with their departments, shifts, and bonuses
+        // Get all active users with their departments and FILTERED shifts/bonuses for the month
+        // Using Filtered Include to avoid loading all historical data (performance optimization)
         var users = await _context.Users
             .Include(u => u.Department)
-            .Include(u => u.Shifts)
-            .Include(u => u.Bonuses)
+            .Include(u => u.Shifts.Where(s => s.StartTime >= startDate && s.StartTime < endDate))
+            .Include(u => u.Bonuses.Where(b => b.DateGranted >= startDate && b.DateGranted < endDate))
             .Where(u => u.IsActive)
+            .AsSplitQuery() // Split into separate queries to avoid cartesian explosion
             .ToListAsync();
 
         var entries = new List<PayrollEntryViewModel>();
 
-        var today = DateTime.Today;
-
         foreach (var user in users)
         {
-            // Calculate total hours from shifts in the specified month
-            var monthlyShifts = user.Shifts
-                .Where(s => s.StartTime >= startDate && s.StartTime < endDate)
-                .ToList();
+            // Shifts are already filtered to the month by the query
+            var monthlyShifts = user.Shifts.ToList();
 
             var totalHours = monthlyShifts
                 .Sum(s => (s.EndTime - s.StartTime).TotalHours);
@@ -53,10 +52,8 @@ public class PayrollService : IPayrollService
 
             var hourlyRate = user.Department?.HourlyRate ?? 0;
 
-            // Get bonuses in the specified month
-            var monthlyBonuses = user.Bonuses
-                .Where(b => b.DateGranted >= startDate && b.DateGranted < endDate)
-                .ToList();
+            // Bonuses are already filtered to the month by the query
+            var monthlyBonuses = user.Bonuses.ToList();
 
             var bonusTotal = monthlyBonuses
                 .Where(b => b.DateGranted <= today)
@@ -106,10 +103,12 @@ public class PayrollService : IPayrollService
         var endDate = startDate.AddMonths(1);
         var today = DateTime.Today;
 
+        // Use Filtered Include to only load relevant shifts and bonuses for the month
         var user = await _context.Users
             .Include(u => u.Department)
-            .Include(u => u.Shifts)
-            .Include(u => u.Bonuses)
+            .Include(u => u.Shifts.Where(s => s.StartTime >= startDate && s.StartTime < endDate))
+            .Include(u => u.Bonuses.Where(b => b.DateGranted >= startDate && b.DateGranted < endDate))
+            .AsSplitQuery()
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
@@ -117,9 +116,8 @@ public class PayrollService : IPayrollService
             return null;
         }
 
-        var monthlyShifts = user.Shifts
-            .Where(s => s.StartTime >= startDate && s.StartTime < endDate)
-            .ToList();
+        // Shifts are already filtered by the query
+        var monthlyShifts = user.Shifts.ToList();
 
         var totalHours = monthlyShifts.Sum(s => (s.EndTime - s.StartTime).TotalHours);
         
@@ -130,8 +128,9 @@ public class PayrollService : IPayrollService
         var hourlyRate = user.Department?.HourlyRate ?? 0;
         
         // Only include bonuses that have already been granted (DateGranted <= today)
+        // Bonuses are already filtered to the month by the query
         var bonusTotal = user.Bonuses
-            .Where(b => b.DateGranted >= startDate && b.DateGranted < endDate && b.DateGranted <= today)
+            .Where(b => b.DateGranted <= today)
             .Sum(b => b.Amount);
 
         return new PayrollEntryViewModel
