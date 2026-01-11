@@ -51,18 +51,11 @@ public class RequestService : IRequestService
         var pendingRequestsQuery = _context.LeaveRequests
             .Where(r => r.UserId == userId && r.Status == RequestStatus.Pending && r.Type == type);
 
-        bool duplicateExists;
-
-        if (type == RequestType.Vacation)
-        {
-            duplicateExists = await pendingRequestsQuery
-                .AnyAsync(r => r.StartDate == startDate && r.EndDate == endDate);
-        }
-        else
-        {
-            duplicateExists = await pendingRequestsQuery
+        bool duplicateExists = type == RequestType.Vacation
+            ? await pendingRequestsQuery
+                .AnyAsync(r => r.StartDate == startDate && r.EndDate == endDate)
+            : await pendingRequestsQuery
                 .AnyAsync(r => r.TargetDepartmentId == targetDepartmentId);
-        }
 
         if (duplicateExists)
         {
