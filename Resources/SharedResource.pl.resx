@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+
+  <!-- Navigation -->
+  <data name="Home" xml:space="preserve"><value>Strona główna</value></data>
+  <data name="MyPanel" xml:space="preserve"><value>Mój panel</value></data>
+  <data name="Management" xml:space="preserve"><value>Zarządzanie</value></data>
+  <data name="ScheduleSection" xml:space="preserve"><value>Organizacja pracy</value></data>
+  <data name="FinanceSection" xml:space="preserve"><value>Finanse</value></data>
+  <data name="ReportsSection" xml:space="preserve"><value>Raporty</value></data>
+  <data name="MySchedule" xml:space="preserve"><value>Mój harmonogram</value></data>
+  <data name="MyRequests" xml:space="preserve"><value>Moje wnioski</value></data>
+  <data name="MyPayroll" xml:space="preserve"><value>Moje wynagrodzenie</value></data>
+  <data name="Departments" xml:space="preserve"><value>Działy</value></data>
+  <data name="Users" xml:space="preserve"><value>Użytkownicy</value></data>
+  <data name="AllShifts" xml:space="preserve"><value>Grafik zmian</value></data>
+  <data name="ManageRequests" xml:space="preserve"><value>Wnioski</value></data>
+  <data name="PayrollReport" xml:space="preserve"><value>Raport płac</value></data>
+  <data name="Bonuses" xml:space="preserve"><value>Premie</value></data>
+  <data name="Statistics" xml:space="preserve"><value>Statystyki</value></data>
+  <data name="Login" xml:space="preserve"><value>Zaloguj</value></data>
+  <data name="Logout" xml:space="preserve"><value>Wyloguj</value></data>
+  <data name="Register" xml:space="preserve"><value>Zarejestruj</value></data>
+
+  <!-- Page titles -->
+  <data name="WelcomeTitle" xml:space="preserve"><value>Witaj w WorkFlowManager</value></data>
+
+  <!-- Home page -->
+  <data name="HomeSubtitle" xml:space="preserve"><value>Zarządzaj pracownikami, harmonogramami, wnioskami i wynagrodzeniami - wszystko w jednym miejscu.</value></data>
+  <data name="GoToDepartments" xml:space="preserve"><value>Przejdź do działów</value></data>
+  <data name="DepartmentsDescription" xml:space="preserve"><value>Organizuj pracowników w działy z konfigurowalnymi stawkami godzinowymi.</value></data>
+  <data name="Scheduling" xml:space="preserve"><value>Harmonogramy</value></data>
+  <data name="SchedulingDescription" xml:space="preserve"><value>Twórz i zarządzaj zmianami. Pracownicy mogą łatwo przeglądać swoje harmonogramy.</value></data>
+  <data name="Payroll" xml:space="preserve"><value>Wynagrodzenia</value></data>
+  <data name="PayrollDescription" xml:space="preserve"><value>Automatyczne obliczanie wynagrodzeń na podstawie przepracowanych godzin i premii.</value></data>
+
+</root>

@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@inject IHtmlLocalizer<SharedResource> L
+<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,12 +27,12 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house-fill me-1 icon-home"></i>Home
+                                <i class="bi bi-house-fill me-1 icon-home"></i>@L["Home"]
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-custom" asp-area="" asp-controller="Departments" asp-action="Index">
-                                <i class="bi bi-building-fill me-1 icon-dept"></i>Departments
+                                <i class="bi bi-building-fill me-1 icon-dept"></i>@L["Departments"]
                             </a>
                         </li>
                         
@@ -40,22 +41,22 @@
                             <!-- Employee Menu -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link nav-link-custom dropdown-toggle dropdown-toggle-custom" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-badge-fill me-1"></i>My Panel
+                                    <i class="bi bi-person-badge-fill me-1"></i>@L["MyPanel"]
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-custom">
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Shifts" asp-action="MySchedule">
-                                            <i class="bi bi-calendar-check-fill me-2 icon-schedule"></i>My Schedule
+                                            <i class="bi bi-calendar-check-fill me-2 icon-schedule"></i>@L["MySchedule"]
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Requests" asp-action="Index">
-                                            <i class="bi bi-inbox-fill me-2 icon-requests"></i>My Requests
+                                            <i class="bi bi-inbox-fill me-2 icon-requests"></i>@L["MyRequests"]
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Payroll" asp-action="MyPayroll">
-                                            <i class="bi bi-wallet2 me-2 icon-payroll"></i>My Payroll
+                                            <i class="bi bi-wallet2 me-2 icon-payroll"></i>@L["MyPayroll"]
                                         </a>
                                     </li>
                                 </ul>
@@ -67,47 +68,66 @@
                             <!-- Admin Management Menu -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link nav-link-custom dropdown-toggle dropdown-toggle-custom" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-gear-wide-connected me-1"></i>Management
+                                    <i class="bi bi-gear-wide-connected me-1"></i>@L["Management"]
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-custom">
-                                    <li class="dropdown-header dropdown-header-custom">Schedule & Requests</li>
+                                    <li class="dropdown-header dropdown-header-custom">@L["ScheduleSection"]</li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Shifts" asp-action="Index">
-                                            <i class="bi bi-calendar-week-fill me-2 icon-schedule"></i>Manage Shifts
+                                            <i class="bi bi-calendar-week-fill me-2 icon-schedule"></i>@L["AllShifts"]
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Requests" asp-action="Manage">
-                                            <i class="bi bi-clipboard-check-fill me-2 icon-requests"></i>Manage Requests
+                                            <i class="bi bi-clipboard-check-fill me-2 icon-requests"></i>@L["ManageRequests"]
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider dropdown-divider-custom"></li>
-                                    <li class="dropdown-header dropdown-header-custom">Finance</li>
+                                    <li class="dropdown-header dropdown-header-custom">@L["FinanceSection"]</li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Bonuses" asp-action="Index">
-                                            <i class="bi bi-gift-fill me-2 icon-bonuses"></i>Bonuses
+                                            <i class="bi bi-gift-fill me-2 icon-bonuses"></i>@L["Bonuses"]
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Payroll" asp-action="Index">
-                                            <i class="bi bi-cash-stack me-2 icon-payroll"></i>Payroll
+                                            <i class="bi bi-cash-stack me-2 icon-payroll"></i>@L["PayrollReport"]
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider dropdown-divider-custom"></li>
-                                    <li class="dropdown-header dropdown-header-custom">Reports & Admin</li>
+                                    <li class="dropdown-header dropdown-header-custom">@L["ReportsSection"]</li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Stats" asp-action="Index">
-                                            <i class="bi bi-bar-chart-line-fill me-2 icon-stats"></i>Statistics
+                                            <i class="bi bi-bar-chart-line-fill me-2 icon-stats"></i>@L["Statistics"]
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item dropdown-item-custom" asp-area="" asp-controller="Users" asp-action="Index">
-                                            <i class="bi bi-people-fill me-2 icon-users"></i>Users
+                                            <i class="bi bi-people-fill me-2 icon-users"></i>@L["Users"]
                                         </a>
                                     </li>
                                 </ul>
                             </li>
                         }
+                        
+                        <!-- Language Switcher -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-link-custom dropdown-toggle dropdown-toggle-custom" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-globe me-1"></i>@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToUpper()
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom">
+                                <li>
+                                    <a class="dropdown-item dropdown-item-custom @(System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en" ? "active" : "")" href="/SetLanguage/en">
+                                        🇬🇧 English
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item dropdown-item-custom @(System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "pl" ? "active" : "")" href="/SetLanguage/pl">
+                                        🇵🇱 Polski
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -134,8 +154,8 @@
                 <!-- Quick Links -->
                 <div class="col-md-4 text-center">
                     <ul class="footer-nav">
-                        <li><a class="footer-nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill me-1"></i>Home</a></li>
-                        <li><a class="footer-nav-link" asp-controller="Departments" asp-action="Index"><i class="bi bi-building-fill me-1"></i>Departments</a></li>
+                        <li><a class="footer-nav-link" asp-controller="Home" asp-action="Index"><i class="bi bi-house-fill me-1"></i>@L["Home"]</a></li>
+                        <li><a class="footer-nav-link" asp-controller="Departments" asp-action="Index"><i class="bi bi-building-fill me-1"></i>@L["Departments"]</a></li>
                         <li><a class="footer-nav-link" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-check me-1"></i>Privacy</a></li>
                     </ul>
                 </div>
